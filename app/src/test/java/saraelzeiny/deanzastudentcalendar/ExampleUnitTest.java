@@ -1,4 +1,4 @@
-package com.example.karina.dacalendar;
+package saraelzeiny.deanzastudentcalendar;
 
 import org.junit.Test;
 

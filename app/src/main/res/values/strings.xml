@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">DA Calendar</string>
+    <string name="app_name">De Anza Student Calendar</string>
+    <string name="facebook_app_id">1701604733446155</string>
 </resources>
