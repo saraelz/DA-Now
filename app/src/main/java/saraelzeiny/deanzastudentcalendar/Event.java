@@ -13,12 +13,18 @@ import java.util.ArrayList;
 public class Event {
     protected String name, description, place;
     protected LocalDateTime start, finish;
-    protected enum category {
+    protected enum source {
         Facebook, ClubMeeting, TransferAppointment, Website
     }
     protected ArrayList<String> tags;
 
-    Event(String eventName, String details, String location, LocalDateTime startTime, LocalDateTime finishTime)
+    Event()
+    {
+
+    }
+
+    Event(String eventName, String details, String location, LocalDateTime startTime,
+          LocalDateTime finishTime)
     {
         name = eventName;
         description = details;
@@ -55,7 +61,7 @@ public class Event {
         //does this make sense to continue with month and month/day?
         //cases from LocalDateTime API http://joda-time.sourceforge.net/apidocs/org/joda/time/DateTimeConstants.html
 
-        //This will split the string name around the spaces and stores them into the given string array
+        //This will split the string around the spaces and stores them into the given string array
         String tempNameArr[] = name.split(" ");
         for (String tempName : tempNameArr)
         {
@@ -74,6 +80,7 @@ public class Event {
     public void tag(String t)
     {
         tags.add(t);
+        //sort/alphabetize new tag
     }
 
     /*public boolean search_tags(String input)
@@ -84,5 +91,5 @@ public class Event {
             if (tags.contains(key)) //or do another for loop, check beginning of input to match tags
                 return true;
         //display in ListView
-    }
+    }*/
 }

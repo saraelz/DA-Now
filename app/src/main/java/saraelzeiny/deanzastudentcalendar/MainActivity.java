@@ -24,14 +24,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void facebookCrawler()
+    private void FacebookStalking()
     {
         long [] facebookGroups = {885940821502890L, //De Anza DECA Club
                 219645201389350L, //VIDA: Vasconcellos Institute for Democracy In Action
                 2236277819L, //De Anza College
         };
-        long [] facebookPages = {
-        }
+        long [] facebookPages = {265047173570399L, //ICC
+                192472534143760L //DASB
+        };
     }
 
     private void grabFacebookPage(int id)
