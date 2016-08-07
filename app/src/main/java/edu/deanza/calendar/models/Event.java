@@ -10,9 +10,6 @@ import org.joda.time.LocalTime;
 public class Event {
     protected String name, description, location;
     protected LocalTime startTime, endTime;
-    protected enum source {
-        Facebook, ClubMeeting, TransferAppointment, Website
-    }
     // TODO: add `categories` field
 
     Event(String name, String description, String location, String startTime,
