@@ -2,15 +2,15 @@ package edu.deanza.calendar.models;
 
 //constructor for localDateTime: LocalDateTime(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour)
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import java.util.ArrayList;
 
 /**
  * Created by Sara on 5/28/2016.
  */
 public class Event {
-    protected String name, description, place;
-    protected LocalDateTime start, finish;
+    protected String name, description, location;
+    protected LocalTime startTime, endTime;
     protected enum source {
         Facebook, ClubMeeting, TransferAppointment, Website
     }
@@ -21,14 +21,14 @@ public class Event {
 
     }
 
-    Event(String eventName, String details, String location, LocalDateTime startTime,
-          LocalDateTime finishTime)
+    Event(String name, String description, String location, String startTime,
+          String endTime)
     {
-        name = eventName;
-        description = details;
-        place = location;
-        start = startTime;
-        finish = finishTime;
+        this.name = name;
+        this.description = description;
+        this.location = location;
+        this.startTime = LocalTime.parse(startTime);
+        this.endTime = LocalTime.parse(endTime);
 
         tags = new ArrayList<String>();
         //generate_tags();
