@@ -1,4 +1,4 @@
-package saraelzeiny.deanzastudentcalendar;
+package edu.deanza.calendar;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,7 +9,8 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.appevents.AppEventsLogger;
-import java.util.*;
+
+import edu.deanza.R;
 
 public class MainActivity extends AppCompatActivity {
 

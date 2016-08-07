@@ -1,4 +1,4 @@
-package saraelzeiny.deanzastudentcalendar;
+package edu.deanza;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

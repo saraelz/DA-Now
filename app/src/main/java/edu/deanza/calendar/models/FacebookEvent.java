@@ -1,4 +1,4 @@
-package saraelzeiny.deanzastudentcalendar;
+package edu.deanza.calendar.models;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;

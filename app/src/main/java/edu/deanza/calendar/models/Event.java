@@ -1,8 +1,6 @@
-package saraelzeiny.deanzastudentcalendar;
+package edu.deanza.calendar.models;
 
 //constructor for localDateTime: LocalDateTime(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour)
-
-import android.widget.ArrayAdapter;
 
 import org.joda.time.LocalDateTime;
 import java.util.ArrayList;

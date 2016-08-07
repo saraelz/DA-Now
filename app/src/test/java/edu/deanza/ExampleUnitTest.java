@@ -1,4 +1,4 @@
-package saraelzeiny.deanzastudentcalendar;
+package edu.deanza;
 
 import org.junit.Test;
 
