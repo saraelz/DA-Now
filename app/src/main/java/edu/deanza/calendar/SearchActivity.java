@@ -12,12 +12,12 @@ import com.facebook.appevents.AppEventsLogger;
 
 import edu.deanza.R;
 
-public class MainActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_search);
 
         //track analytics using FB--can remove feature later
         FacebookSdk.sdkInitialize(getApplicationContext());
