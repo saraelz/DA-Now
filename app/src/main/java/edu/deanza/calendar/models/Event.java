@@ -1,8 +1,11 @@
 package edu.deanza.calendar.models;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by Sara on 5/28/2016.
@@ -26,20 +29,34 @@ public class Event {
 
     }
 
-    public static Event fromJson(JSONObject eventJson) {
+    public static Event fromJson(JSONObject jsonEvent) {
         Event e = new Event();
         try {
-            e.name = eventJson.getString("name");
-            e.description = eventJson.getString("description");
-            e.location = eventJson.getString("location");
-            e.startTime = DateTime.parse(eventJson.getString("start_time"));
-            e.endTime = DateTime.parse(eventJson.getString("end_time"));
+            e.name = jsonEvent.getString("name");
+            e.description = jsonEvent.getString("description");
+            e.location = jsonEvent.getString("location");
+            e.startTime = DateTime.parse(jsonEvent.getString("start_time"));
+            e.endTime = DateTime.parse(jsonEvent.getString("end_time"));
         }
         catch (JSONException ex) {
             ex.printStackTrace();
             return null;
         }
         return e;
+    }
+
+    public static ArrayList<Event> fromJson(JSONArray jsonEvents) {
+        ArrayList<Event> events = new ArrayList<Event>(jsonEvents.length());
+        JSONObject jsonEvent;
+        for (int i = 0; i < jsonEvents.length(); i++) {
+            JSONObject jsonEvent = jsonEvents.getJSONObject(i);
+            Event event = Event.fromJson(jsonEvent);
+
+            if (event != null) {
+                events.add(event)
+            }
+        }
+        return events
     }
 
     public String getName() {
