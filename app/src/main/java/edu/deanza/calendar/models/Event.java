@@ -1,6 +1,6 @@
 package edu.deanza.calendar.models;
 
-import org.joda.time.LocalTime;
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,7 +10,7 @@ import org.json.JSONObject;
 public class Event {
 
     protected String name, description, location;
-    protected LocalTime startTime, endTime;
+    protected DateTime startTime, endTime;
 
     // TODO: implement `categories` field
 
@@ -21,8 +21,8 @@ public class Event {
         this.name = name;
         this.description = description;
         this.location = location;
-        this.startTime = LocalTime.parse(startTime);
-        this.endTime = LocalTime.parse(endTime);
+        this.startTime = DateTime.parse(startTime);
+        this.endTime = DateTime.parse(endTime);
 
     }
 
@@ -32,8 +32,8 @@ public class Event {
             e.name = eventJson.getString("name");
             e.description = eventJson.getString("description");
             e.location = eventJson.getString("location");
-            e.startTime = LocalTime.parse(eventJson.getString("start_time"));
-            e.endTime = LocalTime.parse(eventJson.getString("end_time"));
+            e.startTime = DateTime.parse(eventJson.getString("start_time"));
+            e.endTime = DateTime.parse(eventJson.getString("end_time"));
         }
         catch (JSONException ex) {
             ex.printStackTrace();
@@ -54,11 +54,11 @@ public class Event {
         return location;
     }
 
-    public LocalTime getStartTime() {
+    public DateTime getStartTime() {
         return startTime;
     }
 
-    public LocalTime getEndTime() {
+    public DateTime getEndTime() {
         return endTime;
     }
 
