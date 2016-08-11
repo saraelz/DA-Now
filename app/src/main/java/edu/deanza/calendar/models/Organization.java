@@ -1,6 +1,5 @@
 package edu.deanza.calendar.models;
 
-import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,33 +9,33 @@ import java.util.ArrayList;
 /**
  * Created by soso1 on 8/8/2016.
  */
-public class StudentOrganization {
+
+public class Organization {
+
     protected String name;
     protected String description;
+    protected String facebookUrl;
 
-    protected String facebookURL;
+    public Organization() {}
 
-    public StudentOrganization() {
-    }
-
-    public StudentOrganization(String name, String description) {
+    public Organization(String name, String description) {
         this.name = name;
         this.description = description;
-        this.facebookURL = null;
+        this.facebookUrl = null;
     }
-    public StudentOrganization(String name, String description, String facebookURL) {
+    public Organization(String name, String description, String facebookUrl) {
         this.name = name;
         this.description = description;
-        this.facebookURL = facebookURL;
+        this.facebookUrl = facebookUrl;
     }
 
     //based on Clubs.json
-    public static StudentOrganization fromClubsJSON(JSONObject jsonClub) {
-        StudentOrganization club = new StudentOrganization();
+    public static Organization fromClubsJSON(JSONObject jsonClub) {
+        Organization club = new Organization();
         try {
             club.name = jsonClub.getString("name");
             club.description = jsonClub.getString("description");
-            club.facebookURL = null;
+            club.facebookUrl = null;
         }
         catch (JSONException ex) {
             ex.printStackTrace();
@@ -46,12 +45,12 @@ public class StudentOrganization {
     }
 
     //based on Clubs.json - can handle entire file
-    public static ArrayList<StudentOrganization> fromClubsJSON(JSONArray jsonClubs) {
-        ArrayList<StudentOrganization> clubs = new ArrayList<StudentOrganization>(jsonClubs.length());
+    public static ArrayList<Organization> fromClubsJSON(JSONArray jsonClubs) {
+        ArrayList<Organization> clubs = new ArrayList<Organization>(jsonClubs.length());
         JSONObject jsonClub;
         for (int i = 0; i < jsonClubs.length(); i++) {
             jsonClub = jsonClubs.getJSONObject(i);
-            StudentOrganization club = StudentOrganization.fromClubsJSON(jsonClub);
+            Organization club = Organization.fromClubsJSON(jsonClub);
 
             if (club != null) {
                 clubs.add(club);
@@ -61,24 +60,19 @@ public class StudentOrganization {
     }
 
     /*//incomplete method, uses Facebook API
-    public static StudentOrganization fromFacebookURL(String url) {
-        StudentOrganization organization = new StudentOrganization();
+    public static Organization fromFacebookURL(String url) {
+        Organization organization = new Organization();
 
         //pull json from facebook
 
         //generate name, description from JSON
 
-        //initialize organization.name, organization.description, organization.facebookURL
+        //initialize organization.name, organization.description, organization.facebookUrl
 
         //is there a need to treat pages different than groups?
 
         return organization;
     }*/
-
-
-    public String getFacebookURL() {
-        return facebookURL;
-    }
 
     public String getName() {
         return name;
@@ -87,4 +81,9 @@ public class StudentOrganization {
     public String getDescription() {
         return description;
     }
+
+    public String getFacebookUrl() {
+        return facebookUrl;
+    }
+
 }

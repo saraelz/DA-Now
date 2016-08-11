@@ -10,21 +10,26 @@ import java.util.ArrayList;
 /**
  * Created by Sara on 5/28/2016.
  */
+
 public class Event {
 
-    protected String name, description, location, sponsor;
-    protected DateTime startTime, endTime;
+    protected String name;
+    protected String description;
+    protected String location;
+    protected String organization;
+    protected DateTime startTime;
+    protected DateTime endTime;
 
     // TODO: implement `categories` field
 
     public Event() {}
 
-    public Event(String name, String sponsor, String description, String location, String startTime,
-                 String endTime) {
+    public Event(String name, String description, String location, String organization,
+                 String startTime, String endTime) {
         this.name = name;
-        this.sponsor = sponsor;
         this.description = description;
         this.location = location;
+        this.organization = organization;
         this.startTime = DateTime.parse(startTime);
         this.endTime = DateTime.parse(endTime);
     }
@@ -38,7 +43,7 @@ public class Event {
             e.location = jsonEvent.getString("location");
             e.startTime = DateTime.parse(jsonEvent.getString("start_time"));
             e.endTime = DateTime.parse(jsonEvent.getString("end_time"));
-            e.sponsor = jsonEvent.getString("sponsor");
+            e.organization = jsonEvent.getString("organization");
         }
         catch (JSONException ex) {
             ex.printStackTrace();
@@ -97,16 +102,16 @@ public class Event {
         return name;
     }
 
-    public String getSponsor() {
-        return sponsor;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public String getLocation() {
         return location;
+    }
+
+    public String getOrganization() {
+        return organization;
     }
 
     public DateTime getStartTime() {
