@@ -12,11 +12,6 @@ public class Organization {
 
     public Organization() {}
 
-    public Organization(String name, String description) {
-        this.name = name;
-        this.description = description;
-        this.facebookUrl = null;
-    }
     public Organization(String name, String description, String facebookUrl) {
         this.name = name;
         this.description = description;
