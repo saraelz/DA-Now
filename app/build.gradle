@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "edu.deanza"
+        applicationId "edu.deanza.calendar"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
@@ -28,4 +28,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'joda-time:joda-time:2.9.4' // for joda
+    compile 'com.google.firebase:firebase-database:9.4.0'
+    compile 'com.google.firebase:firebase-core:9.4.0'
 }
+
+apply plugin: 'com.google.gms.google-services'

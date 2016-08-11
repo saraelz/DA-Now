@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1095338783246",
+    "firebase_url": "https://de-anza-calendar.firebaseio.com",
+    "project_id": "de-anza-calendar",
+    "storage_bucket": "de-anza-calendar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095338783246:android:b6a0e9616cb3f034",
+        "android_client_info": {
+          "package_name": "edu.deanza.calendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095338783246-lloi45bfeln96huj7udlr5gi4ni6jni6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXs2UsmG_E6OyYBWMiuDENKlPScwOuh38"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
