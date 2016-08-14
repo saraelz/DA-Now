@@ -12,21 +12,21 @@ public class Event {
     protected String description;
     protected String location;
     protected String organization;
-    protected DateTime startTime;
-    protected DateTime endTime;
+    protected DateTime start;
+    protected DateTime end;
 
     // TODO: implement `categories` field
 
     public Event() {}
 
     public Event(String name, String description, String location, String organization,
-                 String startTime, String endTime) {
+                 String start, String end) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.organization = organization;
-        this.startTime = DateTime.parse(startTime);
-        this.endTime = DateTime.parse(endTime);
+        this.start = DateTime.parse(start);
+        this.end = DateTime.parse(end);
     }
 
     public String getName() {
@@ -45,12 +45,12 @@ public class Event {
         return organization;
     }
 
-    public DateTime getStartTime() {
-        return startTime;
+    public DateTime getStart() {
+        return start;
     }
 
-    public DateTime getEndTime() {
-        return endTime;
+    public DateTime getEnd() {
+        return end;
     }
 
 }
