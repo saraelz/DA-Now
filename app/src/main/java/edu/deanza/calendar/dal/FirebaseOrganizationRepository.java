@@ -8,6 +8,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ import static com.google.android.gms.internal.zzs.TAG;
 public class FirebaseOrganizationRepository implements OrganizationRepository {
 
     private Query currentQuery;
-    private List<Organization> organizations;
+    private List<Organization> organizations = new ArrayList<>();
 
     private class OrganizationChangeListener implements ValueEventListener {
 
@@ -54,7 +55,11 @@ public class FirebaseOrganizationRepository implements OrganizationRepository {
         return organizations;
     }
 
-    public FirebaseOrganizationRepository() {}
+    public FirebaseOrganizationRepository() {
+        currentQuery = FirebaseDatabase.getInstance().getReference()
+                .child("organizations")
+                .orderByKey();
+    }
 
     @Override
     public List<Organization> all() {

@@ -14,7 +14,7 @@ public interface EventRepository {
 
     public List<Event> all();
 
-    public List<Event> ofOrganization(String organization);
+    public List<Event> findByOrganization(String organizationName);
 
     public List<Event> on(LocalDate date);
 
@@ -22,6 +22,6 @@ public interface EventRepository {
 
     public List<Event> after(LocalDate date);
 
-    public List<Event> between(LocalDate dateA, LocalDate dateB);
+    public List<Event> between(LocalDate start, LocalDate end);
 
 }

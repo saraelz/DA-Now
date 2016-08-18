@@ -13,6 +13,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.deanza.calendar.models.Event;
@@ -25,8 +26,8 @@ import static com.google.android.gms.internal.zzs.TAG;
 
 public class FirebaseEventRepository implements EventRepository {
 
-    private Query eventNodes;
-    private List<Event> events;
+    private Query currentQuery;
+    private List<Event> events = new ArrayList<>();
 
     private class EventChangeListener implements ValueEventListener {
 
@@ -44,57 +45,61 @@ public class FirebaseEventRepository implements EventRepository {
 
     }
 
-    private void updateEvents(Query query) {
-        query.addListenerForSingleValueEvent(new EventChangeListener());
+    private List<Event> updateEvents() {
+        currentQuery.addListenerForSingleValueEvent(new EventChangeListener());
+        return events;
     }
 
     public FirebaseEventRepository() {
-        eventNodes = FirebaseDatabase.getInstance().getReference()
+        currentQuery = FirebaseDatabase.getInstance().getReference()
                 .child("events")
-                .orderByChild("date");
+                .orderByKey();
     }
 
+    @Override
     public List<Event> all() {
-        updateEvents(eventNodes);
-        return events;
+        currentQuery = FirebaseDatabase.getInstance().getReference()
+                .child("events")
+                .orderByKey();
+        return updateEvents();
     }
 
-    public List<Event> ofOrganization(String organization) {
-        Query q = eventNodes.equalTo(organization, "organization");
-        updateEvents(q);
-        return events;
+    @Override
+    public List<Event> findByOrganization(String organizationName) {
+        currentQuery = currentQuery.equalTo(organizationName, "organizationName");
+        return updateEvents();
     }
 
+    @Override
     public List<Event> on(LocalDate date) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
-        Query q = eventNodes
-                .startAt(formatter.print(date), "date")
-                .endAt(formatter.print(date.plusDays(1)), "date");
-        updateEvents(q);
-        return events;
+        currentQuery = currentQuery
+                .startAt(formatter.print(date))
+                .endAt(formatter.print(date.plusDays(1)));
+        return updateEvents();
     }
 
+    @Override
     public List<Event> before(LocalDate date) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
-        Query q = eventNodes.endAt(formatter.print(date), "date");
-        updateEvents(q);
-        return events;
+        currentQuery = currentQuery.endAt(formatter.print(date));
+        return updateEvents();
     }
 
+    @Override
     public List<Event> after(LocalDate date) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
-        Query q = eventNodes.startAt(formatter.print(date), "date");
-        updateEvents(q);
-        return events;
+        currentQuery = currentQuery.startAt(formatter.print(date));
+        return updateEvents();
     }
 
-    public List<Event> between(LocalDate dateA, LocalDate dateB) {
+    @Override
+    public List<Event> between(LocalDate start, LocalDate end) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
-        Query q = eventNodes
-                .startAt(formatter.print(dateA), "date")
-                .endAt(formatter.print(dateB), "date");
-        updateEvents(q);
-        return events;
+        currentQuery = currentQuery
+                .startAt(formatter.print(start))
+                .endAt(formatter.print(end));
+        return updateEvents();
     }
 
 }
