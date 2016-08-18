@@ -8,13 +8,15 @@ public class Organization {
 
     protected String name;
     protected String description;
+    protected String location;
     protected String facebookUrl;
 
     public Organization() {}
 
-    public Organization(String name, String description, String facebookUrl) {
+    public Organization(String name, String description, String location, String facebookUrl) {
         this.name = name;
         this.description = description;
+        this.location = location;
         this.facebookUrl = facebookUrl;
     }
 
@@ -24,6 +26,10 @@ public class Organization {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     public String getFacebookUrl() {
