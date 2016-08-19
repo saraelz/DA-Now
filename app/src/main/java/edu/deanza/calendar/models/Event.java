@@ -9,19 +9,17 @@ import org.joda.time.format.ISODateTimeFormat;
 
 public class Event {
 
-    protected String name;
-    protected String description;
-    protected String location;
-    protected String organizationName;
-    protected DateTime start;
-    protected DateTime end;
+    protected final String name;
+    protected final String description;
+    protected final String location;
+    protected final String organizationName;
+    protected final DateTime start;
+    protected final DateTime end;
 
     // TODO: implement `categories` field
 
-    public Event() {}
-
     public Event(String name, String description, String location, String organizationName,
-                 DateTime start, DateTime end) {
+                DateTime start, DateTime end) {
         this.name = name;
         this.description = description;
         this.location = location;

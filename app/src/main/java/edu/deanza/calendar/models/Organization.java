@@ -10,13 +10,11 @@ import java.util.List;
 
 public class Organization {
 
-    protected String name;
-    protected String description;
-    protected String location;
-    protected String facebookUrl;
-    protected List<Interval> meetings;
-
-    public Organization() {}
+    protected final String name;
+    protected final String description;
+    protected final String location;
+    protected final String facebookUrl;
+    protected final List<Interval> meetings;
 
     public Organization(String name, String description, String location, String facebookUrl, List<Interval> meetings) {
         this.name = name;

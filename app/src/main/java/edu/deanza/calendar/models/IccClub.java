@@ -6,9 +6,7 @@ import java.util.List;
 
 public class IccClub extends Organization {
 
-    private List<Day> meetingDays;
-
-    public IccClub() {}
+    private final List<Day> meetingDays;
 
     public IccClub(String name, String description, String location, String facebookUrl,
                    List<Interval> meetings, List<Day> meetingDays) {
