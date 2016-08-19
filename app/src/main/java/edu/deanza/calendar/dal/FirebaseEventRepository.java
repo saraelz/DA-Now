@@ -8,7 +8,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.deanza.calendar.models.Event;
 import edu.deanza.calendar.models.OrganizationEvent;
 
 import static com.google.android.gms.internal.zzs.TAG;
@@ -36,21 +34,14 @@ public class FirebaseEventRepository implements EventRepository {
         @Override
         public void onDataChange(DataSnapshot eventNodes) {
             organizationEvents.clear();
-            for (DataSnapshot eventNode : eventNodes.getChildren()) {
-                String eventKey = eventNode.getKey();
-                int nameStartDelimiter = eventKey.lastIndexOf('|');
-                String name = eventKey.substring(nameStartDelimiter + 1, eventKey.length());
-
-                Map<String, String> rawEvent = (Map<String, String>) eventNode.getValue();
-                Event e = new Event(
-                        eventKey.substring(nameStartDelimiter + 1, eventKey.length()),
-                        rawEvent.get("description"),
-                        rawEvent.get("location"),
-                        rawEvent.get("organizationName"),
-                        DateTime.parse(rawEvent.get("start")),
-                        DateTime.parse(rawEvent.get("end"))
+            Map<String, Map<Object, Object>> rawEvents = (Map<String, Map<Object, Object>>) eventNodes.getValue();
+            EventMapper mapper = new EventMapper();
+            for (Map.Entry<String, Map<Object, Object>> rawEvent : rawEvents.entrySet()) {
+                organizationEvents.add(
+                        new FirebaseOrganizationEvent(
+                                mapper.map(rawEvent.getKey(), rawEvent.getValue())
+                        )
                 );
-                organizationEvents.add(new FirebaseOrganizationEvent(e));
             }
         }
 

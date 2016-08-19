@@ -8,13 +8,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import org.joda.time.Interval;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.deanza.calendar.models.Organization;
 import edu.deanza.calendar.models.OrganizationEvent;
 
 import static com.google.android.gms.internal.zzs.TAG;
@@ -31,33 +28,16 @@ public class FirebaseOrganizationRepository implements OrganizationRepository {
     private class OrganizationChangeListener implements ValueEventListener {
 
         @Override
-        public void onDataChange(DataSnapshot snapshot) {
-
+        public void onDataChange(DataSnapshot organizationNodes) {
             organizationEvents.clear();
-            List<Map<String, Object>> rawOrganizations = (List<Map<String, Object>>) snapshot.getValue();
-
-            for (Map<String, Object> rawOrganization : rawOrganizations) {
-
-                List<String> rawMeetings = (List<String>) rawOrganization.get("meetings");
-                List<Interval> meetings = new ArrayList<>();
-                for (String s : rawMeetings) {
-                    try {
-                        meetings.add(Interval.parse(s));
-                    }
-                    catch (IllegalArgumentException e) {
-                        continue;
-                    }
-                }
-
-                Organization o = new Organization(
-                        (String) rawOrganization.get("name"),
-                        (String) rawOrganization.get("description"),
-                        (String) rawOrganization.get("location"),
-                        (String) rawOrganization.get("facebookUrl"),
-                        meetings
+            Map<String, Map<Object, Object>> rawOrganizations = (Map<String, Map<Object, Object>>) organizationNodes.getValue();
+            OrganizationMapper mapper = new OrganizationMapper();
+            for (Map.Entry<String, Map<Object, Object>> rawOrganization : rawOrganizations.entrySet()) {
+                organizationEvents.add(
+                        new FirebaseOrganizationEvent(
+                                mapper.map(rawOrganization.getKey(), rawOrganization.getValue())
+                        )
                 );
-
-                organizationEvents.add(new FirebaseOrganizationEvent(o));
             }
         }
 

@@ -34,7 +34,7 @@ public class FirebaseOrganizationEvent extends OrganizationEvent {
     @Override
     public List<Event> allEvents() {
         if (organization == null) {
-            return null;
+            getOrganization();
         }
 
         EventRepository repository = new FirebaseEventRepository();
