@@ -5,16 +5,17 @@ import android.util.Log;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import edu.deanza.calendar.models.Event;
 
@@ -32,10 +33,24 @@ public class FirebaseEventRepository implements EventRepository {
     private class EventChangeListener implements ValueEventListener {
 
         @Override
-        public void onDataChange(DataSnapshot snapshot) {
-            GenericTypeIndicator<List<Event>> t = new GenericTypeIndicator<List<Event>>() {};
+        public void onDataChange(DataSnapshot eventNodes) {
             events.clear();
-            events.addAll(snapshot.getValue(t));
+            for (DataSnapshot eventNode : eventNodes.getChildren()) {
+                String eventKey = eventNode.getKey();
+                int nameStartDelimiter = eventKey.lastIndexOf('|');
+                String name = eventKey.substring(nameStartDelimiter + 1, eventKey.length());
+
+                Map<String, String> rawEvent = (Map<String, String>) eventNode.getValue();
+                Event e = new Event(
+                        eventKey.substring(nameStartDelimiter + 1, eventKey.length()),
+                        rawEvent.get("description"),
+                        rawEvent.get("location"),
+                        rawEvent.get("organizationName"),
+                        DateTime.parse(rawEvent.get("start")),
+                        DateTime.parse(rawEvent.get("end"))
+                );
+                events.add(e);
+            }
         }
 
         @Override

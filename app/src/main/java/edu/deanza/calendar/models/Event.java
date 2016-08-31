@@ -21,13 +21,13 @@ public class Event {
     public Event() {}
 
     public Event(String name, String description, String location, String organizationName,
-                 String start, String end) {
+                 DateTime start, DateTime end) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.organizationName = organizationName;
-        this.start = DateTime.parse(start);
-        this.end = DateTime.parse(end);
+        this.start = start;
+        this.end = end;
     }
 
     public String getName() {
