@@ -1,4 +1,4 @@
-package edu.deanza.calendar.models;
+package edu.deanza.calendar.domain.models;
 
 /**
  * Created by karinaantonio on 8/10/16.

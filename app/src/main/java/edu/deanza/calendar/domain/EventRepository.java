@@ -1,10 +1,10 @@
-package edu.deanza.calendar.dal;
+package edu.deanza.calendar.domain;
 
 import org.joda.time.LocalDate;
 
 import java.util.List;
 
-import edu.deanza.calendar.models.OrganizationEvent;
+import edu.deanza.calendar.domain.models.OrganizationEvent;
 
 /**
  * Created by karinaantonio on 8/11/16.

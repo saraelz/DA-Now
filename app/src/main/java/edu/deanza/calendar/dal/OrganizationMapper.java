@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.deanza.calendar.models.Day;
-import edu.deanza.calendar.models.IccClub;
-import edu.deanza.calendar.models.Organization;
+import edu.deanza.calendar.domain.models.Day;
+import edu.deanza.calendar.domain.models.IccClub;
+import edu.deanza.calendar.domain.models.Organization;
 
 /**
  * Created by karinaantonio on 8/19/16.

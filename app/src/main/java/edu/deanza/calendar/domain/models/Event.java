@@ -1,4 +1,4 @@
-package edu.deanza.calendar.models;
+package edu.deanza.calendar.domain.models;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;

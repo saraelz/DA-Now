@@ -1,8 +1,8 @@
-package edu.deanza.calendar.dal;
+package edu.deanza.calendar.domain;
 
 import java.util.List;
 
-import edu.deanza.calendar.models.OrganizationEvent;
+import edu.deanza.calendar.domain.models.OrganizationEvent;
 
 /**
  * Created by karinaantonio on 8/18/16.

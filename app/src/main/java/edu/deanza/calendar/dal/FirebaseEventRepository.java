@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.deanza.calendar.models.OrganizationEvent;
+import edu.deanza.calendar.domain.EventRepository;
+import edu.deanza.calendar.domain.models.OrganizationEvent;
 
 import static com.google.android.gms.internal.zzs.TAG;
 

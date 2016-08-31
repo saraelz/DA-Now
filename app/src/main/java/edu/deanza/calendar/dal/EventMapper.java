@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 
 import java.util.Map;
 
-import edu.deanza.calendar.models.Event;
+import edu.deanza.calendar.domain.models.Event;
 
 /**
  * Created by karinaantonio on 8/20/16.

@@ -3,9 +3,11 @@ package edu.deanza.calendar.dal;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.deanza.calendar.models.Event;
-import edu.deanza.calendar.models.Organization;
-import edu.deanza.calendar.models.OrganizationEvent;
+import edu.deanza.calendar.domain.EventRepository;
+import edu.deanza.calendar.domain.OrganizationRepository;
+import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.domain.models.OrganizationEvent;
 
 /**
  * Created by karinaantonio on 8/18/16.
