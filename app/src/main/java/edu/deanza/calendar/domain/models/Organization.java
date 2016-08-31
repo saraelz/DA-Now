@@ -5,6 +5,7 @@ import org.joda.time.Interval;
 import java.util.List;
 
 import edu.deanza.calendar.domain.EventRepository;
+import edu.deanza.calendar.util.Callback;
 
 /**
  * Created by soso1 on 8/8/2016.
@@ -61,13 +62,22 @@ public class Organization {
         return meetings;
     }
 
-    public List<Event> getEvents() {
+    public void getEvents(final Callback<List<Event>> callback) {
         if (events == null) {
             assert eventRepository != null;
-            events = eventRepository.findByOrganization(name);
+            eventRepository.findByOrganization(name, new Callback<List<Event>>() {
+                @Override
+                protected void call(List<Event> data) {
+                    events = data;
+                    callback.setArgument(data);
+                    callback.run();
+                }
+            });
         }
-        return events;
-
+        else {
+            callback.setArgument(events);
+            callback.run();
+        }
     }
 
 }

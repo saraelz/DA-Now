@@ -5,6 +5,7 @@ import org.joda.time.LocalDate;
 import java.util.List;
 
 import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.util.Callback;
 
 /**
  * Created by karinaantonio on 8/11/16.
@@ -12,16 +13,16 @@ import edu.deanza.calendar.domain.models.Event;
 
 public interface EventRepository {
 
-    public List<Event> all();
+    void all(Callback<List<Event>> callback);
 
-    public List<Event> findByOrganization(String organizationName);
+    void findByOrganization(String organizationName, Callback<List<Event>> callback);
 
-    public List<Event> on(LocalDate date);
+    void on(LocalDate date, Callback<List<Event>> callback);
 
-    public List<Event> before(LocalDate date);
+    void before(LocalDate date, Callback<List<Event>> callback);
 
-    public List<Event> after(LocalDate date);
+    void after(LocalDate date, Callback<List<Event>> callback);
 
-    public List<Event> between(LocalDate start, LocalDate end);
+    void between(LocalDate start, LocalDate end, Callback<List<Event>> callback);
 
 }

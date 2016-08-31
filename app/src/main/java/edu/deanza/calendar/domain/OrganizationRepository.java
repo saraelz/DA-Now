@@ -3,6 +3,7 @@ package edu.deanza.calendar.domain;
 import java.util.List;
 
 import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.util.Callback;
 
 /**
  * Created by karinaantonio on 8/18/16.
@@ -10,8 +11,8 @@ import edu.deanza.calendar.domain.models.Organization;
 
 public interface OrganizationRepository {
 
-    public List<Organization> all();
+    void all(Callback<List<Organization>> callback);
 
-    public Organization findByName(String name);
+    void findByName(String name, Callback<List<Organization>> callback);
 
 }

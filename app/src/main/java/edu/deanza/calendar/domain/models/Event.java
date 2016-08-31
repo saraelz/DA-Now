@@ -3,7 +3,10 @@ package edu.deanza.calendar.domain.models;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.util.List;
+
 import edu.deanza.calendar.domain.OrganizationRepository;
+import edu.deanza.calendar.util.Callback;
 
 /**
  * Created by Sara on 5/28/2016.
@@ -61,12 +64,23 @@ public class Event {
         return organizationName;
     }
 
-    public Organization getOrganization() {
+    public void getOrganization(final Callback<Organization> callback) {
         if (organization == null) {
             assert organizationRepository != null;
-            organization = organizationRepository.findByName(organizationName);
+            organizationRepository.findByName(organizationName, new Callback<List<Organization>>() {
+                @Override
+                protected void call(List<Organization> data) {
+                    Organization o = data.get(0);
+                    organization = o;
+                    callback.setArgument(o);
+                    callback.run();
+                }
+            });
         }
-        return organization;
+        else {
+            callback.setArgument(organization);
+            callback.run();
+        }
     }
 
     public DateTime getStart() {
