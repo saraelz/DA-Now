@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 
 import java.util.Map;
 
+import edu.deanza.calendar.domain.OrganizationRepository;
 import edu.deanza.calendar.domain.models.Event;
 
 /**
@@ -11,6 +12,12 @@ import edu.deanza.calendar.domain.models.Event;
  */
 
 class EventMapper implements DataMapper<Event> {
+
+    private final OrganizationRepository repository;
+
+    public EventMapper(OrganizationRepository repository) {
+        this.repository = repository;
+    }
 
     public Event map(String eventKey, Map<Object, Object> rawEvent) {
         int nameStartDelimiter = eventKey.lastIndexOf('|');
@@ -22,7 +29,7 @@ class EventMapper implements DataMapper<Event> {
         DateTime start = DateTime.parse((String) rawEvent.get("start"));
         DateTime end = DateTime.parse((String) rawEvent.get("end"));
 
-        return new Event(name, description, location, organizationName, start, end);
+        return new Event(name, description, location, organizationName, start, end, repository);
     }
 
 }

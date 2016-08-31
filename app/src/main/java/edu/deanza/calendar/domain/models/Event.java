@@ -3,6 +3,8 @@ package edu.deanza.calendar.domain.models;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
+import edu.deanza.calendar.domain.OrganizationRepository;
+
 /**
  * Created by Sara on 5/28/2016.
  */
@@ -15,17 +17,32 @@ public class Event {
     protected final String organizationName;
     protected final DateTime start;
     protected final DateTime end;
+    protected final OrganizationRepository organizationRepository;
+    protected Organization organization;
 
     // TODO: implement `categories` field
 
     public Event(String name, String description, String location, String organizationName,
-                DateTime start, DateTime end) {
+                 DateTime start, DateTime end, OrganizationRepository organizationRepository) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.organizationName = organizationName;
         this.start = start;
         this.end = end;
+        this.organizationRepository = organizationRepository;
+    }
+
+    public Event(String name, String description, String location, String organizationName,
+                 DateTime start, DateTime end, Organization organization) {
+        this.name = name;
+        this.description = description;
+        this.location = location;
+        this.organizationName = organizationName;
+        this.start = start;
+        this.end = end;
+        this.organization = organization;
+        this.organizationRepository = null;
     }
 
     public String getName() {
@@ -42,6 +59,14 @@ public class Event {
 
     public String getOrganizationName() {
         return organizationName;
+    }
+
+    public Organization getOrganization() {
+        if (organization == null) {
+            assert organizationRepository != null;
+            organization = organizationRepository.findByName(organizationName);
+        }
+        return organization;
     }
 
     public DateTime getStart() {

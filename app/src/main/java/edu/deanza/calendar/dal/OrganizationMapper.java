@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import edu.deanza.calendar.domain.EventRepository;
 import edu.deanza.calendar.domain.models.Day;
 import edu.deanza.calendar.domain.models.IccClub;
 import edu.deanza.calendar.domain.models.Organization;
@@ -15,6 +16,12 @@ import edu.deanza.calendar.domain.models.Organization;
  */
 
 class OrganizationMapper implements DataMapper<Organization> {
+
+    private final EventRepository repository;
+
+    public OrganizationMapper(EventRepository repository) {
+        this.repository = repository;
+    }
 
     public Organization map(String name, Map<Object, Object> rawOrganization) {
 
@@ -44,10 +51,10 @@ class OrganizationMapper implements DataMapper<Organization> {
                 }
             }
 
-            o = new IccClub(name, description, location, facebookUrl, meetings, days);
+            o = new IccClub(name, description, location, facebookUrl, meetings, repository, days);
         }
         else {
-            o = new Organization(name, description, location, facebookUrl, meetings);
+            o = new Organization(name, description, location, facebookUrl, meetings, repository);
         }
 
         return o;

@@ -8,6 +8,6 @@ import java.util.Map;
 
 interface DataMapper<T> {
 
-    public T map(String name, Map<Object, Object> rawData);
+    T map(String name, Map<Object, Object> rawData);
 
 }

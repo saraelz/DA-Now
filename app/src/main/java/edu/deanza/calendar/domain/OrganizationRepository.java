@@ -2,7 +2,7 @@ package edu.deanza.calendar.domain;
 
 import java.util.List;
 
-import edu.deanza.calendar.domain.models.OrganizationEvent;
+import edu.deanza.calendar.domain.models.Organization;
 
 /**
  * Created by karinaantonio on 8/18/16.
@@ -10,8 +10,8 @@ import edu.deanza.calendar.domain.models.OrganizationEvent;
 
 public interface OrganizationRepository {
 
-    public List<OrganizationEvent> all();
+    public List<Organization> all();
 
-    public OrganizationEvent findByName(String name);
+    public Organization findByName(String name);
 
 }
