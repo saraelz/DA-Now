@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.deanza.calendar.models.Event;
 import edu.deanza.calendar.models.Organization;
+import edu.deanza.calendar.models.OrganizationEvent;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
@@ -24,13 +24,13 @@ import static com.google.android.gms.internal.zzs.TAG;
 public class FirebaseOrganizationRepository implements OrganizationRepository {
 
     private Query currentQuery;
-    private List<Organization> organizations = new ArrayList<>();
+    private List<OrganizationEvent> organizationEvents = new ArrayList<>();
 
     private class OrganizationChangeListener implements ValueEventListener {
 
         @Override
         public void onDataChange(DataSnapshot snapshot) {
-            organizations.clear();
+            organizationEvents.clear();
             List<Map<String, String>> rawOrganizations = (List<Map<String, String>>) snapshot.getValue();
             for (Map<String, String> rawOrganization : rawOrganizations) {
                 Organization o = new Organization(
@@ -39,7 +39,7 @@ public class FirebaseOrganizationRepository implements OrganizationRepository {
                         rawOrganization.get("location"),
                         rawOrganization.get("facebookUrl")
                 );
-                organizations.add(o);
+                organizationEvents.add(new FirebaseOrganizationEvent(o));
             }
         }
 
@@ -50,9 +50,9 @@ public class FirebaseOrganizationRepository implements OrganizationRepository {
 
     }
 
-    private List<Organization> updateOrganizations() {
+    private List<OrganizationEvent> updateOrganizations() {
         currentQuery.addListenerForSingleValueEvent(new OrganizationChangeListener());
-        return organizations;
+        return organizationEvents;
     }
 
     public FirebaseOrganizationRepository() {
@@ -62,7 +62,7 @@ public class FirebaseOrganizationRepository implements OrganizationRepository {
     }
 
     @Override
-    public List<Organization> all() {
+    public List<OrganizationEvent> all() {
         currentQuery = FirebaseDatabase.getInstance().getReference()
                 .child("organizations")
                 .orderByKey();
@@ -70,7 +70,7 @@ public class FirebaseOrganizationRepository implements OrganizationRepository {
     }
 
     @Override
-    public Organization findByName(String name) {
+    public OrganizationEvent findByName(String name) {
         currentQuery = currentQuery.equalTo(name);
         return updateOrganizations().get(0);
     }

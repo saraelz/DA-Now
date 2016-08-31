@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.models.Event;
+import edu.deanza.calendar.models.OrganizationEvent;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
@@ -28,13 +29,13 @@ import static com.google.android.gms.internal.zzs.TAG;
 public class FirebaseEventRepository implements EventRepository {
 
     private Query currentQuery;
-    private List<Event> events = new ArrayList<>();
+    private List<OrganizationEvent> organizationEvents = new ArrayList<>();
 
     private class EventChangeListener implements ValueEventListener {
 
         @Override
         public void onDataChange(DataSnapshot eventNodes) {
-            events.clear();
+            organizationEvents.clear();
             for (DataSnapshot eventNode : eventNodes.getChildren()) {
                 String eventKey = eventNode.getKey();
                 int nameStartDelimiter = eventKey.lastIndexOf('|');
@@ -49,7 +50,7 @@ public class FirebaseEventRepository implements EventRepository {
                         DateTime.parse(rawEvent.get("start")),
                         DateTime.parse(rawEvent.get("end"))
                 );
-                events.add(e);
+                organizationEvents.add(new FirebaseOrganizationEvent(e));
             }
         }
 
@@ -60,9 +61,9 @@ public class FirebaseEventRepository implements EventRepository {
 
     }
 
-    private List<Event> updateEvents() {
+    private List<OrganizationEvent> updateEvents() {
         currentQuery.addListenerForSingleValueEvent(new EventChangeListener());
-        return events;
+        return organizationEvents;
     }
 
     public FirebaseEventRepository() {
@@ -72,7 +73,7 @@ public class FirebaseEventRepository implements EventRepository {
     }
 
     @Override
-    public List<Event> all() {
+    public List<OrganizationEvent> all() {
         currentQuery = FirebaseDatabase.getInstance().getReference()
                 .child("events")
                 .orderByKey();
@@ -80,13 +81,13 @@ public class FirebaseEventRepository implements EventRepository {
     }
 
     @Override
-    public List<Event> findByOrganization(String organizationName) {
+    public List<OrganizationEvent> findByOrganization(String organizationName) {
         currentQuery = currentQuery.equalTo(organizationName, "organizationName");
         return updateEvents();
     }
 
     @Override
-    public List<Event> on(LocalDate date) {
+    public List<OrganizationEvent> on(LocalDate date) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = currentQuery
                 .startAt(formatter.print(date))
@@ -95,21 +96,21 @@ public class FirebaseEventRepository implements EventRepository {
     }
 
     @Override
-    public List<Event> before(LocalDate date) {
+    public List<OrganizationEvent> before(LocalDate date) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = currentQuery.endAt(formatter.print(date));
         return updateEvents();
     }
 
     @Override
-    public List<Event> after(LocalDate date) {
+    public List<OrganizationEvent> after(LocalDate date) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = currentQuery.startAt(formatter.print(date));
         return updateEvents();
     }
 
     @Override
-    public List<Event> between(LocalDate start, LocalDate end) {
+    public List<OrganizationEvent> between(LocalDate start, LocalDate end) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = currentQuery
                 .startAt(formatter.print(start))

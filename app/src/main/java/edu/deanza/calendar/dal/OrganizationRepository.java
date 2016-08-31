@@ -2,8 +2,7 @@ package edu.deanza.calendar.dal;
 
 import java.util.List;
 
-import edu.deanza.calendar.models.Event;
-import edu.deanza.calendar.models.Organization;
+import edu.deanza.calendar.models.OrganizationEvent;
 
 /**
  * Created by karinaantonio on 8/18/16.
@@ -11,8 +10,8 @@ import edu.deanza.calendar.models.Organization;
 
 public interface OrganizationRepository {
 
-    public List<Organization> all();
+    public List<OrganizationEvent> all();
 
-    public Organization findByName(String name);
+    public OrganizationEvent findByName(String name);
 
 }

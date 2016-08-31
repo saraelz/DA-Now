@@ -4,7 +4,7 @@ import org.joda.time.LocalDate;
 
 import java.util.List;
 
-import edu.deanza.calendar.models.Event;
+import edu.deanza.calendar.models.OrganizationEvent;
 
 /**
  * Created by karinaantonio on 8/11/16.
@@ -12,16 +12,16 @@ import edu.deanza.calendar.models.Event;
 
 public interface EventRepository {
 
-    public List<Event> all();
+    public List<OrganizationEvent> all();
 
-    public List<Event> findByOrganization(String organizationName);
+    public List<OrganizationEvent> findByOrganization(String organizationName);
 
-    public List<Event> on(LocalDate date);
+    public List<OrganizationEvent> on(LocalDate date);
 
-    public List<Event> before(LocalDate date);
+    public List<OrganizationEvent> before(LocalDate date);
 
-    public List<Event> after(LocalDate date);
+    public List<OrganizationEvent> after(LocalDate date);
 
-    public List<Event> between(LocalDate start, LocalDate end);
+    public List<OrganizationEvent> between(LocalDate start, LocalDate end);
 
 }
