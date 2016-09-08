@@ -48,7 +48,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
 
     @Override
     public void findByOrganization(String organizationName, Callback<Event> callback) {
-        currentQuery = root.orderByChild("start").equalTo(organizationName, "organizationName");
+        currentQuery = root.orderByChild(organizationName).equalTo(true);
         listenToQuery(callback);
     }
 

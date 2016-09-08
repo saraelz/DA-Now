@@ -2,6 +2,8 @@ package edu.deanza.calendar.dal;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.domain.OrganizationRepository;
@@ -23,13 +25,18 @@ class EventMapper implements DataMapper<Event> {
         int nameStartDelimiter = eventKey.lastIndexOf('|');
         String name = eventKey.substring(nameStartDelimiter + 1, eventKey.length());
 
-        String description = (String) rawEvent.get("description");
-        String location = (String) rawEvent.get("location");
-        String organizationName = (String) rawEvent.get("organizationName");
-        DateTime start = DateTime.parse((String) rawEvent.get("start"));
-        DateTime end = DateTime.parse((String) rawEvent.get("end"));
+        String description = (String) rawEvent.remove("description");
+        String location = (String) rawEvent.remove("location");
+        DateTime start = DateTime.parse((String) rawEvent.remove("start"));
+        DateTime end = DateTime.parse((String) rawEvent.remove("end"));
 
-        return new Event(name, description, location, organizationName, start, end, repository);
+        List<String> organizationNames = new ArrayList<>();
+        for (Map.Entry<Object, Object> entry: rawEvent.entrySet()) {
+            // Only organization entries remain in rawEvent
+            organizationNames.add((String) entry.getKey());
+        }
+
+        return new Event(name, description, location, organizationNames, start, end, repository);
     }
 
 }

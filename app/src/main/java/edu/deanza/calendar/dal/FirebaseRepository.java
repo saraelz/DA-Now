@@ -30,18 +30,18 @@ abstract class FirebaseRepository<T> {
     private final ListOrderedMap<String, T> currentData = new ListOrderedMap<>();
     private AsyncTask runningTask;
 
-    class RecyclingEventListener implements ValueEventListener {
+    class RecyclingEventQueryListener implements ValueEventListener {
 
         private final Callback<T> continuation;
 
-        public RecyclingEventListener(Callback<T> continuation) {
+        public RecyclingEventQueryListener(Callback<T> continuation) {
             this.continuation = continuation;
         }
 
         @Override
         public void onDataChange(final DataSnapshot nodes) {
             if (nodes.getValue() == null) {
-                Log.i("FBRepo.onDataChange", "on an empty node");
+                Log.i("QueryListener", "on an empty node underneath: " + nodes.getKey());
                 return;
             }
 
@@ -87,16 +87,66 @@ abstract class FirebaseRepository<T> {
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-            Log.w(TAG, "RecyclingEventListener:onCancelled", databaseError.toException());
+            Log.w(TAG, "RecyclingEventQueryListener:onCancelled", databaseError.toException());
         }
 
     }
 
-    final void listenToQuery(final Callback<T> callback) {
+    class RecyclingEventLocationListener implements ValueEventListener {
+
+        private final Callback<T> continuation;
+
+        public RecyclingEventLocationListener(Callback<T> continuation) {
+            this.continuation = continuation;
+        }
+
+        @Override
+        public void onDataChange(final DataSnapshot node) {
+            if (node.getValue() == null) {
+                Log.i("LocationListener", "on an empty node: " + node.getKey());
+                continuation.setArgument(null);
+                continuation.run();
+                return;
+            }
+
+            T newData;
+            String key = node.getKey();
+            int existingDataIndex = currentData.indexOf(key);
+            if (existingDataIndex == -1) {
+                newData = construct(key, node);
+            }
+            else {
+                newData = recycle(existingDataIndex);
+            }
+            continuation.setArgument(newData);
+            continuation.run();
+        }
+
+        private T recycle(int existingDataIndex) {
+            return currentData.getValue(existingDataIndex);
+        }
+
+        private T construct(String key, DataSnapshot node) {
+            Map<Object, Object> rawData = (Map<Object, Object>) node.getValue();
+            return getMapper().map(key, rawData);
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.w(TAG, "RecyclingEventLocationListener:onCancelled", databaseError.toException());
+        }
+
+    }
+
+    final void listenToQuery(Callback<T> callback) {
         if (runningTask != null) {
             runningTask.cancel(true);
         }
-        currentQuery.addListenerForSingleValueEvent(new RecyclingEventListener(callback));
+        currentQuery.addListenerForSingleValueEvent(new RecyclingEventQueryListener(callback));
+    }
+
+    final void listenToLocation(Callback<T> callback) {
+        currentQuery.addListenerForSingleValueEvent(new RecyclingEventLocationListener(callback));
     }
 
     abstract DataMapper<T> getMapper();

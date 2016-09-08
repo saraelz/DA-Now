@@ -2,6 +2,7 @@ package edu.deanza.calendar.domain.models;
 
 import org.joda.time.Interval;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.deanza.calendar.domain.EventRepository;
@@ -65,6 +66,7 @@ public class Organization {
     public void getEvents(final Callback<Event> callback) {
         if (events == null) {
             assert eventRepository != null;
+            events = new ArrayList<>();
             eventRepository.findByOrganization(name, new Callback<Event>() {
                 @Override
                 protected void call(Event data) {

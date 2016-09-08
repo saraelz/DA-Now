@@ -44,9 +44,8 @@ public final class FirebaseOrganizationRepository extends FirebaseRepository<Org
 
     @Override
     public void findByName(String name, Callback<Organization> callback) {
-        currentQuery = currentQuery.equalTo(name);
-        listenToQuery(callback);
-
+        currentQuery = root.child(name);
+        listenToLocation(callback);
     }
 
 }

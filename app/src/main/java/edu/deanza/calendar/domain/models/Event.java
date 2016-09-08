@@ -3,6 +3,8 @@ package edu.deanza.calendar.domain.models;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import edu.deanza.calendar.domain.OrganizationRepository;
@@ -17,34 +19,35 @@ public class Event {
     protected final String name;
     protected final String description;
     protected final String location;
-    protected final String organizationName;
+    protected final List<String> organizationNames;
     protected final DateTime start;
     protected final DateTime end;
     protected final OrganizationRepository organizationRepository;
-    protected Organization organization;
+    // If an Organization entry does not exist for a given organizationName, the List entry will be null
+    protected List<Organization> organizations;
 
     // TODO: implement `categories` field
 
-    public Event(String name, String description, String location, String organizationName,
+    public Event(String name, String description, String location, List<String> organizationNames,
                  DateTime start, DateTime end, OrganizationRepository organizationRepository) {
         this.name = name;
         this.description = description;
         this.location = location;
-        this.organizationName = organizationName;
+        this.organizationNames = organizationNames;
         this.start = start;
         this.end = end;
         this.organizationRepository = organizationRepository;
     }
 
-    public Event(String name, String description, String location, String organizationName,
-                 DateTime start, DateTime end, Organization organization) {
+    public Event(String name, String description, String location, List<String> organizationNames,
+                 DateTime start, DateTime end, List<Organization> organizations) {
         this.name = name;
         this.description = description;
         this.location = location;
-        this.organizationName = organizationName;
+        this.organizationNames = organizationNames;
         this.start = start;
         this.end = end;
-        this.organization = organization;
+        this.organizations = organizations;
         this.organizationRepository = null;
     }
 
@@ -60,25 +63,30 @@ public class Event {
         return location;
     }
 
-    public String getOrganizationName() {
-        return organizationName;
+    public List<String> getOrganizationNames() {
+        return organizationNames;
     }
 
-    public void getOrganization(final Callback<Organization> callback) {
-        if (organization == null) {
+    public void getOrganizations(final Callback<Organization> callback) {
+        if (organizations == null) {
             assert organizationRepository != null;
-            organizationRepository.findByName(organizationName, new Callback<Organization>() {
-                @Override
-                protected void call(Organization data) {
-                    organization = data;
-                    callback.setArgument(data);
-                    callback.run();
-                }
-            });
+            organizations = new ArrayList<>();
+            for (String name : organizationNames) {
+                organizationRepository.findByName(name, new Callback<Organization>() {
+                    @Override
+                    protected void call(Organization data) {
+                        organizations.add(data);
+                        callback.setArgument(data);
+                        callback.run();
+                    }
+                });
+            }
         }
         else {
-            callback.setArgument(organization);
-            callback.run();
+            for (Organization organization : organizations) {
+                callback.setArgument(organization);
+                callback.run();
+            }
         }
     }
 
