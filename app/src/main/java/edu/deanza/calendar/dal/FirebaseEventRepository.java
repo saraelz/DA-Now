@@ -55,7 +55,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     @Override
     public void on(LocalDate date, Callback<List<Event>> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
-        currentQuery = currentQuery
+        currentQuery = root
                 .startAt(formatter.print(date))
                 .endAt(formatter.print(date.plusDays(1)));
         listenToQuery(callback);
@@ -64,21 +64,21 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     @Override
     public void before(LocalDate date, Callback<List<Event>> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
-        currentQuery = currentQuery.endAt(formatter.print(date));
+        currentQuery = root.endAt(formatter.print(date));
         listenToQuery(callback);
     }
 
     @Override
     public void after(LocalDate date, Callback<List<Event>> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
-        currentQuery = currentQuery.startAt(formatter.print(date));
+        currentQuery = root.startAt(formatter.print(date));
         listenToQuery(callback);
     }
 
     @Override
     public void between(LocalDate start, LocalDate end, Callback<List<Event>> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
-        currentQuery = currentQuery
+        currentQuery = root
                 .startAt(formatter.print(start))
                 .endAt(formatter.print(end));
         listenToQuery(callback);

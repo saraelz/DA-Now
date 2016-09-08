@@ -31,12 +31,13 @@ class OrganizationMapper implements DataMapper<Organization> {
 
         List<String> rawMeetings = (List<String>) rawOrganization.get("meetings");
         List<Interval> meetings = new ArrayList<>();
-        for (String s : rawMeetings) {
-            try {
-                meetings.add(Interval.parse(s));
-            }
-            catch (IllegalArgumentException e) {
-                continue;
+        if (rawMeetings != null) {
+            for (String s : rawMeetings) {
+                try {
+                    meetings.add(Interval.parse(s));
+                } catch (IllegalArgumentException e) {
+                    continue;
+                }
             }
         }
 

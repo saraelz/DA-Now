@@ -20,7 +20,7 @@ public final class FirebaseOrganizationRepository extends FirebaseRepository<Org
         currentQuery = root.orderByKey();
     }
 
-    DataMapper<Organization> mapper;
+    private final DataMapper<Organization> mapper;
 
     public FirebaseOrganizationRepository() {
         mapper = new OrganizationMapper(new FirebaseEventRepository(this));
