@@ -67,12 +67,11 @@ public class Event {
     public void getOrganization(final Callback<Organization> callback) {
         if (organization == null) {
             assert organizationRepository != null;
-            organizationRepository.findByName(organizationName, new Callback<List<Organization>>() {
+            organizationRepository.findByName(organizationName, new Callback<Organization>() {
                 @Override
-                protected void call(List<Organization> data) {
-                    Organization o = data.get(0);
-                    organization = o;
-                    callback.setArgument(o);
+                protected void call(Organization data) {
+                    organization = data;
+                    callback.setArgument(data);
                     callback.run();
                 }
             });

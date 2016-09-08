@@ -36,14 +36,14 @@ public final class FirebaseOrganizationRepository extends FirebaseRepository<Org
     }
 
     @Override
-    public void all(Callback<List<Organization>> callback) {
+    public void all(Callback<Organization> callback) {
         currentQuery = root.orderByKey();
         listenToQuery(callback);
 
     }
 
     @Override
-    public void findByName(String name, Callback<List<Organization>> callback) {
+    public void findByName(String name, Callback<Organization> callback) {
         currentQuery = currentQuery.equalTo(name);
         listenToQuery(callback);
 

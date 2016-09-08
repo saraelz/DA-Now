@@ -32,9 +32,9 @@ abstract class FirebaseRepository<T> {
 
     class RecyclingEventListener implements ValueEventListener {
 
-        private final Callback<List<T>> continuation;
+        private final Callback<T> continuation;
 
-        public RecyclingEventListener(Callback<List<T>> continuation) {
+        public RecyclingEventListener(Callback<T> continuation) {
             this.continuation = continuation;
         }
 
@@ -42,8 +42,6 @@ abstract class FirebaseRepository<T> {
         public void onDataChange(final DataSnapshot nodes) {
             if (nodes.getValue() == null) {
                 Log.i("FBRepo.onDataChange", "on an empty node");
-                continuation.setArgument(new ArrayList<T>());
-                continuation.run();
                 return;
             }
 
@@ -69,8 +67,10 @@ abstract class FirebaseRepository<T> {
                 protected void onPostExecute(ListOrderedMap<String, T> newData) {
                     currentData.clear();
                     currentData.putAll(newData);
-                    continuation.setArgument(newData.valueList());
-                    continuation.run();
+                    for (T data : newData.valueList()) {
+                        continuation.setArgument(data);
+                        continuation.run();
+                    }
                 }
 
                 private void recycle(String key, int existingDataIndex, ListOrderedMap<String, T> newData) {
@@ -92,7 +92,7 @@ abstract class FirebaseRepository<T> {
 
     }
 
-    final void listenToQuery(final Callback<List<T>> callback) {
+    final void listenToQuery(final Callback<T> callback) {
         if (runningTask != null) {
             runningTask.cancel(true);
         }
