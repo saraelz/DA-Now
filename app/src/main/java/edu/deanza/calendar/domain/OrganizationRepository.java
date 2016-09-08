@@ -11,8 +11,10 @@ import edu.deanza.calendar.util.Callback;
 
 public interface OrganizationRepository {
 
-    void all(Callback<Organization> callback);
+    void all(Callback<List<Organization>> callback);
 
     void findByName(String name, Callback<Organization> callback);
+
+    void findByNames(List<String> names, Callback<List<Organization>> callback);
 
 }

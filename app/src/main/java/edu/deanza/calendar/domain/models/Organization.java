@@ -63,24 +63,21 @@ public class Organization {
         return meetings;
     }
 
-    public void getEvents(final Callback<Event> callback) {
+    public void getEvents(final Callback<List<Event>> callback) {
         if (events == null) {
             assert eventRepository != null;
-            events = new ArrayList<>();
-            eventRepository.findByOrganization(name, new Callback<Event>() {
+            eventRepository.findByOrganization(name, new Callback<List<Event>>() {
                 @Override
-                protected void call(Event data) {
-                    events.add(data);
+                protected void call(List<Event> data) {
+                    events = data;
                     callback.setArgument(data);
                     callback.run();
                 }
             });
         }
         else {
-            for (Event e : events) {
-                callback.setArgument(e);
-                callback.run();
-            }
+            callback.setArgument(events);
+            callback.run();
         }
     }
 

@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import edu.deanza.calendar.domain.OrganizationRepository;
@@ -67,26 +66,21 @@ public class Event {
         return organizationNames;
     }
 
-    public void getOrganizations(final Callback<Organization> callback) {
+    public void getOrganizations(final Callback<List<Organization>> callback) {
         if (organizations == null) {
             assert organizationRepository != null;
-            organizations = new ArrayList<>();
-            for (String name : organizationNames) {
-                organizationRepository.findByName(name, new Callback<Organization>() {
-                    @Override
-                    protected void call(Organization data) {
-                        organizations.add(data);
-                        callback.setArgument(data);
-                        callback.run();
-                    }
-                });
-            }
+            organizationRepository.findByNames(organizationNames, new Callback<List<Organization>>() {
+                @Override
+                protected void call(List<Organization> data) {
+                    organizations = data;
+                    callback.setArgument(data);
+                    callback.run();
+                }
+            });
         }
         else {
-            for (Organization organization : organizations) {
-                callback.setArgument(organization);
-                callback.run();
-            }
+            callback.setArgument(organizations);
+            callback.run();
         }
     }
 
