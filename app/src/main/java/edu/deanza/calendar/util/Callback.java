@@ -7,42 +7,21 @@ package edu.deanza.calendar.util;
 public abstract class Callback<ArgumentT> implements Runnable {
 
     private ArgumentT data;
-    private Callback<?> callback;
+    private boolean nullableArgument;
 
     public Callback() {}
 
-    public Callback(ArgumentT data) {
-        setArgument(data);
-    }
-
-    public Callback(Callback<?> callback) {
-        this.callback = callback;
-    }
-
-    public Callback(ArgumentT data, Callback<?> callback) {
-        this.data = data;
-        this.callback = callback;
-    }
-
     public final void setArgument(ArgumentT data) {
         this.data = data;
-    }
-
-    public final Callback<?> setCallback(Callback<?> callback) {
-        this.callback = callback;
-        return callback;
+        if (data == null) {
+            nullableArgument = true;
+        }
     }
 
     @Override
     public final void run() {
-        if (data != null) {
+        if (data != null || nullableArgument) {
             call(data);
-            if (callback != null) {
-                callback.run();
-            }
-        }
-        else if (callback != null) {
-            callback.run();
         }
     }
 
