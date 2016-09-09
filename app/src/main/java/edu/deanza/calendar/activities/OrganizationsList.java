@@ -1,62 +1,48 @@
 package edu.deanza.calendar.activities;
 
-import android.app.ListActivity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.deanza.calendar.R;
+import edu.deanza.calendar.dal.FirebaseOrganizationRepository;
+import edu.deanza.calendar.domain.OrganizationRepository;
 import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.util.Callback;
 
-public class OrganizationsList extends ListActivity {
+public class OrganizationsList extends AppCompatActivity {
 
-    //public ClubRespository repository;
+    private OrganizationRepository repository = new FirebaseOrganizationRepository();
+    private RecyclerView recyclerView;
+    private OrganizationsAdapter adapter;
+    private LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizations_list);
 
+        recyclerView = (RecyclerView) findViewById(R.id.organization_recycler_view);
+        recyclerView.setHasFixedSize(true);
 
-        //repository = new FirebaseClubRepository();
-        //populateListView(repository.all());
+        layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new OrganizationsAdapter(new ArrayList<Organization>());
+        adapter.setHasStableIds(true);
+        recyclerView.setAdapter(adapter);
+
+        repository.all(new Callback<List<Organization>>() {
+            @Override
+            protected void call(List<Organization> data) {
+                adapter.repopulate(data);
+            }
+        });
     }
 
-    // pre: n/a
-    // post: n/a
-    // purpose: (1) takes ArrayList of StudentOrganization items, (2) grabs title of each organization
-    // (3) populates ListView with clickable StudentOrganization items
-    protected void populateListView(ArrayList<Organization> organizations) {
-        String organizationNames[] = new String[organizations.size()];
-        for (int i = 0; i < organizations.size(); i++) {
-            organizationNames[i] = organizations.get(i).getName();
-        }
-
-        //Build Adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,   //context for the activity
-                R.layout.item_organization, //layout to use (create)
-                organizationNames //items to display
-        );
-        //Configure listView
-        ListView list = (ListView) findViewById(android.R.id.list);
-        list.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        /*Intent i = new Intent(this, OrganizationInfo.class);
-
-        Organization item = (Organization) adapter.getItem(position);
-
-        //i.putExtra("organization", name);
-        //i.putExtra("events", date);
-
-        startActivityForResult(i, 1);*/
-    }
 }
