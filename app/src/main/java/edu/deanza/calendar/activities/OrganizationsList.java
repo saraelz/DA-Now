@@ -1,9 +1,12 @@
 package edu.deanza.calendar.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,16 @@ public class OrganizationsList extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         adapter = new OrganizationsAdapter(this, new ArrayList<Organization>());
+        final Context context = this;
+        adapter.setOnItemClickListener(new OrganizationsAdapter.ClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Organization organization = adapter.organizations.get(position);
+                Intent intent = new Intent(context, OrganizationInfo.class);
+                intent.putExtra("OrgName", organization.getName());
+                startActivity(intent);
+            }
+        });
         adapter.setHasStableIds(true);
         recyclerView.setAdapter(adapter);
 

@@ -1,6 +1,7 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -18,16 +18,13 @@ import edu.deanza.calendar.domain.models.Organization;
 public class OrganizationsAdapter
         extends RecyclerView.Adapter<OrganizationsAdapter.OrganizationItemViewHolder> {
 
-    private Context context;
+    private static ClickListener clickListener;
     public List<Organization> organizations;
 
-    public Context getContext() {
-        return context;
-    }
 
     public static class OrganizationItemViewHolder
             extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+            implements View.OnClickListener{
 
         private TextView organizationName;
         private ImageButton subscribeButton;
@@ -42,20 +39,29 @@ public class OrganizationsAdapter
                 public void onClick(View view) {
                     // TODO: subscribe, and delegate that handler to this Adapter's containing Activity/Fragment
                     Log.i("OrgItem/subscribeButton", "subscribed to some Organization");
+                    clickListener.onItemClick(getAdapterPosition(), view);
                 }
             });
         }
 
         @Override
-        public void onClick(View view) {
+        public void onClick(View v) {
             // TODO: switch activities/fragments to the OrganizationInfoPage, and delegate that handler
             Log.i("OrgItem", "*switch to some OrganizationInfoPage now*");
+            clickListener.onItemClick(getAdapterPosition(), v);
         }
+    }
 
+    public void setOnItemClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
+    public interface ClickListener {
+        void onItemClick(int position, View v);
+        //void onItemLongClick(int position, View v);
     }
 
     public OrganizationsAdapter(Context context, List<Organization> organizations) {
-        this.context = context;
         this.organizations = organizations;
     }
 
@@ -92,7 +98,8 @@ public class OrganizationsAdapter
               @Override
               public void onClick(View view) {
                   // toggle image and the org's subscription state (which updates the entry in the Repo)
-                  Toast.makeText(getContext(), organization.getName() + " has been selected!", Toast.LENGTH_SHORT).show();
+                  Snackbar.make(view, organization.getName() + " has been selected!", Snackbar.LENGTH_SHORT)
+                          .setAction("Action", null).show();
 
                   //set button as "clicked"
                   if( ((Boolean) button.getTag())==false ){
