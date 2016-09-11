@@ -40,13 +40,13 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     }
 
     @Override
-    public void all(Callback<List<Event>> callback) {
+    public void all(Callback<Event> callback) {
         currentQuery = root.orderByKey();
         listenToQuery(callback);
     }
 
     @Override
-    public void findByOrganization(String organizationName, Callback<List<Event>> callback) {
+    public void findByOrganization(String organizationName, Callback<Event> callback) {
         currentQuery = root
                 .orderByChild(organizationName)
                 .equalTo(true);
@@ -54,7 +54,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     }
 
     @Override
-    public void on(LocalDate date, Callback<List<Event>> callback) {
+    public void on(LocalDate date, Callback<Event> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = root
                 .orderByKey()
@@ -64,7 +64,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     }
 
     @Override
-    public void before(LocalDate date, Callback<List<Event>> callback) {
+    public void before(LocalDate date, Callback<Event> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = root
                 .orderByKey()
@@ -73,7 +73,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     }
 
     @Override
-    public void after(LocalDate date, Callback<List<Event>> callback) {
+    public void after(LocalDate date, Callback<Event> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = root
                 .orderByKey()
@@ -82,7 +82,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     }
 
     @Override
-    public void between(LocalDate start, LocalDate end, Callback<List<Event>> callback) {
+    public void between(LocalDate start, LocalDate end, Callback<Event> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = root
                 .orderByKey()

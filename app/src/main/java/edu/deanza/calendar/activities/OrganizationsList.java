@@ -8,10 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseOrganizationRepository;
@@ -55,10 +52,10 @@ public class OrganizationsList extends AppCompatActivity {
         adapter.setHasStableIds(true);
         recyclerView.setAdapter(adapter);
 
-        repository.all(new Callback<List<Organization>>() {
+        repository.all(new Callback<Organization>() {
             @Override
-            protected void call(List<Organization> data) {
-                adapter.repopulate(data);
+            protected void call(Organization data) {
+                adapter.add(data);
             }
         });
     }

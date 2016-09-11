@@ -75,10 +75,9 @@ public class OrganizationsAdapter
         this.organizations = organizations;
     }
 
-    public void repopulate(List<Organization> organizations) {
-        this.organizations.clear();
-        this.organizations.addAll(organizations);
-        notifyDataSetChanged();
+    public void add(Organization organization) {
+        organizations.add(organization);
+        notifyItemInserted(organizations.size() - 1);
     }
 
     @Override

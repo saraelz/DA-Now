@@ -14,8 +14,6 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import edu.deanza.calendar.util.Callback;
 
@@ -34,9 +32,9 @@ abstract class FirebaseRepository<T> {
 
     class RecyclingEventQueryListener implements ValueEventListener {
 
-        private final Callback<List<T>> continuation;
+        private final Callback<T> continuation;
 
-        public RecyclingEventQueryListener(Callback<List<T>> continuation) {
+        public RecyclingEventQueryListener(Callback<T> continuation) {
             this.continuation = continuation;
         }
 
@@ -44,12 +42,10 @@ abstract class FirebaseRepository<T> {
         public void onDataChange(final DataSnapshot nodes) {
             if (nodes.getValue() == null) {
                 Log.i("QueryListener", "on an empty node underneath: " + nodes.getKey());
-                continuation.setArgument(new ArrayList<T>());
-                continuation.run();
                 return;
             }
 
-            runningTask = new AsyncTask<Void, Void, ListOrderedMap<String, T>>() {
+            runningTask = new AsyncTask<Void, T, ListOrderedMap<String, T>>() {
 
                 @Override
                 protected ListOrderedMap<String, T> doInBackground(Void... voids) {
@@ -68,20 +64,28 @@ abstract class FirebaseRepository<T> {
                 }
 
                 @Override
-                protected void onPostExecute(ListOrderedMap<String, T> newData) {
-                    currentData.clear();
-                    currentData.putAll(newData);
-                    continuation.setArgument(newData.valueList());
+                protected void onProgressUpdate(T... newElement) {
+                    continuation.setArgument(newElement[0]);
                     continuation.run();
                 }
 
+                @Override
+                protected void onPostExecute(ListOrderedMap<String, T> newData) {
+                    currentData.clear();
+                    currentData.putAll(newData);
+                }
+
                 private void recycle(String key, int existingDataIndex, ListOrderedMap<String, T> newData) {
-                    newData.put(key, currentData.getValue(existingDataIndex));
+                    T recycledData = currentData.getValue(existingDataIndex);
+                    newData.put(key, recycledData);
+                    publishProgress(recycledData);
                 }
 
                 private void append(String key, DataSnapshot node, ListOrderedMap<String, T> newData) {
                     Map<Object, Object> rawData = (Map<Object, Object>) node.getValue();
-                    newData.put(key, getMapper().map(key, rawData));
+                    T newElement = getMapper().map(key, rawData);
+                    newData.put(key, newElement);
+                    publishProgress(newElement);
                 }
 
             }.execute();
@@ -140,51 +144,15 @@ abstract class FirebaseRepository<T> {
 
     }
 
-    final void listenToQuery(final Callback<List<T>> callback) {
+    final void listenToQuery(Callback<T> callback) {
         if (runningTask != null) {
             runningTask.cancel(true);
         }
         currentQuery.addListenerForSingleValueEvent(new RecyclingEventQueryListener(callback));
     }
 
-    final void listenToLocation(String location, final Callback<T> callback) {
-        currentQuery = root.child(location);
+    final void listenToLocation(Callback<T> callback) {
         currentQuery.addListenerForSingleValueEvent(new RecyclingEventLocationListener(callback));
-    }
-
-    final void listenToLocations(List<String> locations, final Callback<List<T>> callback) {
-        final List<T> locationsData = new ArrayList<>();
-        final CountDownLatch locationProcessingDoneSignal = new CountDownLatch(locations.size());
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                try {
-                    locationProcessingDoneSignal.await(3, TimeUnit.SECONDS);
-                }
-                catch (InterruptedException ex) {}
-                finally {
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                callback.setArgument(locationsData);
-                callback.run();
-            }
-        }.execute();
-
-        Callback<T> processLocation = new Callback<T>() {
-            @Override
-            protected void call(T data) {
-                locationsData.add(data);
-                locationProcessingDoneSignal.countDown();
-            }
-        };
-
-        for (String location : locations) {
-            listenToLocation(location, processLocation);
-        }
     }
 
     abstract DataMapper<T> getMapper();
