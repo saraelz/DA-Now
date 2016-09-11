@@ -33,7 +33,7 @@ public class OrganizationsList extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new OrganizationsAdapter(new ArrayList<Organization>());
+        adapter = new OrganizationsAdapter(this, new ArrayList<Organization>());
         adapter.setHasStableIds(true);
         recyclerView.setAdapter(adapter);
 

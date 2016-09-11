@@ -1,5 +1,6 @@
 package edu.deanza.calendar.activities;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -16,7 +18,12 @@ import edu.deanza.calendar.domain.models.Organization;
 public class OrganizationsAdapter
         extends RecyclerView.Adapter<OrganizationsAdapter.OrganizationItemViewHolder> {
 
+    private Context context;
     public List<Organization> organizations;
+
+    public Context getContext() {
+        return context;
+    }
 
     public static class OrganizationItemViewHolder
             extends RecyclerView.ViewHolder
@@ -47,7 +54,8 @@ public class OrganizationsAdapter
 
     }
 
-    public OrganizationsAdapter(List<Organization> organizations) {
+    public OrganizationsAdapter(Context context, List<Organization> organizations) {
+        this.context = context;
         this.organizations = organizations;
     }
 
@@ -69,20 +77,38 @@ public class OrganizationsAdapter
     @Override
     public void onBindViewHolder(OrganizationItemViewHolder viewHolder, int position) {
         final Organization organization = organizations.get(position);
-
         viewHolder.organizationName.setText(organization.getName());
 
+        //Initialize button
+        final ImageButton button = viewHolder.subscribeButton;
+        Boolean clicked; // keeps track of state of button
+        clicked = new Boolean(false); //change later to pull this value from personal user data in Firebase
+        button.setTag(clicked); // setting to false - wasn't clicked
+
         // TODO: set icon according to whether or not org is already subscribed to
-//        Drawable image =
-//        viewHolder.subscribeButton.setImageDrawable();
-//        viewHolder.subscribeButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // TODO: toggle image and the org's subscription state (which updates the entry in the Repo)
-//            }
-//        });
+        // button.setImageDrawable();
 
+        button.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View view) {
+                  // toggle image and the org's subscription state (which updates the entry in the Repo)
+                  Toast.makeText(getContext(), organization.getName() + " has been selected!", Toast.LENGTH_SHORT).show();
 
+                  //set button as "clicked"
+                  if( ((Boolean) button.getTag())==false ){
+                      button.setImageResource(R.drawable.ic_favorite);
+                      button.setTag(new Boolean(true));
+                      // TODO: add dialog box with option of subscribing to meetings
+                      // https://developer.android.com/guide/topics/ui/dialogs.html
+                  }
+
+                  //"unclick" button, undo changes
+                  else {
+                      button.setImageResource(R.drawable.ic_favorite_border);
+                      button.setTag(new Boolean(false));
+                  }
+              }
+          });
     }
 
     @Override
