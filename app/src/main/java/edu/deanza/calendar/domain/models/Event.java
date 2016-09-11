@@ -25,6 +25,7 @@ public class Event {
     protected final OrganizationRepository organizationRepository;
     // If an Organization entry does not exist for a given organizationName, the List entry will be null
     protected List<Organization> organizations;
+    protected Subscription subscription;
 
     // TODO: implement `categories` field
 
@@ -37,6 +38,7 @@ public class Event {
         this.start = start;
         this.end = end;
         this.organizationRepository = organizationRepository;
+        this.organizations = null;
     }
 
     public Event(String name, String description, String location, List<String> organizationNames,
@@ -96,6 +98,18 @@ public class Event {
 
     public DateTime getEnd() {
         return end;
+    }
+
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+    public void subscribe(Subscription subscription) {
+        this.subscription = subscription;
+    }
+
+    public void unsubscribe() {
+        this.subscription = null;
     }
 
     public String getKey() {

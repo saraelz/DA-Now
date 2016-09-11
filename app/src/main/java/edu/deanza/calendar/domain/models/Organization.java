@@ -5,6 +5,7 @@ import org.joda.time.Interval;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import edu.deanza.calendar.domain.EventRepository;
 import edu.deanza.calendar.util.Callback;
@@ -22,6 +23,7 @@ public class Organization{
     protected final List<Interval> meetings;
     protected final EventRepository eventRepository;
     protected List<Event> events;
+    protected OrganizationSubscription subscription;
 
     public Organization(String name, String description, String location, String facebookUrl,
                         List<Interval> meetings, EventRepository eventRepository) {
@@ -31,6 +33,7 @@ public class Organization{
         this.facebookUrl = facebookUrl;
         this.meetings = meetings;
         this.eventRepository = eventRepository;
+        this.events = null;
     }
 
     public Organization(String name, String description, String location, String facebookUrl,
@@ -83,6 +86,18 @@ public class Organization{
                 callback.run();
             }
         }
+    }
+
+    public OrganizationSubscription getSubscription() {
+        return subscription;
+    }
+
+    public void subscribe(OrganizationSubscription subscription) {
+        this.subscription = subscription;
+    }
+
+    public void unsubscribe() {
+        this.subscription = null;
     }
 
     @Override
