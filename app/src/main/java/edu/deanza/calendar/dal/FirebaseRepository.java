@@ -32,6 +32,8 @@ abstract class FirebaseRepository<T> {
     private final ListOrderedMap<String, T> currentData = new ListOrderedMap<>();
     private AsyncTask runningTask;
 
+    private static final String THIS_CLASS_TAG = FirebaseRepository.class.getName();
+
     class RecyclingEventQueryListener implements ValueEventListener {
 
         private final Callback<List<T>> continuation;
@@ -43,7 +45,7 @@ abstract class FirebaseRepository<T> {
         @Override
         public void onDataChange(final DataSnapshot nodes) {
             if (nodes.getValue() == null) {
-                Log.i("QueryListener", "on an empty node underneath: " + nodes.getKey());
+                Log.i(THIS_CLASS_TAG, "RecyclingEventQueryListener:onDataChange: on an empty node underneath: " + nodes.getKey());
                 continuation.setArgument(new ArrayList<T>());
                 continuation.run();
                 return;
@@ -105,7 +107,7 @@ abstract class FirebaseRepository<T> {
         @Override
         public void onDataChange(final DataSnapshot node) {
             if (node.getValue() == null) {
-                Log.i("LocationListener", "on an empty node: " + node.getKey());
+                Log.i(THIS_CLASS_TAG, "RecyclingEventLocationListener:onDataChange: on an empty node: " + node.getKey());
                 continuation.setArgument(null);
                 continuation.run();
                 return;
