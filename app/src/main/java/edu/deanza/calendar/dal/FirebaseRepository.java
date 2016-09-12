@@ -108,8 +108,7 @@ abstract class FirebaseRepository<T> {
         public void onDataChange(final DataSnapshot node) {
             if (node.getValue() == null) {
                 Log.i(THIS_CLASS_TAG, "RecyclingEventLocationListener:onDataChange: on an empty node: " + node.getKey());
-                continuation.setArgument(null);
-                continuation.run();
+                continuation.run(null);
                 return;
             }
 
@@ -171,8 +170,7 @@ abstract class FirebaseRepository<T> {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                callback.setArgument(locationsData);
-                callback.run();
+                callback.run(locationsData);
             }
         }.execute();
 

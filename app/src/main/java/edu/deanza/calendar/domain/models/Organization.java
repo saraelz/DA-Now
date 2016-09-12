@@ -70,8 +70,7 @@ public class Organization {
                 @Override
                 protected void call(List<Event> data) {
                     events = data;
-                    callback.setArgument(data);
-                    callback.run();
+                    callback.run(data);
                 }
             });
         }

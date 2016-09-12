@@ -73,8 +73,7 @@ public class Event {
                 @Override
                 protected void call(List<Organization> data) {
                     organizations = data;
-                    callback.setArgument(data);
-                    callback.run();
+                    callback.run(data);
                 }
             });
         }
