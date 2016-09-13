@@ -1,7 +1,9 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.deanza.calendar.R;
@@ -18,8 +22,13 @@ import edu.deanza.calendar.domain.models.Organization;
 public class OrganizationsAdapter
         extends RecyclerView.Adapter<OrganizationsAdapter.OrganizationItemViewHolder> {
 
+    private Context context;
     private static ClickListener clickListener;
     public List<Organization> organizations;
+
+    public Context getContext() {
+        return context;
+    }
 
 
     public static class OrganizationItemViewHolder
@@ -62,6 +71,7 @@ public class OrganizationsAdapter
     }
 
     public OrganizationsAdapter(Context context, List<Organization> organizations) {
+        this.context = context;
         this.organizations = organizations;
     }
 
@@ -96,21 +106,70 @@ public class OrganizationsAdapter
 
         button.setOnClickListener(new View.OnClickListener() {
               @Override
-              public void onClick(View view) {
+              public void onClick(final View view) {
                   // toggle image and the org's subscription state (which updates the entry in the Repo)
-                  Snackbar.make(view, organization.getName() + " has been selected!", Snackbar.LENGTH_SHORT)
-                          .setAction("Action", null).show();
 
                   //set button as "clicked"
                   if( ((Boolean) button.getTag())==false ){
-                      button.setImageResource(R.drawable.ic_favorite);
-                      button.setTag(new Boolean(true));
                       // TODO: add dialog box with option of subscribing to meetings
                       // https://developer.android.com/guide/topics/ui/dialogs.html
+                      String options[] = {"Main Events", "Meetings"};
+                      boolean checkedValues[] = {true, true};
+
+                      final ArrayList mSelectedItems = new ArrayList();
+                      mSelectedItems.add(0);
+                      mSelectedItems.add(1);
+
+                      //What OrgName events would you like to follow?
+                      //Follow OrgName events
+                      AlertDialog.Builder dialogAlert  = new AlertDialog.Builder(getContext());
+                      dialogAlert.setTitle("Receive notifications for " + organization.getName())
+                              .setCancelable(true)
+                              .setMultiChoiceItems(options, checkedValues,
+                                      new DialogInterface.OnMultiChoiceClickListener() {
+                                          @Override
+                                          public void onClick(DialogInterface dialog, int which,
+                                                              boolean isChecked) {
+                                              if (isChecked) {
+                                                  // If the user checked the item, add it to the selected items
+                                                  mSelectedItems.add(which);
+                                              } else if (mSelectedItems.contains(which)) {
+                                                  // Else, if the item is already in the array, remove it
+                                                  mSelectedItems.remove(Integer.valueOf(which));
+                                              }
+                                          }
+                                      })
+                              .setPositiveButton("Ok",
+                                  new DialogInterface.OnClickListener(){
+                                      public void onClick(DialogInterface dialog, int which) {
+                                          //dismiss the dialog
+                                          if (!mSelectedItems.isEmpty())
+                                          {
+                                              button.setImageResource(R.drawable.ic_favorite);
+                                              button.setTag(new Boolean(true));
+                                              Snackbar.make(view, "Subscribed to " + organization.getName(), Snackbar.LENGTH_LONG)
+                                                      .setAction("Action", null).show();
+                                          }
+                                          else {
+                                              Snackbar.make(view, "Action cancelled.", Snackbar.LENGTH_LONG)
+                                                      .setAction("Action", null).show();
+                                          }
+                                      }
+                                  })
+                              .setNegativeButton("Cancel",
+                                      new DialogInterface.OnClickListener(){
+                                          public void onClick(DialogInterface dialog, int which) {
+                                              //dismiss the dialog
+                                          }
+                                      })
+                              .create()
+                              .show();
                   }
 
                   //"unclick" button, undo changes
                   else {
+                      Snackbar.make(view, "Unsubscribed from " + organization.getName(), Snackbar.LENGTH_LONG)
+                              .setAction("Action", null).show();
                       button.setImageResource(R.drawable.ic_favorite_border);
                       button.setTag(new Boolean(false));
                   }

@@ -9,7 +9,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import edu.deanza.calendar.R;
+import edu.deanza.calendar.domain.models.Organization;
 
 public class OrganizationInfo extends AppCompatActivity {
 
@@ -24,12 +27,15 @@ public class OrganizationInfo extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "My message", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
 
-        Intent i = getIntent();
-        String name = i.getStringExtra("OrgName");
+        //Organization organization = EventBus.getDefault().removeStickyEvent(Organization.class);
+        //Organization organization = (Organization) getIntent().getSerializableExtra("organization");
+        Intent intent = getIntent();
+        setTitle(intent.getStringExtra("OrgName"));
+
     }
 }

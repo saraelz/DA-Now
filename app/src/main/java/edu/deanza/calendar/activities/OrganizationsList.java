@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +45,11 @@ public class OrganizationsList extends AppCompatActivity {
             public void onItemClick(int position, View v) {
                 Organization organization = adapter.organizations.get(position);
                 Intent intent = new Intent(context, OrganizationInfo.class);
+                //EventBus.getDefault().postSticky(organization);
+                //intent.putExtra("organization", organization);
                 intent.putExtra("OrgName", organization.getName());
-                startActivity(intent);
+                intent.putExtra("OrgDescription", organization.getDescription());
+                startActivityForResult(intent,0);
             }
         });
         adapter.setHasStableIds(true);
