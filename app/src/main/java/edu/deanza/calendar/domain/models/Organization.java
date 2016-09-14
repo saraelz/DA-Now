@@ -13,7 +13,7 @@ import edu.deanza.calendar.util.Callback;
  * Created by soso1 on 8/8/2016.
  */
 
-public class Organization{
+public class Organization {
 
     protected final String name;
     protected final String description;

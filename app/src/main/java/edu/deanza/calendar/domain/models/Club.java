@@ -6,18 +6,18 @@ import java.util.List;
 
 import edu.deanza.calendar.domain.EventRepository;
 
-public class IccClub extends Organization {
+public class Club extends Organization {
 
     private final List<Day> meetingDays;
 
-    public IccClub(String name, String description, String location, String facebookUrl,
-                   List<Interval> meetings, EventRepository eventRepository, List<Day> meetingDays) {
+    public Club(String name, String description, String location, String facebookUrl,
+                List<Interval> meetings, EventRepository eventRepository, List<Day> meetingDays) {
         super(name, description, location, facebookUrl, meetings, eventRepository);
         this.meetingDays = meetingDays;
     }
 
-    public IccClub(String name, String description, String location, String facebookUrl,
-                   List<Interval> meetings, List<Event> events, List<Day> meetingDays) {
+    public Club(String name, String description, String location, String facebookUrl,
+                List<Interval> meetings, List<Event> events, List<Day> meetingDays) {
         super(name, description, location, facebookUrl, meetings, events);
         this.meetingDays = meetingDays;
     }

@@ -14,7 +14,7 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".activities.OrganizationsList">
+        <activity android:name=".activities.EventsList">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

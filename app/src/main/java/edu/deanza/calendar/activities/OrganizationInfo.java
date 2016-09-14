@@ -32,10 +32,11 @@ public class OrganizationInfo extends AppCompatActivity {
             }
         });
 
+
         //Organization organization = EventBus.getDefault().removeStickyEvent(Organization.class);
-        //Organization organization = (Organization) getIntent().getSerializableExtra("organization");
-        Intent intent = getIntent();
-        setTitle(intent.getStringExtra("OrgName"));
+        Organization organization = (Organization) getIntent().getSerializableExtra("org");
+        setTitle(organization.getName());
 
     }
 }
+

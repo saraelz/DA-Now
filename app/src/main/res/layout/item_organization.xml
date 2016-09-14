@@ -8,7 +8,7 @@
        android:id="@+id/item_organization_subscribe"
 
        android:layout_width="wrap_content"
-       android:layout_height="match_parent"
+       android:layout_height="fill_parent"
        android:paddingLeft="5dp"
        android:paddingRight="5dp"
        android:paddingStart="5dp"

@@ -45,10 +45,11 @@ public class OrganizationsList extends AppCompatActivity {
             public void onItemClick(int position, View v) {
                 Organization organization = adapter.organizations.get(position);
                 Intent intent = new Intent(context, OrganizationInfo.class);
+                //intent.putExtra("org", organization);
                 //EventBus.getDefault().postSticky(organization);
                 //intent.putExtra("organization", organization);
                 intent.putExtra("OrgName", organization.getName());
-                intent.putExtra("OrgDescription", organization.getDescription());
+                //intent.putExtra("OrgDescription", organization.getDescription());
                 startActivityForResult(intent,0);
             }
         });

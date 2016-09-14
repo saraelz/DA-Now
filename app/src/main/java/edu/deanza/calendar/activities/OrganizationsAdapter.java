@@ -99,6 +99,7 @@ public class OrganizationsAdapter
         final ImageButton button = viewHolder.subscribeButton;
         Boolean clicked; // keeps track of state of button
         clicked = new Boolean(false); //change later to pull this value from personal user data in Firebase
+        clicked = new Boolean(false); //change later to pull this value from personal user data in Firebase
         button.setTag(clicked); // setting to false - wasn't clicked
 
         // TODO: set icon according to whether or not org is already subscribed to

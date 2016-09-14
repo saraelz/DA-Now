@@ -8,7 +8,7 @@ import java.util.Map;
 
 import edu.deanza.calendar.domain.EventRepository;
 import edu.deanza.calendar.domain.models.Day;
-import edu.deanza.calendar.domain.models.IccClub;
+import edu.deanza.calendar.domain.models.Club;
 import edu.deanza.calendar.domain.models.Organization;
 
 /**
@@ -52,7 +52,7 @@ class OrganizationMapper implements DataMapper<Organization> {
                 }
             }
 
-            o = new IccClub(name, description, location, facebookUrl, meetings, repository, days);
+            o = new Club(name, description, location, facebookUrl, meetings, repository, days);
         }
         else {
             o = new Organization(name, description, location, facebookUrl, meetings, repository);

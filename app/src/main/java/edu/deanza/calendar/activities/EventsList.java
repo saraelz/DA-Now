@@ -4,44 +4,59 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.deanza.calendar.R;
+import edu.deanza.calendar.dal.FirebaseEventRepository;
+import edu.deanza.calendar.domain.EventRepository;
 import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.util.Callback;
 
 public class EventsList extends AppCompatActivity {
 
-    //public FirebaseEventRepository repository;
+    private EventRepository repository = new FirebaseEventRepository();
+    private RecyclerView recyclerView;
+    private EventsAdapter adapter;
+    private LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_list);
-        /*repository = new FirebaseEventRepository();
+
+        recyclerView = (RecyclerView) findViewById(R.id.rvEvents);
+        recyclerView.setHasFixedSize(true);
+
+        layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new EventsAdapter(this, new ArrayList<Event>());
+        adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+            }
+        });
+        adapter.setHasStableIds(true);
+        recyclerView.setAdapter(adapter);
+
         LocalDate today = new LocalDate();
-        List<Event> e = new ArrayList<>();
-        repository.after(today, e);*/
-
-        List<Event> e = new ArrayList<Event>();
-        //e.add(new Event("Self care week", "We'll have dogs in the quad!", "Main quad", "DASB", DateTime.parse("2012-01-10T23:13:26"), DateTime.parse("2012-01-10T23:13:26")));
-        //e.add(new Event("Tent City", "Totally radical sleepover", "Main quad", "SFJ", DateTime.parse("2016-01-10T23:13:26"), DateTime.parse("2016-01-10T23:13:26")));
-        populateListView(e);
-    }
-
-    protected void populateListView(List<Event> events)
-    {
-        // Grab RecyclerView
-        RecyclerView rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
-
-        // Attach the adapter to the RecyclerView to populate items
-        EventsAdapter adapter = new EventsAdapter(this, events);
-        rvEvents.setAdapter(adapter);
-
-        // Set layout manager to position the items
-        rvEvents.setLayoutManager(new LinearLayoutManager(this));
+        /*repository.between(today, today.plusDays(7), new Callback<List<Event>>() {
+            @Override
+            protected void call(List<Event> data) {
+                adapter.repopulate(data);
+            }
+        });*/
+        repository.all(new Callback<List<Event>>() {
+            @Override
+            protected void call(List<Event> data) {
+                adapter.repopulate(data);
+            }
+        });
     }
 }
