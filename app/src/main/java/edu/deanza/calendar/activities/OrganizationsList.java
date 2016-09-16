@@ -65,6 +65,7 @@ public class OrganizationsList extends AppCompatActivity {
             public void onItemClick(Organization clickedOrganization) {
                 Intent intent = new Intent(context, OrganizationInfo.class);
                 intent.putExtra("edu.deanza.calendar.models.Organization", clickedOrganization);
+                intent.putExtra("UID", UID);
                 startActivity(intent);
             }
         });
