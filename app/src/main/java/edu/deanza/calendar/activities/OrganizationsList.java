@@ -13,6 +13,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.deanza.calendar.DividerItemDecoration;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseOrganizationRepository;
 import edu.deanza.calendar.domain.OrganizationRepository;
@@ -32,11 +33,13 @@ public class OrganizationsList extends AppCompatActivity {
         setContentView(R.layout.activity_organizations_list);
 
         recyclerView = (RecyclerView) findViewById(R.id.organization_recycler_view);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
+        //recyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
 
         adapter = new OrganizationsAdapter(this, new ArrayList<Organization>());
         final Context context = this;
@@ -46,9 +49,11 @@ public class OrganizationsList extends AppCompatActivity {
                 Organization organization = adapter.organizations.get(position);
                 Intent intent = new Intent(context, OrganizationInfo.class);
                 //intent.putExtra("org", organization);
-                //EventBus.getDefault().postSticky(organization);
-                //intent.putExtra("organization", organization);
-                intent.putExtra("OrgName", organization.getName());
+                EventBus.getDefault().postSticky(organization);
+                //EventBus.getDefault().register(this);
+
+                //intent.putExtra("org", organization);
+                //intent.putExtra("OrgName", organization.getName());
                 //intent.putExtra("OrgDescription", organization.getDescription());
                 startActivityForResult(intent,0);
             }

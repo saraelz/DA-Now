@@ -12,6 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +28,7 @@ public class EventsAdapter
 
     private Context context;
     private static ClickListener clickListener;
-    public List<Event> events;
+    public List<Event> events = new ArrayList<Event>();
 
     public Context getContext() {
         return context;
@@ -36,13 +40,21 @@ public class EventsAdapter
             implements View.OnClickListener{
 
         private TextView eventName;
-        private TextView eventDate;
+        private TextView eventTime;
+        private TextView eventDayOfMonth;
+        private TextView eventWeekday;
         private ImageButton subscribeButton;
 
         public EventItemViewHolder(View containingItem) {
             super(containingItem);
-            eventName = (TextView) containingItem.findViewById(R.id.item_event_name);
-            eventDate = (TextView) containingItem.findViewById(R.id.item_event_date);
+
+            //initialize textviews
+            eventName = (TextView) containingItem.findViewById(R.id.event_name);
+            eventTime = (TextView) containingItem.findViewById(R.id.event_time);
+            eventDayOfMonth = (TextView) containingItem.findViewById(R.id.event_dom);
+            eventWeekday = (TextView) containingItem.findViewById(R.id.event_weekday);
+
+            //initialize subscribe button
             subscribeButton = (ImageButton) containingItem.findViewById(R.id.item_event_subscribe);
             containingItem.setOnClickListener(this);
             subscribeButton.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +99,7 @@ public class EventsAdapter
     public EventItemViewHolder onCreateViewHolder(ViewGroup eventList, int viewType) {
         View eventItem = LayoutInflater
                 .from(eventList.getContext())
-                .inflate(R.layout.item_event, eventList, false);
+                .inflate(R.layout.item_card_event, eventList, false);
 
         return new EventItemViewHolder(eventItem);
     }
@@ -101,15 +113,25 @@ public class EventsAdapter
         //set name viewholder
         viewHolder.eventName.setText(event.getName());
 
-        //set date viewholder
-        viewHolder.eventDate.setText(String.valueOf(event.getStart().getDayOfMonth()));
-        /*
-        //Event previousEvent = events.get(position-1); --> gives error
-        if (previousEvent.getStart().toDate() == event.getStart().toDate()){
-            viewHolder.eventDate.setText("");
-        }
-        else{
-            viewHolder.eventDate.setText(event.getStart().getDayOfMonth());
+        DateTime startDate = event.getStart();
+        DateTime endDate = event.getEnd();
+        DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("h:mm aa");
+        viewHolder.eventTime.setText(timeFormatter.print(startDate) + " - " + timeFormatter.print(endDate));
+
+        //set date viewholders
+        viewHolder.eventDayOfMonth.setText(String.valueOf(startDate.getDayOfMonth()));
+
+        DateTimeFormatter weekdayFormatter = DateTimeFormat.forPattern("EEE");
+        viewHolder.eventWeekday.setText(weekdayFormatter.print(startDate));
+
+        /*if(position > 0 && position <= events.size()){
+            Event previousEvent = events.get(position-1); // gives error
+            //if previous event has same date, initialize string to empty
+            //if previous event has different month, start a new section
+            if (previousEvent.getStart().toDate() == event.getStart().toDate()){
+                viewHolder.eventDayOfMonth.setText("");
+                viewHolder.eventWeekday.setText("");
+            }
         }*/
 
         //Initialize button
