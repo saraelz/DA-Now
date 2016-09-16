@@ -43,6 +43,5 @@ public class OrganizationInfo extends AppCompatActivity {
             subscribeButton.setImageResource(R.drawable.ic_favorite);
         }
         subscribeButton.setOnClickListener(new OrganizationSubscribeOnClickListener(this, organization, subscriptionDao));
-
     }
 }
