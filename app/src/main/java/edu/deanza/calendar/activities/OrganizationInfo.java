@@ -9,12 +9,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.EventBus;
-
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.domain.models.Organization;
 
 public class OrganizationInfo extends AppCompatActivity {
+
+    Organization organization;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +32,9 @@ public class OrganizationInfo extends AppCompatActivity {
             }
         });
 
-        //Organization organization = EventBus.getDefault().removeStickyEvent(Organization.class);
-        //Organization organization = (Organization) getIntent().getSerializableExtra("organization");
         Intent intent = getIntent();
-        setTitle(intent.getStringExtra("OrgName"));
+        organization = (Organization) intent.getSerializableExtra("edu.deanza.calendar.models.Organization");
+        setTitle(organization.getName());
 
     }
 }

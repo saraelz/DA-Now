@@ -14,6 +14,7 @@ import android.util.Log;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 import edu.deanza.calendar.R;
@@ -22,6 +23,7 @@ import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.OrganizationRepository;
 import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.domain.models.Subscription;
 import edu.deanza.calendar.util.Callback;
 
 public class OrganizationsList extends AppCompatActivity {
@@ -60,14 +62,10 @@ public class OrganizationsList extends AppCompatActivity {
         adapter.setHasStableIds(true);
         adapter.setOnItemClickListener(new OrganizationsAdapter.ClickListener() {
             @Override
-            public void onItemClick(int position, View v) {
-                Organization organization = adapter.organizations.get(position);
+            public void onItemClick(Organization clickedOrganization) {
                 Intent intent = new Intent(context, OrganizationInfo.class);
-                //EventBus.getDefault().postSticky(organization);
-                //intent.putExtra("organization", organization);
-                intent.putExtra("OrgName", organization.getName());
-                intent.putExtra("OrgDescription", organization.getDescription());
-                startActivityForResult(intent,0);
+                intent.putExtra("edu.deanza.calendar.models.Organization", clickedOrganization);
+                startActivity(intent);
             }
         });
         recyclerView.setAdapter(adapter);
