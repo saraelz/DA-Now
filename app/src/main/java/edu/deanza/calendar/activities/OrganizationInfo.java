@@ -46,3 +46,4 @@ public class OrganizationInfo extends AppCompatActivity {
 
     }
 }
+

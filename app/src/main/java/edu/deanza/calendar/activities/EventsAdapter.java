@@ -1,129 +1,199 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.domain.models.Event;
 
-// Create the basic adapter extending from RecyclerView.Adapter
-// Note that we specify the custom ViewHolder which gives us access to our views
-public class EventsAdapter extends
-        RecyclerView.Adapter<EventsAdapter.ViewHolder> {
+public class EventsAdapter
+        extends RecyclerView.Adapter<EventsAdapter.EventItemViewHolder> {
 
-    // Provide a direct reference to each of the views within a data item
-    // Used to cache the views within the item layout for fast access
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        // Your holder should contain a member variable
-        // for any view that will be set as you render a row
-        public TextView nameTextView;
-        public ImageButton favoriteButton;
+    private Context context;
+    private static ClickListener clickListener;
+    public List<Event> events = new ArrayList<Event>();
 
-        // We also create a constructor that accepts the entire item row
-        // and does the view lookups to find each subview
-        public ViewHolder(View itemView) {
-            // Stores the itemView in a public final member variable that can be used
-            // to access the context from any ViewHolder instance.
-            super(itemView);
+    public Context getContext() {
+        return context;
+    }
 
-            nameTextView = (TextView) itemView.findViewById(R.id.event_name);
-            favoriteButton = (ImageButton) itemView.findViewById(R.id.favorite_button);
+
+    public static class EventItemViewHolder
+            extends RecyclerView.ViewHolder
+            implements View.OnClickListener{
+
+        private TextView eventName;
+        private TextView eventTime;
+        private TextView eventDayOfMonth;
+        private TextView eventWeekday;
+        private ImageButton subscribeButton;
+
+        public EventItemViewHolder(View containingItem) {
+            super(containingItem);
+
+            //initialize textviews
+            eventName = (TextView) containingItem.findViewById(R.id.event_name);
+            eventTime = (TextView) containingItem.findViewById(R.id.event_time);
+            eventDayOfMonth = (TextView) containingItem.findViewById(R.id.event_dom);
+            eventWeekday = (TextView) containingItem.findViewById(R.id.event_weekday);
+
+            //initialize subscribe button
+            subscribeButton = (ImageButton) containingItem.findViewById(R.id.item_event_subscribe);
+            containingItem.setOnClickListener(this);
+            subscribeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // TODO: subscribe, and delegate that handler to this Adapter's containing Activity/Fragment
+                    Log.i("OrgItem/subscribeButton", "subscribed to some Event");
+                    clickListener.onItemClick(getAdapterPosition(), view);
+                }
+            });
         }
 
+        @Override
+        public void onClick(View v) {
+            // TODO: switch activities/fragments to the EventInfoPage, and delegate that handler
+            Log.i("OrgItem", "*switch to some EventInfoPage now*");
+            clickListener.onItemClick(getAdapterPosition(), v);
+        }
     }
 
-    //constructor & member variables
+    public void setOnItemClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
 
-    // Store a member variable for the Events
-    private List<Event> mEvents;
-    // Store the context for easy access
-    private Context mContext;
+    public interface ClickListener {
+        void onItemClick(int position, View v);
+        //void onItemLongClick(int position, View v);
+    }
 
-    // Pass in the Event array into the constructor
     public EventsAdapter(Context context, List<Event> events) {
-        mEvents = events;
-        mContext = context;
+        this.context = context;
+        this.events = events;
     }
 
-    // Easy access to the context object in the recyclerview
-    private Context getContext() {
-        return mContext;
+    public void repopulate(List<Event> events) {
+        this.events.clear();
+        this.events.addAll(events);
+        notifyDataSetChanged();
     }
-    
-    // Usually involves inflating a layout from XML and returning the holder
+
     @Override
-    public EventsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+    public EventItemViewHolder onCreateViewHolder(ViewGroup eventList, int viewType) {
+        View eventItem = LayoutInflater
+                .from(eventList.getContext())
+                .inflate(R.layout.item_card_event, eventList, false);
 
-        // Inflate the custom layout
-        View eventView = inflater.inflate(R.layout.item_event, parent, false);
-
-        // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(eventView);
-        return viewHolder;
+        return new EventItemViewHolder(eventItem);
     }
 
-    // Involves populating data into the item through holder
+
     @Override
-    public void onBindViewHolder(EventsAdapter.ViewHolder viewHolder, int position) {
-         // Get the data model based on position
-        final Event event = mEvents.get(position);
+    public void onBindViewHolder(EventItemViewHolder viewHolder, int position) {
+        //grab this event and most recent event
+        final Event event = events.get(position);
 
-        // Set item views based on your views and data model
-        TextView textView = viewHolder.nameTextView;
-        textView.setText(event.getName());
+        //set name viewholder
+        viewHolder.eventName.setText(event.getName());
 
-        /*//Initialize button
-        final ImageButton button = viewHolder.favoriteButton;
+        DateTime startDate = event.getStart();
+        DateTime endDate = event.getEnd();
+        DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("h:mm aa");
+        viewHolder.eventTime.setText(timeFormatter.print(startDate) + " - " + timeFormatter.print(endDate));
+
+        //set date viewholders
+        viewHolder.eventDayOfMonth.setText(String.valueOf(startDate.getDayOfMonth()));
+
+        DateTimeFormatter weekdayFormatter = DateTimeFormat.forPattern("EEE");
+        viewHolder.eventWeekday.setText(weekdayFormatter.print(startDate));
+
+        /*if(position > 0 && position <= events.size()){
+            Event previousEvent = events.get(position-1); // gives error
+            //if previous event has same date, initialize string to empty
+            //if previous event has different month, start a new section
+            if (previousEvent.getStart().toDate() == event.getStart().toDate()){
+                viewHolder.eventDayOfMonth.setText("");
+                viewHolder.eventWeekday.setText("");
+            }
+        }*/
+
+        //Initialize button
+        final ImageButton button = viewHolder.subscribeButton;
         Boolean clicked; // keeps track of state of button
         clicked = new Boolean(false); //change later to pull this value from personal user data in Firebase
         button.setTag(clicked); // setting to false - wasn't clicked
 
-        button.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+        // TODO: set icon according to whether or not org is already subscribed to
+        // button.setImageDrawable();
 
-                        Toast.makeText(getContext(), //try getApplicationContext()
-                                event.getName() + " has been clicked!", Toast.LENGTH_SHORT).show();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
 
-                        //set button as "clicked"
-                        if( ((Boolean) button.getTag())==false ){
-                            button.setImageResource(R.drawable.ic_favorite);
-                            button.setTag(new Boolean(true));
+                // toggle image and the org's subscription state (which updates the entry in the Repo)
+                //set button as "clicked"
+                if (((Boolean) button.getTag()) == false) {
+                    final String options[] = {"10 minutes before", "15 minutes before", "30 minutes before", "60 minutes before", "Cancel"};
 
-                            if(event.getEnd().isBeforeNow())
-                            {
-                                Toast.makeText(getContext(), //try getApplicationContext()
-                                        "This event has passed.", Toast.LENGTH_SHORT).show();
-                            }
-                            // 2do: add dialog boxes
-                            // https://developer.android.com/guide/topics/ui/dialogs.html
-                        }
+                    AlertDialog.Builder dialogAlert  = new AlertDialog.Builder(getContext());
+                    dialogAlert.setTitle("Would you like a reminder?")
+                            .setCancelable(true)
+                            .setItems(options, new DialogInterface.OnClickListener(){
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            //TODO: save preferences in Firebase
+                                            button.setImageResource(R.drawable.ic_favorite);
+                                            button.setTag(new Boolean(true));
+                                            if (i != 4)//options.length()-1)
+                                            {
+                                                Snackbar.make(view, "Added " + event.getName() + " to calendar", Snackbar.LENGTH_LONG)
+                                                        .setAction("Action", null).show();
+                                            }
+                                            else{
+                                                Snackbar.make(view, "Action cancelled.", Snackbar.LENGTH_LONG)
+                                                        .setAction("Action", null).show();
+                                            }
+                                        }
+                                    })
+                            .create()
+                            .show();
+                }
 
-                        //"unclick" button, undo changes
-                        else {
-                            button.setImageResource(R.drawable.ic_favorite_border);
-                            button.setTag(new Boolean(false));
-                        }
-                    }});*/
-
-
+                //"unclick" button, undo changes
+                else {
+                    button.setImageResource(R.drawable.ic_favorite_border);
+                    button.setTag(new Boolean(false));
+                    Snackbar.make(view, "Removed " + event.getName() + " from calendar", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            }
+        });
     }
 
-
-
-    // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return mEvents.size();
+        return events.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return (long) events.get(position).hashCode();
     }
 }

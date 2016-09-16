@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
+import edu.deanza.calendar.DividerItemDecoration;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseOrganizationRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
@@ -51,11 +52,13 @@ public class OrganizationsList extends AppCompatActivity {
         });
 
         recyclerView = (RecyclerView) findViewById(R.id.organization_recycler_view);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
+        //recyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
 
         final Context context = this;
         adapter = new OrganizationsAdapter(context, new ArrayList<Organization>(), subscriptionDao);

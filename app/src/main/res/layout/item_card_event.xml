@@ -1,0 +1,85 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvEvents"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="4dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:minHeight="25dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/event_name"
+            android:textSize="19sp"
+            android:text="Name"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/event_dom"
+            android:layout_toEndOf="@+id/event_dom"
+            android:paddingBottom="10dp"
+            android:layout_toStartOf="@+id/item_event_subscribe" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:id="@+id/event_time"
+            android:textSize="16sp"
+            android:text="Time"
+            android:layout_below="@+id/event_name"
+            android:layout_toRightOf="@+id/event_dom"
+            android:focusableInTouchMode="false"
+            android:focusable="false" />
+
+        <ImageButton
+            android:id="@+id/item_event_subscribe"
+
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+
+            android:layout_alignParentTop="false"
+            android:layout_alignParentBottom="@+id/event_time"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+
+            android:src="@drawable/ic_favorite_border"
+            android:background="@android:color/transparent"
+            android:tint="@color/colorPrimaryDark"
+            android:clickable="true"
+            android:scaleType="fitCenter"
+            android:layout_centerVertical="true" />
+
+        <TextView
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="6"
+            android:id="@+id/event_dom"
+            android:textSize="35dp"
+            android:paddingRight="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentTop="true"
+            android:layout_alignBottom="@+id/event_time"
+            android:paddingBottom="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="15dp"
+            android:text="Mon"
+            android:id="@+id/event_weekday"
+            android:layout_alignBottom="@+id/event_dom"
+            android:layout_alignStart="@+id/event_dom" />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
+
