@@ -5,7 +5,6 @@ import org.joda.time.Interval;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import edu.deanza.calendar.domain.EventRepository;
 import edu.deanza.calendar.util.Callback;

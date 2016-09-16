@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import edu.deanza.calendar.domain.models.Organization;
 import edu.deanza.calendar.domain.models.OrganizationSubscription;
 import edu.deanza.calendar.domain.models.Subscription;
 

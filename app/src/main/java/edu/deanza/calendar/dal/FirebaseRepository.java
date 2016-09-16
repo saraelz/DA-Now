@@ -11,8 +11,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.apache.commons.collections4.map.ListOrderedMap;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.util.Callback;
