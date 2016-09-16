@@ -1,12 +1,13 @@
 package edu.deanza.calendar.domain.models;
 
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by karinaantonio on 9/11/16.
  */
 
-public class Subscription {
+public class Subscription implements Serializable {
 
     private String key;
     private long notifyBefore;

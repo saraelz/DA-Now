@@ -6,7 +6,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import java.util.List;
+import java.io.Serializable;
 
 import edu.deanza.calendar.domain.EventRepository;
 import edu.deanza.calendar.domain.OrganizationRepository;
@@ -17,7 +17,7 @@ import edu.deanza.calendar.util.Callback;
  * Created by karinaantonio on 8/11/16.
  */
 
-public final class FirebaseEventRepository extends FirebaseRepository<Event> implements EventRepository {
+public final class FirebaseEventRepository extends FirebaseRepository<Event> implements EventRepository, Serializable {
 
     {
         root = FirebaseDatabase.getInstance().getReference().child("events");

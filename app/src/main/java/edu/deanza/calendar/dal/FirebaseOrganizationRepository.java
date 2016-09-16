@@ -2,7 +2,7 @@ package edu.deanza.calendar.dal;
 
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.List;
+import java.io.Serializable;
 
 import edu.deanza.calendar.domain.EventRepository;
 import edu.deanza.calendar.domain.OrganizationRepository;
@@ -13,7 +13,7 @@ import edu.deanza.calendar.util.Callback;
  * Created by karinaantonio on 8/18/16.
  */
 
-public final class FirebaseOrganizationRepository extends FirebaseRepository<Organization> implements OrganizationRepository {
+public final class FirebaseOrganizationRepository extends FirebaseRepository<Organization> implements OrganizationRepository, Serializable {
 
     {
         root = FirebaseDatabase.getInstance().getReference().child("organizations");

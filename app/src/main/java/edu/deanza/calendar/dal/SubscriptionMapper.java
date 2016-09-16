@@ -1,5 +1,6 @@
 package edu.deanza.calendar.dal;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +12,7 @@ import edu.deanza.calendar.domain.models.Subscription;
  * Created by karinaantonio on 9/11/16.
  */
 
-public class SubscriptionMapper implements DataMapper<Subscription> {
+public class SubscriptionMapper implements DataMapper<Subscription>, Serializable {
 
     @Override
     public Subscription map(String key, Map<Object, Object> rawData) {

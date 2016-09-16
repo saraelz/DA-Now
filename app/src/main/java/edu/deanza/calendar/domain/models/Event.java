@@ -3,6 +3,7 @@ package edu.deanza.calendar.domain.models;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import edu.deanza.calendar.util.Callback;
  * Created by Sara on 5/28/2016.
  */
 
-public class Event {
+public class Event implements Serializable {
 
     protected final String name;
     protected final String description;
