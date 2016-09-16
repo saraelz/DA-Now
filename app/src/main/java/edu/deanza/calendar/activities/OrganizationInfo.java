@@ -2,9 +2,11 @@ package edu.deanza.calendar.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import edu.deanza.calendar.OrganizationSubscribeOnClickListener;
@@ -30,9 +32,17 @@ public class OrganizationInfo extends AppCompatActivity {
         subscriptionDao = new FirebaseSubscriptionDao(intent.getStringExtra("UID"));
 
         setTitle(organization.getName());
-        // TODO: set image button icon depending on org.getsub
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new OrganizationSubscribeOnClickListener(this, organization, subscriptionDao));
+        TextView descriptionView = (TextView) findViewById(R.id.organization_description);
+        descriptionView.setText(organization.getDescription());
+
+        FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
+        if (organization.getSubscription() == null) {
+            subscribeButton.setImageResource(R.drawable.ic_favorite_border);
+        }
+        else {
+            subscribeButton.setImageResource(R.drawable.ic_favorite);
+        }
+        subscribeButton.setOnClickListener(new OrganizationSubscribeOnClickListener(this, organization, subscriptionDao));
 
     }
 }
