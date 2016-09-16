@@ -1,10 +1,12 @@
 package edu.deanza.calendar.domain.models;
 
+import java.io.Serializable;
+
 /**
  * Created by karinaantonio on 8/10/16.
  */
 
-public enum Day {
+public enum Day implements Serializable {
 
     SUNDAY("Sunday", "Sun"),
     MONDAY("Monday", "Mon"),

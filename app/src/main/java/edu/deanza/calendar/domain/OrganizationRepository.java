@@ -1,7 +1,5 @@
 package edu.deanza.calendar.domain;
 
-import java.util.List;
-
 import edu.deanza.calendar.domain.models.Organization;
 import edu.deanza.calendar.util.Callback;
 
@@ -11,10 +9,8 @@ import edu.deanza.calendar.util.Callback;
 
 public interface OrganizationRepository {
 
-    void all(Callback<List<Organization>> callback);
+    void all(Callback<Organization> callback);
 
     void findByName(String name, Callback<Organization> callback);
-
-    void findByNames(List<String> names, Callback<List<Organization>> callback);
 
 }

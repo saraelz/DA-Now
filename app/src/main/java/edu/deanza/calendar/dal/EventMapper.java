@@ -2,6 +2,7 @@ package edu.deanza.calendar.dal;
 
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ import edu.deanza.calendar.domain.models.Event;
  * Created by karinaantonio on 8/20/16.
  */
 
-class EventMapper implements DataMapper<Event> {
+class EventMapper implements DataMapper<Event>, Serializable {
 
     private final OrganizationRepository repository;
 

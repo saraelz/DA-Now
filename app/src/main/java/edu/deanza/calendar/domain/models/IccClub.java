@@ -2,11 +2,12 @@ package edu.deanza.calendar.domain.models;
 
 import org.joda.time.Interval;
 
+import java.io.Serializable;
 import java.util.List;
 
 import edu.deanza.calendar.domain.EventRepository;
 
-public class IccClub extends Organization {
+public class IccClub extends Organization implements Serializable {
 
     private final List<Day> meetingDays;
 

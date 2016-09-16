@@ -3,6 +3,7 @@ package edu.deanza.calendar.domain.models;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import edu.deanza.calendar.util.Callback;
  * Created by Sara on 5/28/2016.
  */
 
-public class Event {
+public class Event implements Serializable {
 
     protected final String name;
     protected final String description;
@@ -24,6 +25,7 @@ public class Event {
     protected final OrganizationRepository organizationRepository;
     // If an Organization entry does not exist for a given organizationName, the List entry will be null
     protected List<Organization> organizations;
+    protected Subscription subscription;
 
     // TODO: implement `categories` field
 
@@ -36,6 +38,7 @@ public class Event {
         this.start = start;
         this.end = end;
         this.organizationRepository = organizationRepository;
+        this.organizations = null;
     }
 
     public Event(String name, String description, String location, List<String> organizationNames,
@@ -66,21 +69,26 @@ public class Event {
         return organizationNames;
     }
 
-    public void getOrganizations(final Callback<List<Organization>> callback) {
+    public void getOrganizations(final Callback<Organization> callback) {
         if (organizations == null) {
             assert organizationRepository != null;
-            organizationRepository.findByNames(organizationNames, new Callback<List<Organization>>() {
-                @Override
-                protected void call(List<Organization> data) {
-                    organizations = data;
-                    callback.setArgument(data);
-                    callback.run();
-                }
-            });
+            organizations = new ArrayList<>();
+            for (String name : organizationNames) {
+                organizationRepository.findByName(name, new Callback<Organization>() {
+                    @Override
+                    protected void call(Organization data) {
+                        organizations.add(data);
+                        callback.setArgument(data);
+                        callback.run();
+                    }
+                });
+            }
         }
         else {
-            callback.setArgument(organizations);
-            callback.run();
+            for (Organization organization : organizations) {
+                callback.setArgument(organization);
+                callback.run();
+            }
         }
     }
 
@@ -90,6 +98,18 @@ public class Event {
 
     public DateTime getEnd() {
         return end;
+    }
+
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+    public void subscribe(Subscription subscription) {
+        this.subscription = subscription;
+    }
+
+    public void unsubscribe() {
+        this.subscription = null;
     }
 
     public String getKey() {

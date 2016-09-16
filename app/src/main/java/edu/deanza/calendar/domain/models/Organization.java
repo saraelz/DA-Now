@@ -13,7 +13,7 @@ import edu.deanza.calendar.util.Callback;
  * Created by soso1 on 8/8/2016.
  */
 
-public class Organization{
+public class Organization implements Serializable {
 
     protected final String name;
     protected final String description;
@@ -22,6 +22,7 @@ public class Organization{
     protected final List<Interval> meetings;
     protected final EventRepository eventRepository;
     protected List<Event> events;
+    protected OrganizationSubscription subscription;
 
     public Organization(String name, String description, String location, String facebookUrl,
                         List<Interval> meetings, EventRepository eventRepository) {
@@ -31,6 +32,7 @@ public class Organization{
         this.facebookUrl = facebookUrl;
         this.meetings = meetings;
         this.eventRepository = eventRepository;
+        this.events = null;
     }
 
     public Organization(String name, String description, String location, String facebookUrl,
@@ -64,22 +66,37 @@ public class Organization{
         return meetings;
     }
 
-    public void getEvents(final Callback<List<Event>> callback) {
+    public void getEvents(final Callback<Event> callback) {
         if (events == null) {
             assert eventRepository != null;
-            eventRepository.findByOrganization(name, new Callback<List<Event>>() {
+            events = new ArrayList<>();
+            eventRepository.findByOrganization(name, new Callback<Event>() {
                 @Override
-                protected void call(List<Event> data) {
-                    events = data;
+                protected void call(Event data) {
+                    events.add(data);
                     callback.setArgument(data);
                     callback.run();
                 }
             });
         }
         else {
-            callback.setArgument(events);
-            callback.run();
+            for (Event e : events) {
+                callback.setArgument(e);
+                callback.run();
+            }
         }
+    }
+
+    public OrganizationSubscription getSubscription() {
+        return subscription;
+    }
+
+    public void subscribe(OrganizationSubscription subscription) {
+        this.subscription = subscription;
+    }
+
+    public void unsubscribe() {
+        this.subscription = null;
     }
 
     @Override
