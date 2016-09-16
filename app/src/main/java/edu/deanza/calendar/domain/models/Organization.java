@@ -2,6 +2,7 @@ package edu.deanza.calendar.domain.models;
 
 import org.joda.time.Interval;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import edu.deanza.calendar.util.Callback;
  * Created by soso1 on 8/8/2016.
  */
 
-public class Organization {
+public class Organization{
 
     protected final String name;
     protected final String description;
@@ -81,4 +82,23 @@ public class Organization {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Organization that = (Organization) o;
+
+        return name.equals(that.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }
