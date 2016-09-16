@@ -41,6 +41,12 @@ public class OrganizationsList extends AppCompatActivity {
 
         final String UID = new UidGenerator().generate();
         subscriptionDao = new FirebaseSubscriptionDao(UID);
+        subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
+            @Override
+            protected void call(Map<String, Subscription> data) {
+                adapter.addSubscriptions(data);
+            }
+        });
 
         recyclerView = (RecyclerView) findViewById(R.id.organization_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -49,8 +55,9 @@ public class OrganizationsList extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new OrganizationsAdapter(this, new ArrayList<Organization>());
         final Context context = this;
+        adapter = new OrganizationsAdapter(context, new ArrayList<Organization>(), subscriptionDao);
+        adapter.setHasStableIds(true);
         adapter.setOnItemClickListener(new OrganizationsAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
@@ -63,7 +70,6 @@ public class OrganizationsList extends AppCompatActivity {
                 startActivityForResult(intent,0);
             }
         });
-        adapter.setHasStableIds(true);
         recyclerView.setAdapter(adapter);
 
         repository.all(new Callback<Organization>() {

@@ -1,11 +1,7 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,71 +9,88 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import edu.deanza.calendar.OrganizationSubscribeOnClickListener;
 import edu.deanza.calendar.R;
+import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.domain.models.OrganizationSubscription;
+import edu.deanza.calendar.domain.models.Subscription;
 
 public class OrganizationsAdapter
         extends RecyclerView.Adapter<OrganizationsAdapter.OrganizationItemViewHolder> {
 
-    private Context context;
+    private final Context context;
+    private final List<Organization> organizations;
+    private final List<Organization> organizationsAddedBeforeSubscriptionsReceived = new ArrayList<>();
+    private Map<String, Subscription> subscriptions;
+    private final SubscriptionDao subscriptionDao;
     private static ClickListener clickListener;
-    public List<Organization> organizations;
+
+    private static final int NOT_SUBSCRIBED = 0;
+    private static final int SUBSCRIBED = 1;
+    private static final String THIS_TAG = OrganizationsAdapter.class.getName();
+
+    public OrganizationsAdapter(Context context, List<Organization> organizations, SubscriptionDao subscriptionDao) {
+        this.context = context;
+        this.organizations = organizations;
+        this.subscriptionDao = subscriptionDao;
+    }
 
     public Context getContext() {
         return context;
     }
 
+    public void add(Organization organization) {
+        String name = organization.getName();
+        if (subscriptions == null) {
+            organizationsAddedBeforeSubscriptionsReceived.add(organization);
+        }
+        else if (subscriptions.containsKey(name)) {
+            organization.subscribe((OrganizationSubscription) subscriptions.get(name));
+        }
+        organizations.add(organization);
+        notifyItemInserted(organizations.size() - 1);
+    }
 
-    public static class OrganizationItemViewHolder
-            extends RecyclerView.ViewHolder
-            implements View.OnClickListener{
+    public void addSubscriptions(Map<String, Subscription> subscriptions) {
+        this.subscriptions = subscriptions;
+        for (Organization o : organizationsAddedBeforeSubscriptionsReceived) {
+            String name = o.getName();
+            if (subscriptions.containsKey(name)) {
+                o.subscribe((OrganizationSubscription) subscriptions.get(name));
+            }
+        }
+    }
+
+    public interface ClickListener {
+        void onItemClick(Organization clickedOrganization);
+    }
+
+    public void setOnItemClickListener(ClickListener listener) {
+        clickListener = listener;
+    }
+
+    public static class OrganizationItemViewHolder extends RecyclerView.ViewHolder {
 
         private TextView organizationName;
         private ImageButton subscribeButton;
+
+        private static final String THIS_TAG = OrganizationItemViewHolder.class.getName();
 
         public OrganizationItemViewHolder(View containingItem) {
             super(containingItem);
             organizationName = (TextView) containingItem.findViewById(R.id.item_organization_name);
             subscribeButton = (ImageButton) containingItem.findViewById(R.id.item_organization_subscribe);
-            containingItem.setOnClickListener(this);
-            subscribeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // TODO: subscribe, and delegate that handler to this Adapter's containing Activity/Fragment
-                    Log.i("OrgItem/subscribeButton", "subscribed to some Organization");
-                    clickListener.onItemClick(getAdapterPosition(), view);
-                }
-            });
         }
 
-        @Override
-        public void onClick(View v) {
-            // TODO: switch activities/fragments to the OrganizationInfoPage, and delegate that handler
-            Log.i("OrgItem", "*switch to some OrganizationInfoPage now*");
-            clickListener.onItemClick(getAdapterPosition(), v);
-        }
     }
 
-    public void setOnItemClickListener(ClickListener clickListener) {
-        this.clickListener = clickListener;
-    }
-
-    public interface ClickListener {
-        void onItemClick(int position, View v);
-        //void onItemLongClick(int position, View v);
-    }
-
-    public OrganizationsAdapter(Context context, List<Organization> organizations) {
-        this.context = context;
-        this.organizations = organizations;
-    }
-
-    public void add(Organization organization) {
-        organizations.add(organization);
-        notifyItemInserted(organizations.size() - 1);
+    @Override
+    public int getItemViewType(int position) {
+        return organizations.get(position).getSubscription() == null ? NOT_SUBSCRIBED : SUBSCRIBED;
     }
 
     @Override
@@ -89,91 +102,38 @@ public class OrganizationsAdapter
         return new OrganizationItemViewHolder(organizationItem);
     }
 
-    @Override
-    public void onBindViewHolder(OrganizationItemViewHolder viewHolder, int position) {
+    public void onBindViewHolder(final OrganizationItemViewHolder viewHolder, final int position) {
         final Organization organization = organizations.get(position);
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickListener.onItemClick(organization);
+            }
+        });
+
         viewHolder.organizationName.setText(organization.getName());
 
-        //Initialize button
-        final ImageButton button = viewHolder.subscribeButton;
-        Boolean clicked; // keeps track of state of button
-        clicked = new Boolean(false); //change later to pull this value from personal user data in Firebase
-        button.setTag(clicked); // setting to false - wasn't clicked
+        final ImageButton subscribeButton = viewHolder.subscribeButton;
+        if (getItemViewType(position) == SUBSCRIBED) {
+            subscribeButton.setImageResource(R.drawable.ic_favorite);
+        }
+        else if (getItemViewType(position) == NOT_SUBSCRIBED) {
+            subscribeButton.setImageResource(R.drawable.ic_favorite_border);
+        }
+        subscribeButton.setOnClickListener(new OrganizationSubscribeOnClickListener(context, organization, subscriptionDao) {
+            @Override
+            protected void subscribe(boolean withMeetings, View view) {
+                super.subscribe(withMeetings, view);
+                notifyItemChanged(viewHolder.getAdapterPosition());
+            }
 
-        // TODO: set icon according to whether or not org is already subscribed to
-        // button.setImageDrawable();
-
-        button.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(final View view) {
-                  // toggle image and the org's subscription state (which updates the entry in the Repo)
-
-                  //set button as "clicked"
-                  if( ((Boolean) button.getTag())==false ){
-                      // TODO: add dialog box with option of subscribing to meetings
-                      // https://developer.android.com/guide/topics/ui/dialogs.html
-                      String options[] = {"Main Events", "Meetings"};
-                      boolean checkedValues[] = {true, true};
-
-                      final ArrayList mSelectedItems = new ArrayList();
-                      mSelectedItems.add(0);
-                      mSelectedItems.add(1);
-
-                      //What OrgName events would you like to follow?
-                      //Follow OrgName events
-                      AlertDialog.Builder dialogAlert  = new AlertDialog.Builder(getContext());
-                      dialogAlert.setTitle("Receive notifications for " + organization.getName())
-                              .setCancelable(true)
-                              .setMultiChoiceItems(options, checkedValues,
-                                      new DialogInterface.OnMultiChoiceClickListener() {
-                                          @Override
-                                          public void onClick(DialogInterface dialog, int which,
-                                                              boolean isChecked) {
-                                              if (isChecked) {
-                                                  // If the user checked the item, add it to the selected items
-                                                  mSelectedItems.add(which);
-                                              } else if (mSelectedItems.contains(which)) {
-                                                  // Else, if the item is already in the array, remove it
-                                                  mSelectedItems.remove(Integer.valueOf(which));
-                                              }
-                                          }
-                                      })
-                              .setPositiveButton("Ok",
-                                  new DialogInterface.OnClickListener(){
-                                      public void onClick(DialogInterface dialog, int which) {
-                                          //dismiss the dialog
-                                          if (!mSelectedItems.isEmpty())
-                                          {
-                                              button.setImageResource(R.drawable.ic_favorite);
-                                              button.setTag(new Boolean(true));
-                                              Snackbar.make(view, "Subscribed to " + organization.getName(), Snackbar.LENGTH_LONG)
-                                                      .setAction("Action", null).show();
-                                          }
-                                          else {
-                                              Snackbar.make(view, "Action cancelled.", Snackbar.LENGTH_LONG)
-                                                      .setAction("Action", null).show();
-                                          }
-                                      }
-                                  })
-                              .setNegativeButton("Cancel",
-                                      new DialogInterface.OnClickListener(){
-                                          public void onClick(DialogInterface dialog, int which) {
-                                              //dismiss the dialog
-                                          }
-                                      })
-                              .create()
-                              .show();
-                  }
-
-                  //"unclick" button, undo changes
-                  else {
-                      Snackbar.make(view, "Unsubscribed from " + organization.getName(), Snackbar.LENGTH_LONG)
-                              .setAction("Action", null).show();
-                      button.setImageResource(R.drawable.ic_favorite_border);
-                      button.setTag(new Boolean(false));
-                  }
-              }
-          });
+            @Override
+            protected void unsubscribe(View view) {
+                super.unsubscribe(view);
+                notifyItemChanged(viewHolder.getAdapterPosition());
+            }
+        });
     }
 
     @Override
