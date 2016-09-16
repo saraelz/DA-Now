@@ -25,6 +25,11 @@ public abstract class Callback<ArgumentT> implements Runnable {
         }
     }
 
+    public final void run(ArgumentT data) {
+        setArgument(data);
+        run();
+    }
+
     protected abstract void call(ArgumentT data);
 
 }

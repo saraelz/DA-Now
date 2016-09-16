@@ -78,8 +78,7 @@ public class Event implements Serializable {
                     @Override
                     protected void call(Organization data) {
                         organizations.add(data);
-                        callback.setArgument(data);
-                        callback.run();
+                        callback.run(data);
                     }
                 });
             }

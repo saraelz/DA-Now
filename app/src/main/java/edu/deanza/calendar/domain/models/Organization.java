@@ -74,8 +74,7 @@ public class Organization implements Serializable {
                 @Override
                 protected void call(Event data) {
                     events.add(data);
-                    callback.setArgument(data);
-                    callback.run();
+                    callback.run(data);
                 }
             });
         }
