@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.deanza.calendar.domain.OrganizationRepository;
+import edu.deanza.calendar.domain.Subscribable;
 import edu.deanza.calendar.util.Callback;
 
 /**
  * Created by Sara on 5/28/2016.
  */
 
-public class Event implements Serializable {
+public class Event implements Subscribable, Serializable {
 
     protected final String name;
     protected final String description;
@@ -99,14 +100,17 @@ public class Event implements Serializable {
         return end;
     }
 
+    @Override
     public Subscription getSubscription() {
         return subscription;
     }
 
+    @Override
     public void subscribe(Subscription subscription) {
         this.subscription = subscription;
     }
 
+    @Override
     public void unsubscribe() {
         this.subscription = null;
     }
@@ -115,4 +119,28 @@ public class Event implements Serializable {
         return start.toString(ISODateTimeFormat.yearMonthDay()) + '|' + name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Event event = (Event) o;
+
+        if (!name.equals(event.name)) {
+            return false;
+        }
+        return start.equals(event.start);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + start.hashCode();
+        return result;
+    }
 }

@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.activities.EventCards;
 
 public class EventsDisplay extends AppCompatActivity {
 
@@ -18,14 +17,12 @@ public class EventsDisplay extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
 
+        // TODO: Give UID to cards fragment
         if (fragment == null) {
             fragment = new EventCards();
-            ;
             fm.beginTransaction()
                     .add(R.id.fragmentContainer, fragment)
                     .commit();
-
-
         }
     }
 }

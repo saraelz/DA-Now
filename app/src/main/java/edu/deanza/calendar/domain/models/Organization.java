@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.deanza.calendar.domain.EventRepository;
+import edu.deanza.calendar.domain.Subscribable;
 import edu.deanza.calendar.util.Callback;
 
 /**
  * Created by soso1 on 8/8/2016.
  */
 
-public class Organization implements Serializable {
+public class Organization implements Subscribable, Serializable {
 
     protected final String name;
     protected final String description;
@@ -86,16 +87,28 @@ public class Organization implements Serializable {
         }
     }
 
+    @Override
     public OrganizationSubscription getSubscription() {
         return subscription;
+    }
+
+    @Override
+    public void subscribe(Subscription subscription) {
+        subscribe((OrganizationSubscription) subscription);
     }
 
     public void subscribe(OrganizationSubscription subscription) {
         this.subscription = subscription;
     }
 
+    @Override
     public void unsubscribe() {
         this.subscription = null;
+    }
+
+    @Override
+    public String getKey() {
+        return name;
     }
 
     @Override

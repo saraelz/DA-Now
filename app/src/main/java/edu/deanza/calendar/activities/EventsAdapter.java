@@ -1,98 +1,59 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import edu.deanza.calendar.R;
+import edu.deanza.calendar.OnClickSubscribeTimeDialog;
+import edu.deanza.calendar.SubscribeOnClickListener;
+import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
 
-public class EventsAdapter
-        extends RecyclerView.Adapter<EventsAdapter.EventItemViewHolder> {
+public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.EventItemViewHolder> {
 
-    private Context context;
-    private static ClickListener clickListener;
-    public List<Event> events = new ArrayList<Event>();
-
-    public Context getContext() {
-        return context;
+    public EventsAdapter(Context context, List<Event> subscribables, SubscriptionDao subscriptionDao) {
+        super(context, subscribables, subscriptionDao);
     }
 
+    private static ClickListener clickListener;
 
-    public static class EventItemViewHolder
-            extends RecyclerView.ViewHolder
-            implements View.OnClickListener{
+    public interface ClickListener {
+        void onItemClick(Event clickedEvent);
+    }
+
+    public void setOnItemClickListener(ClickListener listener) {
+        clickListener = listener;
+    }
+
+    public static class EventItemViewHolder extends SubscribableAdapter.SubscribableItemViewHolder {
 
         private TextView eventName;
         private TextView eventTime;
         private TextView eventDayOfMonth;
         private TextView eventWeekday;
-        private ImageButton subscribeButton;
 
         public EventItemViewHolder(View containingItem) {
             super(containingItem);
-
-            //initialize textviews
             eventName = (TextView) containingItem.findViewById(R.id.event_name);
             eventTime = (TextView) containingItem.findViewById(R.id.event_time);
             eventDayOfMonth = (TextView) containingItem.findViewById(R.id.event_dom);
             eventWeekday = (TextView) containingItem.findViewById(R.id.event_weekday);
-
-            //initialize subscribe button
-            subscribeButton = (ImageButton) containingItem.findViewById(R.id.item_event_subscribe);
-            containingItem.setOnClickListener(this);
-            subscribeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // TODO: subscribe, and delegate that handler to this Adapter's containing Activity/Fragment
-                    Log.i("OrgItem/subscribeButton", "subscribed to some Event");
-                    clickListener.onItemClick(getAdapterPosition(), view);
-                }
-            });
         }
 
         @Override
-        public void onClick(View v) {
-            // TODO: switch activities/fragments to the EventInfoPage, and delegate that handler
-            Log.i("OrgItem", "*switch to some EventInfoPage now*");
-            clickListener.onItemClick(getAdapterPosition(), v);
+        int subscribeButtonId() {
+            return R.id.item_event_subscribe;
         }
-    }
-
-    public void setOnItemClickListener(ClickListener clickListener) {
-        this.clickListener = clickListener;
-    }
-
-    public interface ClickListener {
-        void onItemClick(int position, View v);
-        //void onItemLongClick(int position, View v);
-    }
-
-    public EventsAdapter(Context context, List<Event> events) {
-        this.context = context;
-        this.events = events;
-    }
-
-    public void repopulate(List<Event> events) {
-        this.events.clear();
-        this.events.addAll(events);
-        notifyDataSetChanged();
     }
 
     @Override
@@ -107,10 +68,10 @@ public class EventsAdapter
 
     @Override
     public void onBindViewHolder(EventItemViewHolder viewHolder, int position) {
-        //grab this event and most recent event
-        final Event event = events.get(position);
+        super.onBindViewHolder(viewHolder, position);
 
-        //set name viewholder
+        final Event event = subscribables.get(position);
+
         viewHolder.eventName.setText(event.getName());
 
         DateTime startDate = event.getStart();
@@ -118,7 +79,6 @@ public class EventsAdapter
         DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("h:mm aa");
         viewHolder.eventTime.setText(timeFormatter.print(startDate) + " - " + timeFormatter.print(endDate));
 
-        //set date viewholders
         viewHolder.eventDayOfMonth.setText(String.valueOf(startDate.getDayOfMonth()));
 
         DateTimeFormatter weekdayFormatter = DateTimeFormat.forPattern("EEE");
@@ -134,66 +94,42 @@ public class EventsAdapter
             }
         }*/
 
-        //Initialize button
-        final ImageButton button = viewHolder.subscribeButton;
-        Boolean clicked; // keeps track of state of button
-        clicked = new Boolean(false); //change later to pull this value from personal user data in Firebase
-        button.setTag(clicked); // setting to false - wasn't clicked
+    }
 
-        // TODO: set icon according to whether or not org is already subscribed to
-        // button.setImageDrawable();
-
-        button.setOnClickListener(new View.OnClickListener() {
+    @Override
+    SubscribeOnClickListener getSubscribeOnClickListener(final EventItemViewHolder viewHolder,
+                                                         final Event event) {
+        return new OnClickSubscribeTimeDialog(context, event, subscriptionDao) {
             @Override
-            public void onClick(final View view) {
-
-                // toggle image and the org's subscription state (which updates the entry in the Repo)
-                //set button as "clicked"
-                if (((Boolean) button.getTag()) == false) {
-                    final String options[] = {"10 minutes before", "15 minutes before", "30 minutes before", "60 minutes before", "Cancel"};
-
-                    AlertDialog.Builder dialogAlert  = new AlertDialog.Builder(getContext());
-                    dialogAlert.setTitle("Would you like a reminder?")
-                            .setCancelable(true)
-                            .setItems(options, new DialogInterface.OnClickListener(){
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            //TODO: save preferences in Firebase
-                                            button.setImageResource(R.drawable.ic_favorite);
-                                            button.setTag(new Boolean(true));
-                                            if (i != 4)//options.length()-1)
-                                            {
-                                                Snackbar.make(view, "Added " + event.getName() + " to calendar", Snackbar.LENGTH_LONG)
-                                                        .setAction("Action", null).show();
-                                            }
-                                            else{
-                                                Snackbar.make(view, "Action cancelled.", Snackbar.LENGTH_LONG)
-                                                        .setAction("Action", null).show();
-                                            }
-                                        }
-                                    })
-                            .create()
-                            .show();
-                }
-
-                //"unclick" button, undo changes
-                else {
-                    button.setImageResource(R.drawable.ic_favorite_border);
-                    button.setTag(new Boolean(false));
-                    Snackbar.make(view, "Removed " + event.getName() + " from calendar", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
+            protected void postSubscribe() {
+                super.postSubscribe();
+                notifyItemChanged(viewHolder.getAdapterPosition());
+                Snackbar.make(viewHolder.itemView,
+                        "Subscribed to " + event.getName(),
+                        Snackbar.LENGTH_LONG)
+                        .show();
             }
-        });
-    }
 
-    @Override
-    public int getItemCount() {
-        return events.size();
-    }
+            @Override
+            protected void postUnsubscribe() {
+                super.postUnsubscribe();
+                notifyItemChanged(viewHolder.getAdapterPosition());
+                Snackbar.make(
+                        viewHolder.itemView,
+                        "Unsubscribed from " + event.getName(),
+                        Snackbar.LENGTH_LONG)
+                        .show();
+            }
 
-    @Override
-    public long getItemId(int position) {
-        return (long) events.get(position).hashCode();
+            @Override
+            protected void onCancel() {
+                super.onCancel();
+                Snackbar.make(
+                        viewHolder.itemView,
+                        "Action cancelled.",
+                        Snackbar.LENGTH_LONG)
+                        .show();
+            }
+        };
     }
 }

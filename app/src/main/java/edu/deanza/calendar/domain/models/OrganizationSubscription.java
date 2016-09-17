@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 public class OrganizationSubscription extends Subscription implements Serializable {
 
-    private boolean notifyMeetings;
+    private final boolean notifyMeetings;
 
     public OrganizationSubscription(String key, long notifyBefore, TimeUnit timeUnit, boolean notifyMeetings) {
         super(key, notifyBefore, timeUnit);
@@ -20,8 +20,24 @@ public class OrganizationSubscription extends Subscription implements Serializab
         return notifyMeetings;
     }
 
-    public void setNotifyMeetings(boolean notifyMeetings) {
-        this.notifyMeetings = notifyMeetings;
+    public static class Builder extends Subscription.Builder {
+
+        private boolean notifyMeetingsPiece;
+
+        public Subscription.Builder notifyMeetings(boolean notifyMeetings) {
+            this.notifyMeetingsPiece = notifyMeetings;
+            return this;
+        }
+
+        @Override
+        public OrganizationSubscription build() {
+            return new OrganizationSubscription(
+                    keyPiece,
+                    notifyBeforePiece,
+                    timeUnitPiece,
+                    notifyMeetingsPiece
+            );
+        }
     }
 
 }
