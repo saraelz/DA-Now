@@ -1,6 +1,7 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import edu.deanza.calendar.OrganizationSubscribeOnClickListener;
+import edu.deanza.calendar.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.SubscribeOnClickListener;
 import edu.deanza.calendar.dal.SubscriptionDao;
@@ -77,17 +78,36 @@ public class OrganizationsAdapter
     @Override
     SubscribeOnClickListener getSubscribeOnClickListener(final OrganizationItemViewHolder viewHolder,
                                                          final Organization organization) {
-        return new OrganizationSubscribeOnClickListener(context, organization, subscriptionDao) {
+        return new OnClickOrganizationSubscribeDialog(context, organization, subscriptionDao) {
             @Override
-            protected void subscribe(boolean withMeetings, View view) {
-                super.subscribe(withMeetings, view);
+            protected void postSubscribe() {
+                super.postSubscribe();
                 notifyItemChanged(viewHolder.getAdapterPosition());
+                Snackbar.make(viewHolder.itemView,
+                        "Subscribed to " + organization.getName(),
+                        Snackbar.LENGTH_LONG)
+                        .show();
             }
 
             @Override
-            protected void unsubscribe(View view) {
-                super.unsubscribe(view);
+            protected void postUnsubscribe() {
+                super.postUnsubscribe();
                 notifyItemChanged(viewHolder.getAdapterPosition());
+                Snackbar.make(
+                        viewHolder.itemView,
+                        "Unsubscribed from " + organization.getName(),
+                        Snackbar.LENGTH_LONG)
+                        .show();
+            }
+
+            @Override
+            protected void onCancel() {
+                super.onCancel();
+                Snackbar.make(
+                        viewHolder.itemView,
+                        "Action cancelled.",
+                        Snackbar.LENGTH_LONG)
+                        .show();
             }
         };
     }

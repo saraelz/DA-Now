@@ -6,7 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import edu.deanza.calendar.OrganizationSubscribeOnClickListener;
+import edu.deanza.calendar.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.dal.SubscriptionDao;
@@ -37,7 +37,7 @@ public class OrganizationInfo extends AppCompatActivity {
         else {
             subscribeButton.setImageResource(R.drawable.ic_favorite);
         }
-        subscribeButton.setOnClickListener(new OrganizationSubscribeOnClickListener(this, organization, subscriptionDao));
+        subscribeButton.setOnClickListener(new OnClickOrganizationSubscribeDialog(this, organization, subscriptionDao));
 
     }
 }
