@@ -13,28 +13,34 @@ public abstract class OnClickMultiChoiceDialog implements View.OnClickListener {
 
     protected final Context context;
 
-    protected abstract String[] options();
-    protected abstract boolean[] defaultOptionStates();
+    protected abstract String[] getOptions();
+    protected abstract boolean[] getDefaultOptionStates();
     private boolean optionStates[];
 
-    protected abstract String dialogTitle();
-    protected abstract void onClickedOkWithSelection(View view);
-    protected abstract void onClickedOkWithoutSelection(View view);
+    protected abstract String getDialogTitle();
+    protected abstract void onClickedOkWithSelection();
+    protected abstract void onClickedOkWithoutSelection();
+    protected abstract void onCancel();
 
     public OnClickMultiChoiceDialog(Context context) {
         this.context = context;
-        optionStates = defaultOptionStates().clone();
+        optionStates = getDefaultOptionStates().clone();
+    }
+
+    protected boolean[] getOptionStates() {
+        return optionStates;
     }
 
     @Override
     public void onClick(final View view) {
-        boolean defaultOptionStates[] = defaultOptionStates();
+        boolean defaultOptionStates[] = getDefaultOptionStates();
 
+        final OnClickMultiChoiceDialog us = this;
         AlertDialog.Builder dialogAlert  = new AlertDialog.Builder(context);
         dialogAlert
-                .setTitle(dialogTitle())
+                .setTitle(getDialogTitle())
                 .setCancelable(true)
-                .setMultiChoiceItems(options(), defaultOptionStates,
+                .setMultiChoiceItems(getOptions(), defaultOptionStates,
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int clickedOption,
@@ -59,25 +65,26 @@ public abstract class OnClickMultiChoiceDialog implements View.OnClickListener {
                                     }
                                 }
                                 if (nothingSelected) {
-                                    onClickedOkWithoutSelection(view);
+                                    onClickedOkWithoutSelection();
                                 }
                                 else {
-                                    onClickedOkWithSelection(view);
+                                    onClickedOkWithSelection();
                                 }
                             }
                         })
                 .setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener(){
                             public void onClick(DialogInterface dialog, int which) {
-                                // Dismiss the dialog
+                                onCancel();
                             }
                         })
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+                        us.onCancel();
+                    }
+                })
                 .create()
                 .show();
     }
-
-    protected boolean[] getOptionStates() {
-        return optionStates;
-    }
-
 }

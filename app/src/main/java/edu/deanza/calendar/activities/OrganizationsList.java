@@ -6,17 +6,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-
-import java.util.ArrayList;
 import android.util.Log;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
+import edu.deanza.calendar.DividerItemDecoration;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseOrganizationRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
@@ -25,6 +24,7 @@ import edu.deanza.calendar.domain.OrganizationRepository;
 import edu.deanza.calendar.domain.models.Organization;
 import edu.deanza.calendar.domain.models.Subscription;
 import edu.deanza.calendar.util.Callback;
+import edu.deanza.calendar.util.UidGenerator;
 
 public class OrganizationsList extends AppCompatActivity {
 
@@ -41,7 +41,8 @@ public class OrganizationsList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizations_list);
 
-        final String UID = new UidGenerator().generate();
+        final Context context = this;
+        final String UID = new UidGenerator(context, THIS_TAG).generate();
         subscriptionDao = new FirebaseSubscriptionDao(UID);
         subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
             @Override
@@ -56,8 +57,8 @@ public class OrganizationsList extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
+        //recyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
 
-        final Context context = this;
         adapter = new OrganizationsAdapter(context, new ArrayList<Organization>(), subscriptionDao);
         adapter.setHasStableIds(true);
         adapter.setOnItemClickListener(new OrganizationsAdapter.ClickListener() {
@@ -78,55 +79,6 @@ public class OrganizationsList extends AppCompatActivity {
             }
         });
 
-    }
-
-    private class UidGenerator {
-
-        String UID_FILENAME = "UID";
-        String uid = UUID.randomUUID().toString();
-
-        public String generate() {
-            String uid;
-            boolean uidExists = getBaseContext()
-                    .getFileStreamPath(UID_FILENAME)
-                    .exists();
-            if (!uidExists) {
-                uid = saveUidToFile();
-            }
-            else {
-                uid = readUidFromFile();
-            }
-            return uid;
-        }
-
-        private String saveUidToFile() {
-            try (FileOutputStream fos = openFileOutput(UID_FILENAME, Context.MODE_PRIVATE)) {
-                fos.write(uid.getBytes());
-            }
-            catch (IOException ex) {
-                // TODO: Show dialog box?
-                Log.wtf(THIS_TAG, "Writing the UID to file failed, skipping! This session's" +
-                        "subscriptions will be lost on app exit", ex);
-                return uid;
-            }
-            return uid;
-        }
-
-        private String readUidFromFile() {
-            try (FileInputStream fis = openFileInput(UID_FILENAME)) {
-                StringBuilder builder = new StringBuilder();
-                int charCode;
-                while ((charCode = fis.read()) != -1) {
-                    builder.append((char) charCode);
-                }
-                uid = builder.toString();
-            }
-            catch (IOException ex) {
-                Log.wtf(THIS_TAG, "Reading the UID file failed, creating a new one", ex);
-                return saveUidToFile();
-            }
-            return uid;
-        }
     }
 
 }

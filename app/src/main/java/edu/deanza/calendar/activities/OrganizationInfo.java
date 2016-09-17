@@ -2,14 +2,11 @@ package edu.deanza.calendar.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
-import edu.deanza.calendar.OrganizationSubscribeOnClickListener;
+import edu.deanza.calendar.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.dal.SubscriptionDao;
@@ -32,8 +29,6 @@ public class OrganizationInfo extends AppCompatActivity {
         subscriptionDao = new FirebaseSubscriptionDao(intent.getStringExtra("UID"));
 
         setTitle(organization.getName());
-        TextView descriptionView = (TextView) findViewById(R.id.organization_description);
-        descriptionView.setText(organization.getDescription());
 
         FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
         if (organization.getSubscription() == null) {
@@ -42,6 +37,8 @@ public class OrganizationInfo extends AppCompatActivity {
         else {
             subscribeButton.setImageResource(R.drawable.ic_favorite);
         }
-        subscribeButton.setOnClickListener(new OrganizationSubscribeOnClickListener(this, organization, subscriptionDao));
+        subscribeButton.setOnClickListener(new OnClickOrganizationSubscribeDialog(this, organization, subscriptionDao));
+
     }
 }
+

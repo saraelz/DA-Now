@@ -1,129 +1,135 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
 
 import edu.deanza.calendar.R;
+import edu.deanza.calendar.OnClickSubscribeTimeDialog;
+import edu.deanza.calendar.SubscribeOnClickListener;
+import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
 
-// Create the basic adapter extending from RecyclerView.Adapter
-// Note that we specify the custom ViewHolder which gives us access to our views
-public class EventsAdapter extends
-        RecyclerView.Adapter<EventsAdapter.ViewHolder> {
+public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.EventItemViewHolder> {
 
-    // Provide a direct reference to each of the views within a data item
-    // Used to cache the views within the item layout for fast access
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        // Your holder should contain a member variable
-        // for any view that will be set as you render a row
-        public TextView nameTextView;
-        public ImageButton favoriteButton;
+    public EventsAdapter(Context context, List<Event> subscribables, SubscriptionDao subscriptionDao) {
+        super(context, subscribables, subscriptionDao);
+    }
 
-        // We also create a constructor that accepts the entire item row
-        // and does the view lookups to find each subview
-        public ViewHolder(View itemView) {
-            // Stores the itemView in a public final member variable that can be used
-            // to access the context from any ViewHolder instance.
-            super(itemView);
+    private static ClickListener clickListener;
 
-            nameTextView = (TextView) itemView.findViewById(R.id.event_name);
-            favoriteButton = (ImageButton) itemView.findViewById(R.id.favorite_button);
+    public interface ClickListener {
+        void onItemClick(Event clickedEvent);
+    }
+
+    public void setOnItemClickListener(ClickListener listener) {
+        clickListener = listener;
+    }
+
+    public static class EventItemViewHolder extends SubscribableAdapter.SubscribableItemViewHolder {
+
+        private TextView eventName;
+        private TextView eventTime;
+        private TextView eventDayOfMonth;
+        private TextView eventWeekday;
+
+        public EventItemViewHolder(View containingItem) {
+            super(containingItem);
+            eventName = (TextView) containingItem.findViewById(R.id.event_name);
+            eventTime = (TextView) containingItem.findViewById(R.id.event_time);
+            eventDayOfMonth = (TextView) containingItem.findViewById(R.id.event_dom);
+            eventWeekday = (TextView) containingItem.findViewById(R.id.event_weekday);
         }
 
+        @Override
+        int subscribeButtonId() {
+            return R.id.item_event_subscribe;
+        }
     }
 
-    //constructor & member variables
-
-    // Store a member variable for the Events
-    private List<Event> mEvents;
-    // Store the context for easy access
-    private Context mContext;
-
-    // Pass in the Event array into the constructor
-    public EventsAdapter(Context context, List<Event> events) {
-        mEvents = events;
-        mContext = context;
-    }
-
-    // Easy access to the context object in the recyclerview
-    private Context getContext() {
-        return mContext;
-    }
-    
-    // Usually involves inflating a layout from XML and returning the holder
     @Override
-    public EventsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+    public EventItemViewHolder onCreateViewHolder(ViewGroup eventList, int viewType) {
+        View eventItem = LayoutInflater
+                .from(eventList.getContext())
+                .inflate(R.layout.item_card_event, eventList, false);
 
-        // Inflate the custom layout
-        View eventView = inflater.inflate(R.layout.item_event, parent, false);
-
-        // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(eventView);
-        return viewHolder;
-    }
-
-    // Involves populating data into the item through holder
-    @Override
-    public void onBindViewHolder(EventsAdapter.ViewHolder viewHolder, int position) {
-         // Get the data model based on position
-        final Event event = mEvents.get(position);
-
-        // Set item views based on your views and data model
-        TextView textView = viewHolder.nameTextView;
-        textView.setText(event.getName());
-
-        /*//Initialize button
-        final ImageButton button = viewHolder.favoriteButton;
-        Boolean clicked; // keeps track of state of button
-        clicked = new Boolean(false); //change later to pull this value from personal user data in Firebase
-        button.setTag(clicked); // setting to false - wasn't clicked
-
-        button.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        Toast.makeText(getContext(), //try getApplicationContext()
-                                event.getName() + " has been clicked!", Toast.LENGTH_SHORT).show();
-
-                        //set button as "clicked"
-                        if( ((Boolean) button.getTag())==false ){
-                            button.setImageResource(R.drawable.ic_favorite);
-                            button.setTag(new Boolean(true));
-
-                            if(event.getEnd().isBeforeNow())
-                            {
-                                Toast.makeText(getContext(), //try getApplicationContext()
-                                        "This event has passed.", Toast.LENGTH_SHORT).show();
-                            }
-                            // 2do: add dialog boxes
-                            // https://developer.android.com/guide/topics/ui/dialogs.html
-                        }
-
-                        //"unclick" button, undo changes
-                        else {
-                            button.setImageResource(R.drawable.ic_favorite_border);
-                            button.setTag(new Boolean(false));
-                        }
-                    }});*/
-
-
+        return new EventItemViewHolder(eventItem);
     }
 
 
-
-    // Returns the total count of items in the list
     @Override
-    public int getItemCount() {
-        return mEvents.size();
+    public void onBindViewHolder(EventItemViewHolder viewHolder, int position) {
+        super.onBindViewHolder(viewHolder, position);
+
+        final Event event = subscribables.get(position);
+
+        viewHolder.eventName.setText(event.getName());
+
+        DateTime startDate = event.getStart();
+        DateTime endDate = event.getEnd();
+        DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("h:mm aa");
+        viewHolder.eventTime.setText(timeFormatter.print(startDate) + " - " + timeFormatter.print(endDate));
+
+        viewHolder.eventDayOfMonth.setText(String.valueOf(startDate.getDayOfMonth()));
+
+        DateTimeFormatter weekdayFormatter = DateTimeFormat.forPattern("EEE");
+        viewHolder.eventWeekday.setText(weekdayFormatter.print(startDate));
+
+        /*if(position > 0 && position <= events.size()){
+            Event previousEvent = events.get(position-1); // gives error
+            //if previous event has same date, initialize string to empty
+            //if previous event has different month, start a new section
+            if (previousEvent.getStart().toDate() == event.getStart().toDate()){
+                viewHolder.eventDayOfMonth.setText("");
+                viewHolder.eventWeekday.setText("");
+            }
+        }*/
+
+    }
+
+    @Override
+    SubscribeOnClickListener getSubscribeOnClickListener(final EventItemViewHolder viewHolder,
+                                                         final Event event) {
+        return new OnClickSubscribeTimeDialog(context, event, subscriptionDao) {
+            @Override
+            protected void postSubscribe() {
+                super.postSubscribe();
+                notifyItemChanged(viewHolder.getAdapterPosition());
+                Snackbar.make(viewHolder.itemView,
+                        "Subscribed to " + event.getName(),
+                        Snackbar.LENGTH_LONG)
+                        .show();
+            }
+
+            @Override
+            protected void postUnsubscribe() {
+                super.postUnsubscribe();
+                notifyItemChanged(viewHolder.getAdapterPosition());
+                Snackbar.make(
+                        viewHolder.itemView,
+                        "Unsubscribed from " + event.getName(),
+                        Snackbar.LENGTH_LONG)
+                        .show();
+            }
+
+            @Override
+            protected void onCancel() {
+                super.onCancel();
+                Snackbar.make(
+                        viewHolder.itemView,
+                        "Action cancelled.",
+                        Snackbar.LENGTH_LONG)
+                        .show();
+            }
+        };
     }
 }
