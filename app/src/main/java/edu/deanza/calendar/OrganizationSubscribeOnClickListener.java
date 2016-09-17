@@ -16,7 +16,8 @@ import edu.deanza.calendar.util.OnClickMultiChoiceDialog;
  * Created by karinaantonio on 9/15/16.
  */
 
-public class OrganizationSubscribeOnClickListener extends OnClickMultiChoiceDialog {
+public class OrganizationSubscribeOnClickListener extends OnClickMultiChoiceDialog
+        implements SubscribeOnClickListener {
 
     private final Organization organization;
     private final SubscriptionDao subscriptionDao;
