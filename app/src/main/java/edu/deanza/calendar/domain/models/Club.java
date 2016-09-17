@@ -6,8 +6,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import edu.deanza.calendar.domain.EventRepository;
+import edu.deanza.calendar.domain.Subscribable;
 
-public class IccClub extends Organization implements Serializable {
+public class Club extends Organization implements Subscribable, Serializable {
 
     private final List<Day> meetingDays;
 
