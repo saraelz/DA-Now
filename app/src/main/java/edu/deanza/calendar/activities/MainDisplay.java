@@ -62,15 +62,6 @@ public class MainDisplay extends AppCompatActivity {
         return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-        //return super.onCreateOptionsMenu(menu);
-    }
-
 
 
     @Override
