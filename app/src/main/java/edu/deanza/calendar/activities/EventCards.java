@@ -6,26 +6,19 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.joda.time.DateTime;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseEventRepository;
-import edu.deanza.calendar.dal.FirebaseOrganizationRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.EventRepository;
-import edu.deanza.calendar.domain.OrganizationRepository;
 import edu.deanza.calendar.domain.models.Event;
 import edu.deanza.calendar.domain.models.Subscription;
 import edu.deanza.calendar.util.Callback;
@@ -62,7 +55,7 @@ public class EventCards extends Fragment {
             }
         });
 
-        View view = inflater.inflate(R.layout.fragment_card, container, false);
+        View view = inflater.inflate(R.layout.fragment_event_cards, container, false);
         cardView = (RecyclerView) view.findViewById(R.id.cardView);
         cardView.setHasFixedSize(true);
 
@@ -94,4 +87,5 @@ public class EventCards extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
+
 }

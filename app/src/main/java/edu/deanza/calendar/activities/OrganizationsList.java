@@ -3,17 +3,16 @@ package edu.deanza.calendar.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.UUID;
 
 import edu.deanza.calendar.DividerItemDecoration;
 import edu.deanza.calendar.R;
@@ -26,7 +25,7 @@ import edu.deanza.calendar.domain.models.Subscription;
 import edu.deanza.calendar.util.Callback;
 import edu.deanza.calendar.util.UidGenerator;
 
-public class OrganizationsList extends AppCompatActivity {
+public class OrganizationsList extends Fragment {
 
     private OrganizationRepository repository = new FirebaseOrganizationRepository();
     private SubscriptionDao subscriptionDao;
@@ -37,11 +36,16 @@ public class OrganizationsList extends AppCompatActivity {
     private static final String THIS_TAG = OrganizationsList.class.getName();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_organizations_list);
+        getActivity().setTitle("Organizations");
+    }
 
-        final Context context = this;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        final Context context = getContext();
         final String UID = new UidGenerator(context, THIS_TAG).generate();
         subscriptionDao = new FirebaseSubscriptionDao(UID);
         subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
@@ -51,10 +55,12 @@ public class OrganizationsList extends AppCompatActivity {
             }
         });
 
-        recyclerView = (RecyclerView) findViewById(R.id.organization_recycler_view);
+        //setContentView(R.layout.fragment_organizations_list);
+        View view = inflater.inflate(R.layout.fragment_organizations_list, container, false);
+        recyclerView = (RecyclerView) view.findViewById(R.id.organization_recycler_view);
         recyclerView.setHasFixedSize(true);
 
-        layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         //recyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
@@ -71,6 +77,7 @@ public class OrganizationsList extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
 
         repository.all(new Callback<Organization>() {
             @Override
@@ -79,6 +86,12 @@ public class OrganizationsList extends AppCompatActivity {
             }
         });
 
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
 }
