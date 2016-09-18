@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.deanza.calendar.domain.Interval;
 import edu.deanza.calendar.domain.OrganizationRepository;
 import edu.deanza.calendar.domain.Subscribable;
 import edu.deanza.calendar.util.Callback;
@@ -15,7 +16,7 @@ import edu.deanza.calendar.util.Callback;
  * Created by Sara on 5/28/2016.
  */
 
-public class Event implements Subscribable, Serializable {
+public class Event implements Interval, Subscribable, Serializable {
 
     protected final String name;
     protected final String description;
@@ -92,10 +93,12 @@ public class Event implements Subscribable, Serializable {
         }
     }
 
+    @Override
     public DateTime getStart() {
         return start;
     }
 
+    @Override
     public DateTime getEnd() {
         return end;
     }
@@ -115,6 +118,7 @@ public class Event implements Subscribable, Serializable {
         this.subscription = null;
     }
 
+    @Override
     public String getKey() {
         return start.toString(ISODateTimeFormat.yearMonthDay()) + '|' + name;
     }

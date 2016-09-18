@@ -1,6 +1,8 @@
 package edu.deanza.calendar.dal;
 
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,14 +33,22 @@ class OrganizationMapper implements DataMapper<Organization>, Serializable {
         String facebookUrl = (String) rawOrganization.get("facebookUrl");
 
         List<String> rawMeetings = (List<String>) rawOrganization.get("meetings");
-        List<Interval> meetings = new ArrayList<>();
+        List<Organization.Meeting> meetings = new ArrayList<>();
         if (rawMeetings != null) {
             for (String s : rawMeetings) {
+                Interval interval;
                 try {
-                    meetings.add(Interval.parse(s));
+                    interval = Interval.parse(s);
                 } catch (IllegalArgumentException e) {
                     continue;
                 }
+
+                DateTime start = interval.getStart();
+                DateTime end = interval.getEnd();
+                String key = start.toString(ISODateTimeFormat.yearMonthDay()) + '|' + name;
+
+                Organization.Meeting meeting = new Organization.Meeting(key, start, end);
+                meetings.add(meeting);
             }
         }
 
