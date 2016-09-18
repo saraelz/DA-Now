@@ -9,8 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -82,6 +84,11 @@ public class EventCards extends Fragment {
             protected void call(Event data) {
                 adapter.add(data);
             }
+        });        repository.all(new Callback<Event>() {
+            @Override
+            protected void call(Event data) {
+                adapter.add(data);
+            }
         });
 
         return view;
@@ -96,8 +103,24 @@ public class EventCards extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.calendar_toolbar_menu, menu);
+        inflater.inflate(R.menu.events_toolbar_menu, menu);
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                //Toast.makeText(getContext(), "Home button pressed", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.menu_today:
+                //scroll to today's event or closest upcoming event
+                int today = adapter.getTodayPosition();
+                if (today != -1)
+                    layoutManager.scrollToPositionWithOffset(today, 20);
+                else
+                    Toast.makeText(getContext(), "No upcoming events.", Toast.LENGTH_LONG).show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
