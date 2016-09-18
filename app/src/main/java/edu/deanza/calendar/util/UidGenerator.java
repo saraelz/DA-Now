@@ -42,6 +42,7 @@ public class UidGenerator {
     }
 
     private String saveUidToFile() {
+        uid = UUID.randomUUID().toString();
         try (FileOutputStream fos = context.openFileOutput(UID_FILENAME, Context.MODE_PRIVATE)) {
             fos.write(uid.getBytes());
         }
