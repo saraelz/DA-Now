@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.Date;
 import java.util.List;
 
 import edu.deanza.calendar.R;
@@ -21,8 +22,15 @@ import edu.deanza.calendar.domain.models.Event;
 
 public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.EventItemViewHolder> {
 
+    private int todayPosition;
+
     public EventsAdapter(Context context, List<Event> subscribables, SubscriptionDao subscriptionDao) {
         super(context, subscribables, subscriptionDao);
+        todayPosition = -1;
+    }
+
+    public int getTodayPosition() {
+        return  todayPosition;
     }
 
     private static ClickListener clickListener;
@@ -78,6 +86,14 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
         DateTime endDate = event.getEnd();
         DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("h:mm aa");
         viewHolder.eventTime.setText(timeFormatter.print(startDate) + " - " + timeFormatter.print(endDate));
+
+        Date today = new Date();
+        if (startDate.toDate().equals(today)){
+            todayPosition = position;
+        }
+        else if (startDate.toDate().after(today) && todayPosition == -1) {
+            todayPosition = position;
+        }
 
         viewHolder.eventDayOfMonth.setText(String.valueOf(startDate.getDayOfMonth()));
 

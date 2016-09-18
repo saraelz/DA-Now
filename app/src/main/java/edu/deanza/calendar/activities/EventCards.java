@@ -6,26 +6,22 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import org.joda.time.DateTime;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseEventRepository;
-import edu.deanza.calendar.dal.FirebaseOrganizationRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.EventRepository;
-import edu.deanza.calendar.domain.OrganizationRepository;
 import edu.deanza.calendar.domain.models.Event;
 import edu.deanza.calendar.domain.models.Subscription;
 import edu.deanza.calendar.util.Callback;
@@ -51,6 +47,9 @@ public class EventCards extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //set toolbar icons
+        setHasOptionsMenu(true);
+
         // TODO: Give UID to cards fragment
         final Context context = getContext();
         final String UID = new UidGenerator(context, THIS_TAG).generate();
@@ -62,7 +61,7 @@ public class EventCards extends Fragment {
             }
         });
 
-        View view = inflater.inflate(R.layout.fragment_card, container, false);
+        View view = inflater.inflate(R.layout.fragment_event_cards, container, false);
         cardView = (RecyclerView) view.findViewById(R.id.cardView);
         cardView.setHasFixedSize(true);
 
@@ -85,6 +84,11 @@ public class EventCards extends Fragment {
             protected void call(Event data) {
                 adapter.add(data);
             }
+        });        repository.all(new Callback<Event>() {
+            @Override
+            protected void call(Event data) {
+                adapter.add(data);
+            }
         });
 
         return view;
@@ -93,5 +97,30 @@ public class EventCards extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    //set toolbar icons
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.events_toolbar_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                //Toast.makeText(getContext(), "Home button pressed", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.menu_today:
+                //scroll to today's event or closest upcoming event
+                int today = adapter.getTodayPosition();
+                if (today != -1)
+                    layoutManager.scrollToPositionWithOffset(today, 20);
+                else
+                    Toast.makeText(getContext(), "No upcoming events.", Toast.LENGTH_LONG).show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

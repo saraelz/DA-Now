@@ -9,4 +9,7 @@
     <dimen name="text_size">30dp</dimen>
     <dimen name="icon_length">36dp</dimen>
     <dimen name="icon_padding">16dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
 </resources>
