@@ -1,6 +1,7 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,10 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.R;
+import edu.deanza.calendar.SimpleSectionedRecyclerViewAdapter;
 import edu.deanza.calendar.dal.FirebaseEventRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.dal.SubscriptionDao;
@@ -70,27 +74,59 @@ public class EventCards extends Fragment {
         cardView.setLayoutManager(layoutManager);
 
         adapter = new EventsAdapter(getContext(), new ArrayList<Event>(), subscriptionDao);
-        adapter.setHasStableIds(true);
-        // TODO: Intent to EventInfo
-//        adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
-//            @Override
-//            public void onItemClick(int position, View v) {
-//            }
-//        });
-        cardView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
+            @Override
+            public void onItemClick(Event clickedEvent) {
+                Toast.makeText(getContext(), "Home button pressed", Toast.LENGTH_LONG).show();
+                //Intent intent = new Intent(context, EventInfo.class);
+                //intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
+                //intent.putExtra("UID", UID);
+                //startActivity(intent);
+
+            }
+        });
+
+        //This is the code to provide a sectioned list
+        final List<SimpleSectionedRecyclerViewAdapter.Section> sections =
+                new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
+
+        //Add my adapter to the sectionAdapter
+        final SimpleSectionedRecyclerViewAdapter sectionedAdapter = new
+                SimpleSectionedRecyclerViewAdapter(getContext(),R.layout.section,R.id.section_text,adapter);
 
         repository.all(new Callback<Event>() {
             @Override
             protected void call(Event data) {
-                adapter.add(data);
-            }
-        });        repository.all(new Callback<Event>() {
-            @Override
-            protected void call(Event data) {
+                if (adapter.needsNewDivider(data)) {
+                    int newIndex = adapter.getItemCount();
+                    int newMonth = data.getStart().getMonthOfYear();
+                    sections.add(new SimpleSectionedRecyclerViewAdapter.Section(newIndex, new DateFormatSymbols().getMonths()[newMonth-1]));
+                    sectionedAdapter.setSections(sections);
+                }
+
                 adapter.add(data);
             }
         });
 
+        //Apply this adapter to the RecyclerView
+        cardView.setAdapter(sectionedAdapter);
+
+        /*
+        adapter.setHasStableIds(true);
+        // TODO: Intent to EventInfo
+        adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
+            @Override
+            public void onItemClick(Event clickedEvent) {
+                Toast.makeText(getContext(), "Home button pressed", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(context, EventInfo.class);
+                //intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
+                //intent.putExtra("UID", UID);
+                startActivity(intent);
+
+            }
+        });
+        cardView.setAdapter(adapter); */
         return view;
     }
 
@@ -113,8 +149,8 @@ public class EventCards extends Fragment {
                 //Toast.makeText(getContext(), "Home button pressed", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.menu_today:
-                //scroll to today's event or closest upcoming event
-                int today = adapter.getTodayPosition();
+                //scroll to today's event or closest upcoming events
+                int today = adapter.getTodayIndex();
                 if (today != -1)
                     layoutManager.scrollToPositionWithOffset(today, 20);
                 else

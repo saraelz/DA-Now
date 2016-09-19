@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -22,17 +23,43 @@ import edu.deanza.calendar.domain.models.Event;
 
 public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.EventItemViewHolder> {
 
-    private int todayPosition;
-
     public EventsAdapter(Context context, List<Event> subscribables, SubscriptionDao subscriptionDao) {
         super(context, subscribables, subscriptionDao);
-        todayPosition = -1;
     }
 
-    public int getTodayPosition() {
-        return  todayPosition;
+    //which event is closest to today's date?
+    public int getTodayIndex() {
+
+        Date today = new Date();
+
+        for (int i = 0; i < subscribables.size(); i++) {
+            Date compare = subscribables.get(i).getStart().toDate();
+            if (compare.equals(today) || compare.after(today)){
+                return i + 1;
+            }
+        }
+
+        return subscribables.size(); //try also subscribables.size{}-1;
     }
 
+    // pre: newEvent - the event that we want to add to the adapter
+    // post: returns true if parameter's month does not match  month of previous event in adapter
+    // purpose: indicates whether we need to create a new "month" divider
+    public boolean needsNewDivider(Event newEvent) {
+        if (newEvent == null)
+            return false;
+
+        if (subscribables.size() <= 0)
+            return true;
+
+        Event lastEvent = (Event) subscribables.get(subscribables.size()-1);
+        if (lastEvent.getEnd().getMonthOfYear() != newEvent.getStart().getMonthOfYear())
+            return true;
+        else
+            return false;
+    }
+
+    // manage ClickListener data
     private static ClickListener clickListener;
 
     public interface ClickListener {
@@ -43,6 +70,7 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
         clickListener = listener;
     }
 
+    // based on item_card_event
     public static class EventItemViewHolder extends SubscribableAdapter.SubscribableItemViewHolder {
 
         private TextView eventName;
@@ -77,8 +105,16 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
     @Override
     public void onBindViewHolder(EventItemViewHolder viewHolder, int position) {
         super.onBindViewHolder(viewHolder, position);
-
         final Event event = subscribables.get(position);
+
+        //set onClickListener for item
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickListener.onItemClick(event);
+            }
+        });
+
 
         viewHolder.eventName.setText(event.getName());
 
@@ -86,14 +122,6 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
         DateTime endDate = event.getEnd();
         DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("h:mm aa");
         viewHolder.eventTime.setText(timeFormatter.print(startDate) + " - " + timeFormatter.print(endDate));
-
-        Date today = new Date();
-        if (startDate.toDate().equals(today)){
-            todayPosition = position;
-        }
-        else if (startDate.toDate().after(today) && todayPosition == -1) {
-            todayPosition = position;
-        }
 
         viewHolder.eventDayOfMonth.setText(String.valueOf(startDate.getDayOfMonth()));
 
@@ -112,6 +140,7 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
 
     }
 
+    //subscribe to an event
     @Override
     SubscribeOnClickListener getSubscribeOnClickListener(final EventItemViewHolder viewHolder,
                                                          final Event event) {

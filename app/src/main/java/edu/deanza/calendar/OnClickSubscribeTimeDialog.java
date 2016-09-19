@@ -71,7 +71,7 @@ public class OnClickSubscribeTimeDialog implements SubscribeOnClickListener {
         final OnClickSubscribeTimeDialog us = this;
         AlertDialog.Builder dialogAlert  = new AlertDialog.Builder(context);
         dialogAlert
-                .setTitle("Would you like a reminder?")
+                .setTitle("When would you like a reminder?")
                 .setCancelable(true)
                 .setItems(optionText, new DialogInterface.OnClickListener(){
                     @Override

@@ -23,8 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.OrganizationInfo"/>
+        <activity android:name=".activities.OrganizationInfo" />
         <activity android:name=".activities.EventInfo" />
+        <activity
+            android:name=".EventInfo"
+            android:label="@string/title_activity_event_info"></activity>
     </application>
 
 </manifest>

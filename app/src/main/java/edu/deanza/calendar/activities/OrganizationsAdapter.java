@@ -13,6 +13,7 @@ import edu.deanza.calendar.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.SubscribeOnClickListener;
 import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.domain.models.Event;
 import edu.deanza.calendar.domain.models.Organization;
 
 public class OrganizationsAdapter
@@ -23,7 +24,8 @@ public class OrganizationsAdapter
         super(context, subscribables, subscriptionDao);
     }
 
-    private static ClickListener clickListener;
+    // manage ClickListener data
+    protected static ClickListener clickListener;
 
     public interface ClickListener {
         void onItemClick(Organization clickedOrganization);
@@ -33,6 +35,7 @@ public class OrganizationsAdapter
         clickListener = listener;
     }
 
+    // based on item_organization
     public static class OrganizationItemViewHolder
             extends SubscribableAdapter.SubscribableItemViewHolder {
 
