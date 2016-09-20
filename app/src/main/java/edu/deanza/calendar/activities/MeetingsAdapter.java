@@ -1,7 +1,6 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +12,12 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.OnClickSubscribeTimeDialog;
-import edu.deanza.calendar.SubscribeOnClickListener;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Meeting;
 
-public class MeetingsAdapter extends SubscribableAdapter<Meeting, MeetingsAdapter.MeetingItemViewHolder> {
+public abstract class MeetingsAdapter extends SubscribableAdapter<Meeting, MeetingsAdapter.MeetingItemViewHolder> {
 
     private int todayPosition;
 
@@ -77,57 +73,13 @@ public class MeetingsAdapter extends SubscribableAdapter<Meeting, MeetingsAdapte
 
         DateTimeFormatter weekdayFormatter = DateTimeFormat.forPattern("EEE");
         viewHolder.meetingWeekday.setText(weekdayFormatter.print(startDate));
-
         Date today = new Date();
-        if (startDate.toDate().equals(today)){
+        if (startDate.toDate().equals(today)) {
+            todayPosition = position;
+        } else if (startDate.toDate().after(today) && todayPosition == -1) {
             todayPosition = position;
         }
-        else if (startDate.toDate().after(today) && todayPosition == -1) {
-            todayPosition = position;
-        }
-
     }
 
-    @Override
-    SubscribeOnClickListener getSubscribeOnClickListener(final MeetingItemViewHolder viewHolder,
-                                                         final Meeting meeting) {
-        // DayOfWeek, Month day
-        String datePattern = "E, M d";
-        String date = meeting.getStart().toString(datePattern, Locale.US);
-        final String name = "meeting on " + date;
-
-        return new OnClickSubscribeTimeDialog(context, meeting, subscriptionDao) {
-            @Override
-            protected void postSubscribe() {
-                super.postSubscribe();
-                notifyItemChanged(viewHolder.getAdapterPosition());
-                Snackbar.make(viewHolder.itemView,
-                        "Subscribed to " + name,
-                        Snackbar.LENGTH_LONG)
-                        .show();
-            }
-
-            @Override
-            protected void postUnsubscribe() {
-                super.postUnsubscribe();
-                notifyItemChanged(viewHolder.getAdapterPosition());
-                Snackbar.make(
-                        viewHolder.itemView,
-                        "Unsubscribed from " + name,
-                        Snackbar.LENGTH_LONG)
-                        .show();
-            }
-
-            @Override
-            protected void onCancel() {
-                super.onCancel();
-                Snackbar.make(
-                        viewHolder.itemView,
-                        "Action cancelled.",
-                        Snackbar.LENGTH_LONG)
-                        .show();
-            }
-        };
-    }
 }
 

@@ -1,6 +1,7 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -29,7 +30,7 @@ public abstract class SubscribableAdapter
     private Map<String, Subscription> subscriptions;
     protected final SubscriptionDao subscriptionDao;
 
-    private static final int NOT_SUBSCRIBED = 0;
+    private static final int NOT_SUBSCRIBED = -1;
     private static final int SUBSCRIBED = 1;
     private static final String THIS_TAG = SubscribableAdapter.class.getName();
 
@@ -93,15 +94,40 @@ public abstract class SubscribableAdapter
     public void onBindViewHolder(VH viewHolder, int position) {
         T subscribable = subscribables.get(position);
         ImageButton subscribeButton = viewHolder.subscribeButton;
-        if (getItemViewType(position) == SUBSCRIBED) {
-            subscribeButton.setImageResource(R.drawable.ic_favorite);
-        }
-        else if (getItemViewType(position) == NOT_SUBSCRIBED) {
+        if (subscribable.getSubscription() == null) {
             subscribeButton.setImageResource(R.drawable.ic_favorite_border);
+        }
+        else {
+            subscribeButton.setImageResource(R.drawable.ic_favorite);
         }
         subscribeButton.setOnClickListener(getSubscribeOnClickListener(viewHolder, subscribable));
     }
 
     abstract SubscribeOnClickListener getSubscribeOnClickListener(VH viewHolder, T subscribable);
+
+    void postSubscribe(VH viewHolder, String name) {
+        notifyItemChanged(viewHolder.getAdapterPosition());
+        Snackbar.make(viewHolder.itemView,
+                "Subscribed to " + name,
+                Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    void postUnsubscribe(VH viewHolder, String name) {
+        notifyItemChanged(viewHolder.getAdapterPosition());
+        Snackbar.make(
+                viewHolder.itemView,
+                "Unsubscribed from " + name,
+                Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    void onCancel(VH viewHolder) {
+        Snackbar.make(
+                viewHolder.itemView,
+                "Action cancelled.",
+                Snackbar.LENGTH_LONG)
+                .show();
+    }
 
 }

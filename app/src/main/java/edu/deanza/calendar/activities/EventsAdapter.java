@@ -1,20 +1,16 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.joda.time.DateTime;
-
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import edu.deanza.calendar.R;
 import edu.deanza.calendar.OnClickSubscribeTimeDialog;
+import edu.deanza.calendar.R;
 import edu.deanza.calendar.SubscribeOnClickListener;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
@@ -71,7 +67,7 @@ public class EventsAdapter extends MeetingsAdapter {
     public void onBindViewHolder(MeetingItemViewHolder meetingViewHolder, int position) {
         super.onBindViewHolder(meetingViewHolder, position);
 
-        final Event event = (Event) subscribables.get(position);
+        Event event = (Event) subscribables.get(position);
         EventItemViewHolder viewHolder = (EventItemViewHolder) meetingViewHolder;
 
         viewHolder.eventName.setText(event.getName());
@@ -106,39 +102,26 @@ public class EventsAdapter extends MeetingsAdapter {
     @Override
     SubscribeOnClickListener getSubscribeOnClickListener(final MeetingItemViewHolder viewHolder,
                                                          Meeting meeting) {
-        final Event event = (Event) meeting;
+        Event event = (Event) meeting;
+        final String name = event.getName();
+        final EventsAdapter us = this;
 
         return new OnClickSubscribeTimeDialog(context, event, subscriptionDao) {
             @Override
             protected void postSubscribe() {
-                super.postSubscribe();
-                notifyItemChanged(viewHolder.getAdapterPosition());
-                Snackbar.make(viewHolder.itemView,
-                        "Subscribed to " + event.getName(),
-                        Snackbar.LENGTH_LONG)
-                        .show();
+                us.postSubscribe(viewHolder, name);
             }
 
             @Override
             protected void postUnsubscribe() {
-                super.postUnsubscribe();
-                notifyItemChanged(viewHolder.getAdapterPosition());
-                Snackbar.make(
-                        viewHolder.itemView,
-                        "Unsubscribed from " + event.getName(),
-                        Snackbar.LENGTH_LONG)
-                        .show();
+                us.postUnsubscribe(viewHolder, name);
             }
 
             @Override
             protected void onCancel() {
-                super.onCancel();
-                Snackbar.make(
-                        viewHolder.itemView,
-                        "Action cancelled.",
-                        Snackbar.LENGTH_LONG)
-                        .show();
+                us.onCancel(viewHolder);
             }
         };
     }
+
 }

@@ -2,7 +2,6 @@ package edu.deanza.calendar.dal;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.domain.EventRepository;
-import edu.deanza.calendar.domain.models.Day;
 import edu.deanza.calendar.domain.models.Club;
+import edu.deanza.calendar.domain.models.Day;
 import edu.deanza.calendar.domain.models.Organization;
 
 /**
