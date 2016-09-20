@@ -133,17 +133,21 @@ public class Organization implements Subscribable, Serializable {
         return name.hashCode();
     }
 
-    public static final class Meeting implements Interval, Subscribable {
+    public static final class Meeting implements Interval, Subscribable, Serializable {
 
-        private final String key;
+        private final String organizationName;
         private final DateTime start;
         private final DateTime end;
         private Subscription subscription;
 
-        public Meeting(String key, DateTime start, DateTime end) {
-            this.key = key;
+        public Meeting(String organizationName, DateTime start, DateTime end) {
+            this.organizationName = organizationName;
             this.start = start;
             this.end = end;
+        }
+
+        public String getOrganizationName() {
+            return organizationName;
         }
 
         @Override
@@ -173,7 +177,7 @@ public class Organization implements Subscribable, Serializable {
 
         @Override
         public String getKey() {
-            return key;
+            return start.toString(ISODateTimeFormat.yearMonthDay()) + '|' + organizationName;
         }
 
         @Override
@@ -187,13 +191,22 @@ public class Organization implements Subscribable, Serializable {
 
             Meeting meeting = (Meeting) o;
 
-            return key.equals(meeting.key);
+            if (!organizationName.equals(meeting.organizationName)) {
+                return false;
+            }
+            if (!start.equals(meeting.start)) {
+                return false;
+            }
+            return end.equals(meeting.end);
 
         }
 
         @Override
         public int hashCode() {
-            return key.hashCode();
+            int result = organizationName.hashCode();
+            result = 31 * result + start.hashCode();
+            result = 31 * result + end.hashCode();
+            return result;
         }
     }
 

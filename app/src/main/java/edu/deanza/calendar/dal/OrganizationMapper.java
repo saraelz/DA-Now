@@ -45,9 +45,9 @@ class OrganizationMapper implements DataMapper<Organization>, Serializable {
 
                 DateTime start = interval.getStart();
                 DateTime end = interval.getEnd();
-                String key = start.toString(ISODateTimeFormat.yearMonthDay()) + '|' + name;
 
-                Organization.Meeting meeting = new Organization.Meeting(key, start, end);
+
+                Organization.Meeting meeting = new Organization.Meeting(name, start, end);
                 meetings.add(meeting);
             }
         }
