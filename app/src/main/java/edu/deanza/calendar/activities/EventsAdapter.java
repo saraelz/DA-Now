@@ -12,6 +12,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import edu.deanza.calendar.R;
@@ -49,13 +50,15 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
         private TextView eventTime;
         private TextView eventDayOfMonth;
         private TextView eventWeekday;
+        private TextView eventOrganizations;
 
         public EventItemViewHolder(View containingItem) {
             super(containingItem);
-            eventName = (TextView) containingItem.findViewById(R.id.event_name);
-            eventTime = (TextView) containingItem.findViewById(R.id.event_time);
-            eventDayOfMonth = (TextView) containingItem.findViewById(R.id.event_dom);
-            eventWeekday = (TextView) containingItem.findViewById(R.id.event_weekday);
+            eventName = (TextView) containingItem.findViewById(R.id.item_event_name);
+            eventTime = (TextView) containingItem.findViewById(R.id.item_event_time);
+            eventDayOfMonth = (TextView) containingItem.findViewById(R.id.item_event_dom);
+            eventWeekday = (TextView) containingItem.findViewById(R.id.item_event_dow);
+            eventOrganizations = (TextView) containingItem.findViewById(R.id.item_event_organizations);
         }
 
         @Override
@@ -81,6 +84,21 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
         final Event event = subscribables.get(position);
 
         viewHolder.eventName.setText(event.getName());
+
+        Iterator<String> i = event.getOrganizationNames().iterator();
+        if (i.hasNext()) {
+            StringBuilder organizationNamesList = new StringBuilder();
+            organizationNamesList.append(i.next());
+            while (i.hasNext()) {
+                organizationNamesList.append(", ");
+                organizationNamesList.append(i.next());
+            }
+            viewHolder.eventOrganizations.setText(organizationNamesList.toString());
+        }
+        else {
+            viewHolder.itemView.findViewById(R.id.item_event_organizations_label)
+                    .setVisibility(View.INVISIBLE);
+        }
 
         DateTime startDate = event.getStart();
         DateTime endDate = event.getEnd();

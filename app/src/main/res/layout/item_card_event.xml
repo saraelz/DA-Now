@@ -1,84 +1,104 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cvEvents"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    card_view:cardCornerRadius="4dp">
+                                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                    xmlns:tools="http://schemas.android.com/tools"
+                                    android:id="@+id/cvEvents"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"
+                                    card_view:cardCornerRadius="4dp">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="15dp"
+        android:padding="12dp"
         android:clickable="true"
         android:focusable="true"
         android:background="?android:attr/selectableItemBackground"
         android:minHeight="25dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/item_event_dom"
+            android:layout_width="55dp"
             android:layout_height="wrap_content"
-            android:id="@+id/event_name"
-            android:textSize="19sp"
-            android:text="Name"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/event_dom"
-            android:layout_toEndOf="@+id/event_dom"
-            android:paddingBottom="10dp"
-            android:layout_toStartOf="@+id/item_event_subscribe" />
+            android:layout_marginEnd="10dp"
+            android:gravity="center"
+            android:textSize="35sp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            tools:text="12"/>
 
         <TextView
+            android:id="@+id/item_event_dow"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_event_dom"
+            android:layout_marginEnd="10dp"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            tools:text="Mon"/>
+
+        <TextView
+            android:id="@+id/item_event_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@id/item_event_dow"
+            android:layout_toStartOf="@+id/item_event_subscribe"
+            android:layout_marginBottom="5dp"
+            android:textSize="19sp"
+            tools:text="Name"
+            android:textStyle="bold"/>
 
-            android:id="@+id/event_time"
+        <TextView
+            android:id="@+id/item_event_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_event_name"
+            android:layout_toEndOf="@id/item_event_dow"
+            android:layout_marginBottom="5dp"
             android:textSize="16sp"
-            android:text="Time"
-            android:layout_below="@+id/event_name"
-            android:layout_toRightOf="@+id/event_dom"
+            tools:text="Time"
             android:focusableInTouchMode="false"
-            android:focusable="false" />
+            android:focusable="false"/>
+
+        <TextView
+            android:id="@+id/item_event_organizations_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_event_time"
+            android:layout_toEndOf="@id/item_event_dow"
+            android:textSize="13sp"
+            android:text="Hosted by "
+            android:textStyle="italic"
+            android:focusableInTouchMode="false"
+            android:focusable="false"/>
+
+        <TextView
+            android:id="@+id/item_event_organizations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_event_time"
+            android:layout_toEndOf="@id/item_event_organizations_label"
+            android:layout_toStartOf="@id/item_event_subscribe"
+            android:textSize="13sp"
+            tools:text="Organizations"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
+            android:textStyle="italic"/>
 
         <ImageButton
             android:id="@+id/item_event_subscribe"
-
             android:layout_width="32dp"
             android:layout_height="32dp"
-
             android:layout_alignParentTop="false"
-            android:layout_alignParentBottom="@+id/event_time"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="@id/item_event_time"
             android:layout_alignParentEnd="true"
-
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
             android:src="@drawable/ic_favorite_border"
             android:background="@android:color/transparent"
             android:tint="@color/colorPrimaryDark"
-            android:clickable="true"
             android:scaleType="fitCenter"
-            android:layout_centerVertical="true" />
-
-        <TextView
-            android:layout_width="55dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="6"
-            android:id="@+id/event_dom"
-            android:textSize="35dp"
-            android:paddingRight="10dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="false"
-            android:layout_alignParentTop="true"
-            android:layout_alignBottom="@+id/event_time"
-            android:paddingBottom="5dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="15dp"
-            android:text="Mon"
-            android:id="@+id/event_weekday"
-            android:layout_alignBottom="@+id/event_dom"
-            android:layout_alignStart="@+id/event_dom" />
+            android:clickable="true"/>
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>
