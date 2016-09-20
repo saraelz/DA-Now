@@ -1,7 +1,7 @@
 package edu.deanza.calendar.dal;
 
-import com.google.firebase.database.FirebaseDatabase;
-
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import edu.deanza.calendar.domain.EventRepository;
@@ -15,11 +15,6 @@ import edu.deanza.calendar.util.Callback;
 
 public final class FirebaseOrganizationRepository extends FirebaseRepository<Organization> implements OrganizationRepository, Serializable {
 
-    {
-        root = FirebaseDatabase.getInstance().getReference().child("organizations");
-        currentQuery = root.orderByKey();
-    }
-
     private final DataMapper<Organization> mapper;
 
     public FirebaseOrganizationRepository() {
@@ -28,6 +23,11 @@ public final class FirebaseOrganizationRepository extends FirebaseRepository<Org
 
     public FirebaseOrganizationRepository(EventRepository repository) {
         mapper = new OrganizationMapper(repository);
+    }
+
+    @Override
+    String getRootName() {
+        return "organizations";
     }
 
     @Override
@@ -46,6 +46,11 @@ public final class FirebaseOrganizationRepository extends FirebaseRepository<Org
     public void findByName(String name, Callback<Organization> callback) {
         currentQuery = root.child(name);
         listenToLocation(callback);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        initializeRoot();
     }
 
 }

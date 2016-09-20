@@ -1,11 +1,11 @@
 package edu.deanza.calendar.dal;
 
-import com.google.firebase.database.FirebaseDatabase;
-
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import edu.deanza.calendar.domain.EventRepository;
@@ -19,10 +19,6 @@ import edu.deanza.calendar.util.Callback;
 
 public final class FirebaseEventRepository extends FirebaseRepository<Event> implements EventRepository, Serializable {
 
-    {
-        root = FirebaseDatabase.getInstance().getReference().child("events");
-    }
-
     private final DataMapper<Event> mapper;
 
     public FirebaseEventRepository() {
@@ -33,6 +29,10 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
         mapper = new EventMapper(repository);
     }
 
+    @Override
+    String getRootName() {
+        return "events";
+    }
 
     @Override
     DataMapper<Event> getMapper() {
@@ -89,6 +89,11 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
                 .startAt(formatter.print(start))
                 .endAt(formatter.print(end));
         listenToQuery(callback);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        initializeRoot();
     }
 
 }
