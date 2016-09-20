@@ -1,17 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="edu.deanza.calendar.activities.OrganizationInfo"
-    tools:showIn="@layout/activity_organization_info">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              app:layout_behavior="@string/appbar_scrolling_view_behavior"
+              tools:context="edu.deanza.calendar.activities.OrganizationInfo"
+              tools:showIn="@layout/activity_organization_info"
+              android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5sp"
+        android:layout_gravity="top"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin"
+        android:layout_marginTop="@dimen/text_margin">
+
+        <TextView
+            style="@style/OrganizationMeetingInfo"
+            android:id="@+id/organization_location_label"
+            android:text="Meets at "/>
+        <TextView
+            style="@style/OrganizationMeetingInfo"
+            android:id="@+id/organization_location"
+            android:text="L83 and L36"
+            android:textStyle="bold"/>
+        <TextView
+            style="@style/OrganizationMeetingInfo"
+            android:id="@+id/organization_meeting_days_label"
+            android:text=" on "/>
+        <TextView
+            style="@style/OrganizationMeetingInfo"
+            android:id="@+id/organization_meeting_days"
+            android:text="Fridays"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:id="@+id/organization_description"/>
+        android:id="@+id/organization_description"
+        android:text="For anyone to participate, perform, and learn the Hip-Hop culture, whether you live it through your daily life or just want to experience this beautiful art for the first time."
+        android:padding="5sp"
+        android:elegantTextHeight="false"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin"
+        android:layout_marginTop="5dp"/>
 
-</android.support.v4.widget.NestedScrollView>
+
+
+
+</LinearLayout>
