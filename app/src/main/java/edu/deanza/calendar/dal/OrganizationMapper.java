@@ -33,7 +33,7 @@ class OrganizationMapper implements DataMapper<Organization>, Serializable {
         String facebookUrl = (String) rawOrganization.get("facebookUrl");
 
         List<String> rawMeetings = (List<String>) rawOrganization.get("meetings");
-        List<Organization.Meeting> meetings = new ArrayList<>();
+        List<Organization.RegularMeeting> meetings = new ArrayList<>();
         if (rawMeetings != null) {
             for (String s : rawMeetings) {
                 Interval interval;
@@ -47,7 +47,7 @@ class OrganizationMapper implements DataMapper<Organization>, Serializable {
                 DateTime end = interval.getEnd();
 
 
-                Organization.Meeting meeting = new Organization.Meeting(name, start, end);
+                Organization.RegularMeeting meeting = new Organization.RegularMeeting(start, end, name);
                 meetings.add(meeting);
             }
         }

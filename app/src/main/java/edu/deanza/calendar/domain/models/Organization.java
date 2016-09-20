@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.deanza.calendar.domain.EventRepository;
-import edu.deanza.calendar.domain.Interval;
 import edu.deanza.calendar.domain.Subscribable;
 import edu.deanza.calendar.util.Callback;
 
@@ -22,13 +21,13 @@ public class Organization implements Subscribable, Serializable {
     protected final String description;
     protected final String location;
     protected final String facebookUrl;
-    protected final List<Meeting> meetings;
+    protected final List<RegularMeeting> meetings;
     protected final EventRepository eventRepository;
     protected List<Event> events;
     protected OrganizationSubscription subscription;
 
     public Organization(String name, String description, String location, String facebookUrl,
-                        List<Meeting> meetings, EventRepository eventRepository) {
+                        List<RegularMeeting> meetings, EventRepository eventRepository) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -39,7 +38,7 @@ public class Organization implements Subscribable, Serializable {
     }
 
     public Organization(String name, String description, String location, String facebookUrl,
-                        List<Meeting> meetings, List<Event> events) {
+                        List<RegularMeeting> meetings, List<Event> events) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -65,7 +64,7 @@ public class Organization implements Subscribable, Serializable {
         return facebookUrl;
     }
 
-    public List<Meeting> getMeetings() {
+    public List<RegularMeeting> getMeetings() {
         return meetings;
     }
 
@@ -133,46 +132,17 @@ public class Organization implements Subscribable, Serializable {
         return name.hashCode();
     }
 
-    public static final class Meeting implements Interval, Subscribable, Serializable {
+    public static final class RegularMeeting extends Meeting implements Subscribable, Serializable {
 
         private final String organizationName;
-        private final DateTime start;
-        private final DateTime end;
-        private Subscription subscription;
 
-        public Meeting(String organizationName, DateTime start, DateTime end) {
+        public RegularMeeting(DateTime start, DateTime end, String organizationName) {
+            super(start, end);
             this.organizationName = organizationName;
-            this.start = start;
-            this.end = end;
         }
 
         public String getOrganizationName() {
             return organizationName;
-        }
-
-        @Override
-        public DateTime getStart() {
-            return start;
-        }
-
-        @Override
-        public DateTime getEnd() {
-            return end;
-        }
-
-        @Override
-        public Subscription getSubscription() {
-            return subscription;
-        }
-
-        @Override
-        public void subscribe(Subscription subscription) {
-            this.subscription = subscription;
-        }
-
-        @Override
-        public void unsubscribe() {
-            this.subscription = null;
         }
 
         @Override
@@ -189,7 +159,7 @@ public class Organization implements Subscribable, Serializable {
                 return false;
             }
 
-            Meeting meeting = (Meeting) o;
+            RegularMeeting meeting = (RegularMeeting) o;
 
             if (!organizationName.equals(meeting.organizationName)) {
                 return false;
