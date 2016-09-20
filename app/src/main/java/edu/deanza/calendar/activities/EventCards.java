@@ -23,6 +23,7 @@ import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.EventRepository;
 import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.domain.models.Meeting;
 import edu.deanza.calendar.domain.models.Subscription;
 import edu.deanza.calendar.util.Callback;
 import edu.deanza.calendar.util.UidGenerator;
@@ -69,7 +70,7 @@ public class EventCards extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         cardView.setLayoutManager(layoutManager);
 
-        adapter = new EventsAdapter(getContext(), new ArrayList<Event>(), subscriptionDao);
+        adapter = new EventsAdapter(getContext(), new ArrayList<Meeting>(), subscriptionDao);
         adapter.setHasStableIds(true);
         // TODO: Intent to EventInfo
 //        adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {

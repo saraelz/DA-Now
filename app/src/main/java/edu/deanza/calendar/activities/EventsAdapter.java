@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -20,18 +18,12 @@ import edu.deanza.calendar.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.SubscribeOnClickListener;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.domain.models.Meeting;
 
-public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.EventItemViewHolder> {
+public class EventsAdapter extends MeetingsAdapter {
 
-    private int todayPosition;
-
-    public EventsAdapter(Context context, List<Event> subscribables, SubscriptionDao subscriptionDao) {
+    public EventsAdapter(Context context, List<Meeting> subscribables, SubscriptionDao subscriptionDao) {
         super(context, subscribables, subscriptionDao);
-        todayPosition = -1;
-    }
-
-    public int getTodayPosition() {
-        return  todayPosition;
     }
 
     private static ClickListener clickListener;
@@ -44,21 +36,19 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
         clickListener = listener;
     }
 
-    public static class EventItemViewHolder extends SubscribableAdapter.SubscribableItemViewHolder {
+    public static class EventItemViewHolder extends MeetingsAdapter.MeetingItemViewHolder {
 
         private TextView eventName;
-        private TextView eventTime;
-        private TextView eventDayOfMonth;
-        private TextView eventWeekday;
         private TextView eventOrganizations;
 
         public EventItemViewHolder(View containingItem) {
             super(containingItem);
             eventName = (TextView) containingItem.findViewById(R.id.item_event_name);
-            eventTime = (TextView) containingItem.findViewById(R.id.item_event_time);
-            eventDayOfMonth = (TextView) containingItem.findViewById(R.id.item_event_dom);
-            eventWeekday = (TextView) containingItem.findViewById(R.id.item_event_dow);
             eventOrganizations = (TextView) containingItem.findViewById(R.id.item_event_organizations);
+
+            meetingTime = (TextView) containingItem.findViewById(R.id.item_event_time);
+            meetingDayOfMonth = (TextView) containingItem.findViewById(R.id.item_event_dom);
+            meetingWeekday = (TextView) containingItem.findViewById(R.id.item_event_dow);
         }
 
         @Override
@@ -78,10 +68,11 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
 
 
     @Override
-    public void onBindViewHolder(EventItemViewHolder viewHolder, int position) {
-        super.onBindViewHolder(viewHolder, position);
+    public void onBindViewHolder(MeetingItemViewHolder meetingViewHolder, int position) {
+        super.onBindViewHolder(meetingViewHolder, position);
 
-        final Event event = subscribables.get(position);
+        final Event event = (Event) subscribables.get(position);
+        EventItemViewHolder viewHolder = (EventItemViewHolder) meetingViewHolder;
 
         viewHolder.eventName.setText(event.getName());
 
@@ -100,24 +91,6 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
                     .setVisibility(View.INVISIBLE);
         }
 
-        DateTime startDate = event.getStart();
-        DateTime endDate = event.getEnd();
-        DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("h:mm aa");
-        viewHolder.eventTime.setText(timeFormatter.print(startDate) + " - " + timeFormatter.print(endDate));
-
-        Date today = new Date();
-        if (startDate.toDate().equals(today)){
-            todayPosition = position;
-        }
-        else if (startDate.toDate().after(today) && todayPosition == -1) {
-            todayPosition = position;
-        }
-
-        viewHolder.eventDayOfMonth.setText(String.valueOf(startDate.getDayOfMonth()));
-
-        DateTimeFormatter weekdayFormatter = DateTimeFormat.forPattern("EEE");
-        viewHolder.eventWeekday.setText(weekdayFormatter.print(startDate));
-
         /*if(position > 0 && position <= events.size()){
             Event previousEvent = events.get(position-1); // gives error
             //if previous event has same date, initialize string to empty
@@ -131,8 +104,10 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
     }
 
     @Override
-    SubscribeOnClickListener getSubscribeOnClickListener(final EventItemViewHolder viewHolder,
-                                                         final Event event) {
+    SubscribeOnClickListener getSubscribeOnClickListener(final MeetingItemViewHolder viewHolder,
+                                                         Meeting meeting) {
+        final Event event = (Event) meeting;
+
         return new OnClickSubscribeTimeDialog(context, event, subscriptionDao) {
             @Override
             protected void postSubscribe() {
