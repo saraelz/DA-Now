@@ -12,10 +12,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
+import edu.deanza.calendar.activities.MeetingsAdapter;
+
 /**
  * @author Gabriele Mariotti (gabri.mariotti@gmail.com)
  */
-public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<MeetingsAdapter.MeetingItemViewHolder> {
 
     private final Context mContext;
     private static final int SECTION_TYPE = 0;
@@ -24,12 +27,12 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     private int mSectionResourceId;
     private int mTextResourceId;
     private LayoutInflater mLayoutInflater;
-    private RecyclerView.Adapter mBaseAdapter;
+    private MeetingsAdapter mBaseAdapter;
     private SparseArray<Section> mSections = new SparseArray<Section>();
 
 
     public SimpleSectionedRecyclerViewAdapter(Context context, int sectionResourceId, int textResourceId,
-                                              RecyclerView.Adapter baseAdapter) {
+                                              MeetingsAdapter baseAdapter) {
 
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mSectionResourceId = sectionResourceId;
@@ -65,7 +68,7 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     }
 
 
-    public static class SectionViewHolder extends RecyclerView.ViewHolder {
+    public static class SectionViewHolder extends MeetingsAdapter.MeetingItemViewHolder {
 
         public TextView title;
 
@@ -76,7 +79,7 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int typeView) {
+    public MeetingsAdapter.MeetingItemViewHolder onCreateViewHolder(ViewGroup parent, int typeView) {
         if (typeView == SECTION_TYPE) {
             final View view = LayoutInflater.from(mContext).inflate(mSectionResourceId, parent, false);
             return new SectionViewHolder(view,mTextResourceId);
@@ -86,7 +89,7 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder sectionViewHolder, int position) {
+    public void onBindViewHolder(MeetingsAdapter.MeetingItemViewHolder sectionViewHolder, int position) {
         if (isSectionHeaderPosition(position)) {
             ((SectionViewHolder)sectionViewHolder).title.setText(mSections.get(position).title);
         }else{

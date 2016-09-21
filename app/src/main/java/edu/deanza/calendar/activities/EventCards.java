@@ -82,12 +82,12 @@ public class EventCards extends Fragment {
 //            public void onItemClick(int position, View v) {
 //            }
 //        });
-        cardView.setAdapter(adapter);
+//        cardView.setAdapter(adapter);
 
         adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
             @Override
             public void onItemClick(Event clickedEvent) {
-                Toast.makeText(getContext(), "Home button pressed", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Event clicked", Toast.LENGTH_LONG).show();
                 //Intent intent = new Intent(context, EventInfo.class);
                 //intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
                 //intent.putExtra("UID", UID);

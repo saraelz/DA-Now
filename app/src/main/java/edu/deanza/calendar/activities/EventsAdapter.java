@@ -1,16 +1,19 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import edu.deanza.calendar.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
+import edu.deanza.calendar.SimpleSectionedRecyclerViewAdapter;
 import edu.deanza.calendar.SubscribeOnClickListener;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
@@ -68,7 +71,7 @@ public class EventsAdapter extends MeetingsAdapter {
     public void onBindViewHolder(MeetingItemViewHolder meetingViewHolder, int position) {
         super.onBindViewHolder(meetingViewHolder, position);
 
-        Event event = (Event) subscribables.get(position);
+        final Event event = (Event) subscribables.get(position);
         EventItemViewHolder viewHolder = (EventItemViewHolder) meetingViewHolder;
 
         //set onClickListener for item
@@ -107,6 +110,38 @@ public class EventsAdapter extends MeetingsAdapter {
             }
         }*/
 
+    }
+
+    // pre: newEvent - the event that we want to add to the adapter
+    // post: returns true if parameter's month does not match  month of previous event in adapter
+    // purpose: indicates whether we need to create a new "month" divider
+    public boolean needsNewDivider(Event newEvent) {
+        if (newEvent == null)
+            return false;
+
+        if (subscribables.size() <= 0)
+            return true;
+
+        Event lastEvent = (Event) subscribables.get(subscribables.size()-1);
+        if (lastEvent.getEnd().getMonthOfYear() != newEvent.getStart().getMonthOfYear())
+            return true;
+        else
+            return false;
+    }
+
+    //which event is closest to today's date?
+    public int getTodayIndex() {
+
+        Date today = new Date();
+
+        for (int i = 0; i < subscribables.size(); i++) {
+            Date compare = subscribables.get(i).getStart().toDate();
+            if (compare.equals(today) || compare.after(today)){
+                return i + 1;
+            }
+        }
+
+        return subscribables.size(); //try also subscribables.size{}-1;
     }
 
     //subscribe to an event
