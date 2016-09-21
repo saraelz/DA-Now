@@ -1,6 +1,7 @@
 package edu.deanza.calendar.domain.models;
 
-import org.joda.time.Interval;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,13 +21,13 @@ public class Organization implements Subscribable, Serializable {
     protected final String description;
     protected final String location;
     protected final String facebookUrl;
-    protected final List<Interval> meetings;
+    protected final List<RegularMeeting> meetings;
     protected final EventRepository eventRepository;
     protected List<Event> events;
     protected OrganizationSubscription subscription;
 
     public Organization(String name, String description, String location, String facebookUrl,
-                        List<Interval> meetings, EventRepository eventRepository) {
+                        List<RegularMeeting> meetings, EventRepository eventRepository) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -37,7 +38,7 @@ public class Organization implements Subscribable, Serializable {
     }
 
     public Organization(String name, String description, String location, String facebookUrl,
-                        List<Interval> meetings, List<Event> events) {
+                        List<RegularMeeting> meetings, List<Event> events) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -63,7 +64,7 @@ public class Organization implements Subscribable, Serializable {
         return facebookUrl;
     }
 
-    public List<Interval> getMeetings() {
+    public List<RegularMeeting> getMeetings() {
         return meetings;
     }
 
@@ -130,4 +131,53 @@ public class Organization implements Subscribable, Serializable {
     public int hashCode() {
         return name.hashCode();
     }
+
+    public static final class RegularMeeting extends Meeting implements Subscribable, Serializable {
+
+        private final String organizationName;
+
+        public RegularMeeting(DateTime start, DateTime end, String organizationName) {
+            super(start, end);
+            this.organizationName = organizationName;
+        }
+
+        public String getOrganizationName() {
+            return organizationName;
+        }
+
+        @Override
+        public String getKey() {
+            return start.toString(ISODateTimeFormat.yearMonthDay()) + '|' + organizationName;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            RegularMeeting meeting = (RegularMeeting) o;
+
+            if (!organizationName.equals(meeting.organizationName)) {
+                return false;
+            }
+            if (!start.equals(meeting.start)) {
+                return false;
+            }
+            return end.equals(meeting.end);
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = organizationName.hashCode();
+            result = 31 * result + start.hashCode();
+            result = 31 * result + end.hashCode();
+            return result;
+        }
+    }
+
 }

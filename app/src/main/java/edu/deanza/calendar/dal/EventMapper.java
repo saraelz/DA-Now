@@ -37,7 +37,7 @@ class EventMapper implements DataMapper<Event>, Serializable {
             organizationNames.add((String) entry.getKey());
         }
 
-        return new Event(name, description, location, organizationNames, start, end, repository);
+        return new Event(start, end, name, description, location, organizationNames, repository);
     }
 
 }

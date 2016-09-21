@@ -15,41 +15,34 @@ import edu.deanza.calendar.util.Callback;
  * Created by Sara on 5/28/2016.
  */
 
-public class Event implements Subscribable, Serializable {
+public class Event extends Meeting implements Subscribable, Serializable {
 
     protected final String name;
     protected final String description;
     protected final String location;
     protected final List<String> organizationNames;
-    protected final DateTime start;
-    protected final DateTime end;
     protected final OrganizationRepository organizationRepository;
     // If an Organization entry does not exist for a given organizationName, the List entry will be null
     protected List<Organization> organizations;
-    protected Subscription subscription;
 
     // TODO: implement `categories` field
 
-    public Event(String name, String description, String location, List<String> organizationNames,
-                 DateTime start, DateTime end, OrganizationRepository organizationRepository) {
+    public Event(DateTime start, DateTime end, String name, String description, String location, List<String> organizationNames, OrganizationRepository organizationRepository) {
+        super(start, end);
         this.name = name;
         this.description = description;
         this.location = location;
         this.organizationNames = organizationNames;
-        this.start = start;
-        this.end = end;
         this.organizationRepository = organizationRepository;
         this.organizations = null;
     }
 
-    public Event(String name, String description, String location, List<String> organizationNames,
-                 DateTime start, DateTime end, List<Organization> organizations) {
+    public Event(DateTime start, DateTime end, String name, String description, String location, List<String> organizationNames, List<Organization> organizations) {
+        super(start, end);
         this.name = name;
         this.description = description;
         this.location = location;
         this.organizationNames = organizationNames;
-        this.start = start;
-        this.end = end;
         this.organizations = organizations;
         this.organizationRepository = null;
     }
@@ -92,29 +85,7 @@ public class Event implements Subscribable, Serializable {
         }
     }
 
-    public DateTime getStart() {
-        return start;
-    }
-
-    public DateTime getEnd() {
-        return end;
-    }
-
     @Override
-    public Subscription getSubscription() {
-        return subscription;
-    }
-
-    @Override
-    public void subscribe(Subscription subscription) {
-        this.subscription = subscription;
-    }
-
-    @Override
-    public void unsubscribe() {
-        this.subscription = null;
-    }
-
     public String getKey() {
         return start.toString(ISODateTimeFormat.yearMonthDay()) + '|' + name;
     }

@@ -1,7 +1,6 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,38 +79,28 @@ public class OrganizationsAdapter
 
     @Override
     SubscribeOnClickListener getSubscribeOnClickListener(final OrganizationItemViewHolder viewHolder,
-                                                         final Organization organization) {
+                                                         Organization organization) {
+        final String name = organization.getName();
+        final OrganizationsAdapter us = this;
+
         return new OnClickOrganizationSubscribeDialog(context, organization, subscriptionDao) {
             @Override
             protected void postSubscribe() {
-                super.postSubscribe();
                 notifyItemChanged(viewHolder.getAdapterPosition());
-                Snackbar.make(viewHolder.itemView,
-                        "Subscribed to " + organization.getName(),
-                        Snackbar.LENGTH_LONG)
-                        .show();
+                us.postSubscribe(viewHolder, name);
             }
 
             @Override
             protected void postUnsubscribe() {
-                super.postUnsubscribe();
                 notifyItemChanged(viewHolder.getAdapterPosition());
-                Snackbar.make(
-                        viewHolder.itemView,
-                        "Unsubscribed from " + organization.getName(),
-                        Snackbar.LENGTH_LONG)
-                        .show();
+                us.postSubscribe(viewHolder, name);
             }
 
             @Override
             protected void onCancel() {
-                super.onCancel();
-                Snackbar.make(
-                        viewHolder.itemView,
-                        "Action cancelled.",
-                        Snackbar.LENGTH_LONG)
-                        .show();
+                us.onCancel(viewHolder);
             }
         };
     }
+
 }

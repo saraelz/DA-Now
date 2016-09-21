@@ -6,11 +6,15 @@ import android.util.Log;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.apache.commons.collections4.map.ListOrderedMap;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.Map;
 
 import edu.deanza.calendar.util.Callback;
@@ -21,14 +25,26 @@ import static com.google.android.gms.internal.zzs.TAG;
  * Created by karinaantonio on 8/29/16.
  */
 
-abstract class FirebaseRepository<T> {
+abstract class FirebaseRepository<T> implements Serializable {
 
-    DatabaseReference root;
-    Query currentQuery;
+    transient DatabaseReference root;
+    transient Query currentQuery;
     private final ListOrderedMap<String, T> currentData = new ListOrderedMap<>();
-    private AsyncTask runningTask;
+    private transient AsyncTask runningTask;
 
     private static final String THIS_CLASS_TAG = FirebaseRepository.class.getName();
+
+    {
+        initializeRoot();
+    }
+
+    void initializeRoot() {
+        this.root = FirebaseDatabase.getInstance().getReference().child(getRootName());
+    }
+
+    abstract String getRootName();
+
+    abstract DataMapper<T> getMapper();
 
     class RecyclingEventQueryListener implements ValueEventListener {
 
@@ -153,6 +169,10 @@ abstract class FirebaseRepository<T> {
         currentQuery.addListenerForSingleValueEvent(new RecyclingEventLocationListener(callback));
     }
 
-    abstract DataMapper<T> getMapper();
+    // For serialization; copy and paste in each subclass
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        initializeRoot();
+    }
 
 }

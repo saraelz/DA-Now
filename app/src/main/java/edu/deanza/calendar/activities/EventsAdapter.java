@@ -1,62 +1,25 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
-import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
-import edu.deanza.calendar.R;
 import edu.deanza.calendar.OnClickSubscribeTimeDialog;
+import edu.deanza.calendar.R;
 import edu.deanza.calendar.SubscribeOnClickListener;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.domain.models.Meeting;
 
-public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.EventItemViewHolder> {
+public class EventsAdapter extends MeetingsAdapter {
 
-    public EventsAdapter(Context context, List<Event> subscribables, SubscriptionDao subscriptionDao) {
+    public EventsAdapter(Context context, List<Meeting> subscribables, SubscriptionDao subscriptionDao) {
         super(context, subscribables, subscriptionDao);
-    }
-
-    //which event is closest to today's date?
-    public int getTodayIndex() {
-
-        Date today = new Date();
-
-        for (int i = 0; i < subscribables.size(); i++) {
-            Date compare = subscribables.get(i).getStart().toDate();
-            if (compare.equals(today) || compare.after(today)){
-                return i + 1;
-            }
-        }
-
-        return subscribables.size(); //try also subscribables.size{}-1;
-    }
-
-    // pre: newEvent - the event that we want to add to the adapter
-    // post: returns true if parameter's month does not match  month of previous event in adapter
-    // purpose: indicates whether we need to create a new "month" divider
-    public boolean needsNewDivider(Event newEvent) {
-        if (newEvent == null)
-            return false;
-
-        if (subscribables.size() <= 0)
-            return true;
-
-        Event lastEvent = (Event) subscribables.get(subscribables.size()-1);
-        if (lastEvent.getEnd().getMonthOfYear() != newEvent.getStart().getMonthOfYear())
-            return true;
-        else
-            return false;
     }
 
     // manage ClickListener data
@@ -70,20 +33,19 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
         clickListener = listener;
     }
 
-    // based on item_card_event
-    public static class EventItemViewHolder extends SubscribableAdapter.SubscribableItemViewHolder {
+    public static class EventItemViewHolder extends MeetingsAdapter.MeetingItemViewHolder {
 
         private TextView eventName;
-        private TextView eventTime;
-        private TextView eventDayOfMonth;
-        private TextView eventWeekday;
+        private TextView eventOrganizations;
 
         public EventItemViewHolder(View containingItem) {
             super(containingItem);
-            eventName = (TextView) containingItem.findViewById(R.id.event_name);
-            eventTime = (TextView) containingItem.findViewById(R.id.event_time);
-            eventDayOfMonth = (TextView) containingItem.findViewById(R.id.event_dom);
-            eventWeekday = (TextView) containingItem.findViewById(R.id.event_weekday);
+            eventName = (TextView) containingItem.findViewById(R.id.item_event_name);
+            eventOrganizations = (TextView) containingItem.findViewById(R.id.item_event_organizations);
+
+            meetingTime = (TextView) containingItem.findViewById(R.id.item_event_time);
+            meetingDayOfMonth = (TextView) containingItem.findViewById(R.id.item_event_dom);
+            meetingWeekday = (TextView) containingItem.findViewById(R.id.item_event_dow);
         }
 
         @Override
@@ -103,9 +65,11 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
 
 
     @Override
-    public void onBindViewHolder(EventItemViewHolder viewHolder, int position) {
-        super.onBindViewHolder(viewHolder, position);
-        final Event event = subscribables.get(position);
+    public void onBindViewHolder(MeetingItemViewHolder meetingViewHolder, int position) {
+        super.onBindViewHolder(meetingViewHolder, position);
+
+        Event event = (Event) subscribables.get(position);
+        EventItemViewHolder viewHolder = (EventItemViewHolder) meetingViewHolder;
 
         //set onClickListener for item
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -118,15 +82,20 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
 
         viewHolder.eventName.setText(event.getName());
 
-        DateTime startDate = event.getStart();
-        DateTime endDate = event.getEnd();
-        DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("h:mm aa");
-        viewHolder.eventTime.setText(timeFormatter.print(startDate) + " - " + timeFormatter.print(endDate));
-
-        viewHolder.eventDayOfMonth.setText(String.valueOf(startDate.getDayOfMonth()));
-
-        DateTimeFormatter weekdayFormatter = DateTimeFormat.forPattern("EEE");
-        viewHolder.eventWeekday.setText(weekdayFormatter.print(startDate));
+        Iterator<String> i = event.getOrganizationNames().iterator();
+        if (i.hasNext()) {
+            StringBuilder organizationNamesList = new StringBuilder();
+            organizationNamesList.append(i.next());
+            while (i.hasNext()) {
+                organizationNamesList.append(", ");
+                organizationNamesList.append(i.next());
+            }
+            viewHolder.eventOrganizations.setText(organizationNamesList.toString());
+        }
+        else {
+            viewHolder.itemView.findViewById(R.id.item_event_organizations_label)
+                    .setVisibility(View.INVISIBLE);
+        }
 
         /*if(position > 0 && position <= events.size()){
             Event previousEvent = events.get(position-1); // gives error
@@ -142,39 +111,28 @@ public class EventsAdapter extends SubscribableAdapter<Event, EventsAdapter.Even
 
     //subscribe to an event
     @Override
-    SubscribeOnClickListener getSubscribeOnClickListener(final EventItemViewHolder viewHolder,
-                                                         final Event event) {
+    SubscribeOnClickListener getSubscribeOnClickListener(final MeetingItemViewHolder viewHolder,
+                                                         Meeting meeting) {
+        Event event = (Event) meeting;
+        final String name = event.getName();
+        final EventsAdapter us = this;
+
         return new OnClickSubscribeTimeDialog(context, event, subscriptionDao) {
             @Override
             protected void postSubscribe() {
-                super.postSubscribe();
-                notifyItemChanged(viewHolder.getAdapterPosition());
-                Snackbar.make(viewHolder.itemView,
-                        "Subscribed to " + event.getName(),
-                        Snackbar.LENGTH_LONG)
-                        .show();
+                us.postSubscribe(viewHolder, name);
             }
 
             @Override
             protected void postUnsubscribe() {
-                super.postUnsubscribe();
-                notifyItemChanged(viewHolder.getAdapterPosition());
-                Snackbar.make(
-                        viewHolder.itemView,
-                        "Unsubscribed from " + event.getName(),
-                        Snackbar.LENGTH_LONG)
-                        .show();
+                us.postUnsubscribe(viewHolder, name);
             }
 
             @Override
             protected void onCancel() {
-                super.onCancel();
-                Snackbar.make(
-                        viewHolder.itemView,
-                        "Action cancelled.",
-                        Snackbar.LENGTH_LONG)
-                        .show();
+                us.onCancel(viewHolder);
             }
         };
     }
+
 }
