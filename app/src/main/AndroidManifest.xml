@@ -14,18 +14,20 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".activities.EventsDisplay"
+        <activity
+            android:name=".activities.MainDisplay"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.OrganizationInfo" />
+        <activity android:name=".activities.EventInfo" />
         <activity
-            android:name=".activities.OrganizationInfo"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.OrganizationsList"/>
+            android:name=".EventInfo"
+            android:label="@string/title_activity_event_info"></activity>
     </application>
 
 </manifest>
