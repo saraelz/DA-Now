@@ -8,9 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import edu.deanza.calendar.activities.MeetingsAdapter;
@@ -18,10 +15,10 @@ import edu.deanza.calendar.activities.MeetingsAdapter;
 /**
  * @author Gabriele Mariotti (gabri.mariotti@gmail.com)
  */
-public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<MeetingsAdapter.MeetingItemViewHolder> {
+public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context mContext;
-    private static final int SECTION_TYPE = 0;
+    private static final int SECTION_TYPE = 100;
 
     private boolean mValid = true;
     private int mSectionResourceId;
@@ -68,7 +65,7 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Mee
     }
 
 
-    public static class SectionViewHolder extends MeetingsAdapter.MeetingItemViewHolder {
+    public static class SectionViewHolder extends RecyclerView.ViewHolder {
 
         public TextView title;
 
@@ -79,21 +76,21 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Mee
     }
 
     @Override
-    public MeetingsAdapter.MeetingItemViewHolder onCreateViewHolder(ViewGroup parent, int typeView) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int typeView) {
         if (typeView == SECTION_TYPE) {
             final View view = LayoutInflater.from(mContext).inflate(mSectionResourceId, parent, false);
             return new SectionViewHolder(view,mTextResourceId);
         }else{
-            return mBaseAdapter.onCreateViewHolder(parent, typeView -1);
+            return mBaseAdapter.onCreateViewHolder(parent, toOriginalViewType(typeView));
         }
     }
 
     @Override
-    public void onBindViewHolder(MeetingsAdapter.MeetingItemViewHolder sectionViewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder sectionOrContentViewHolder, int position) {
         if (isSectionHeaderPosition(position)) {
-            ((SectionViewHolder)sectionViewHolder).title.setText(mSections.get(position).title);
+            ((SectionViewHolder) sectionOrContentViewHolder).title.setText(mSections.get(position).title);
         }else{
-            mBaseAdapter.onBindViewHolder(sectionViewHolder,sectionedPositionToPosition(position));
+            mBaseAdapter.onBindViewHolder((MeetingsAdapter.MeetingItemViewHolder) sectionOrContentViewHolder,sectionedPositionToPosition(position));
         }
 
     }
@@ -102,9 +99,16 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Mee
     public int getItemViewType(int position) {
         return isSectionHeaderPosition(position)
                 ? SECTION_TYPE
-                : mBaseAdapter.getItemViewType(sectionedPositionToPosition(position)) +1 ;
+                : toNonSectionViewType(position);
     }
 
+    public int toNonSectionViewType(int position) {
+        return mBaseAdapter.getItemViewType(sectionedPositionToPosition(position)) + SECTION_TYPE;
+    }
+
+    public int toOriginalViewType(int viewType) {
+        return viewType - SECTION_TYPE;
+    }
 
     public static class Section {
         int firstPosition;

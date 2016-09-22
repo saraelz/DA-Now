@@ -1,7 +1,6 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import java.util.List;
 
 import edu.deanza.calendar.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.SimpleSectionedRecyclerViewAdapter;
 import edu.deanza.calendar.SubscribeOnClickListener;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
@@ -116,11 +114,9 @@ public class EventsAdapter extends MeetingsAdapter {
     // post: returns true if parameter's month does not match  month of previous event in adapter
     // purpose: indicates whether we need to create a new "month" divider
     public boolean needsNewDivider(Event newEvent) {
-        if (newEvent == null)
-            return false;
-
-        if (subscribables.size() <= 0)
+        if (subscribables.size() == 0) {
             return true;
+        }
 
         Event lastEvent = (Event) subscribables.get(subscribables.size()-1);
         if (lastEvent.getEnd().getMonthOfYear() != newEvent.getStart().getMonthOfYear())

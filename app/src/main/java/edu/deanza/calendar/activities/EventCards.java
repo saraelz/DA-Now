@@ -1,7 +1,6 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -82,7 +81,6 @@ public class EventCards extends Fragment {
 //            public void onItemClick(int position, View v) {
 //            }
 //        });
-//        cardView.setAdapter(adapter);
 
         adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
             @Override
