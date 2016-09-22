@@ -59,17 +59,13 @@
 
         <ImageButton
             android:id="@+id/item_regular_meeting_subscribe"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            style="@style/Icon"
             android:layout_alignParentTop="false"
             android:layout_alignParentBottom="@id/item_regular_meeting_time"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
             android:src="@drawable/ic_favorite_border"
-            android:background="@android:color/transparent"
-            android:tint="@color/colorPrimaryDark"
-            android:scaleType="fitCenter"
             android:clickable="true"/>
 
     </RelativeLayout>

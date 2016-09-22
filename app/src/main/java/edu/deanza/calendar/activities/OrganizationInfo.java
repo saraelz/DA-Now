@@ -1,5 +1,6 @@
 package edu.deanza.calendar.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -7,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -15,6 +18,8 @@ import edu.deanza.calendar.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.domain.models.Club;
+import edu.deanza.calendar.domain.models.Day;
 import edu.deanza.calendar.domain.models.Event;
 import edu.deanza.calendar.domain.models.Meeting;
 import edu.deanza.calendar.domain.models.Organization;
@@ -39,7 +44,8 @@ public class OrganizationInfo extends AppCompatActivity {
 
         Intent intent = getIntent();
         organization = (Organization) intent.getSerializableExtra("edu.deanza.calendar.models.Organization");
-        subscriptionDao = new FirebaseSubscriptionDao(intent.getStringExtra("UID"));
+        final String UID = intent.getStringExtra("UID");
+        subscriptionDao = new FirebaseSubscriptionDao(UID);
 
         setTitle(organization.getName());
 
@@ -53,16 +59,31 @@ public class OrganizationInfo extends AppCompatActivity {
         subscribeButton.setOnClickListener(new OnClickOrganizationSubscribeDialog(this, organization, subscriptionDao) {
             @Override
             protected void postSubscribe() {
-                super.postSubscribe();
                 subscribeButton.setImageResource(R.drawable.ic_favorite);
             }
 
             @Override
             protected void postUnsubscribe() {
-                super.postUnsubscribe();
                 subscribeButton.setImageResource(R.drawable.ic_favorite_border);
             }
         });
+
+        TextView meetingLocation = (TextView) findViewById(R.id.organization_info_location);
+        meetingLocation.setText(organization.getLocation());
+
+        TextView description = (TextView) findViewById(R.id.organization_info_description);
+        description.setText(organization.getDescription());
+
+        TextView meetingDays = (TextView) findViewById(R.id.organization_info_meeting_days);
+        if (organization instanceof Club) {
+            for (Day day : ((Club) organization).getMeetingDays()) {
+                meetingDays.setText(day.fullName() + 's');
+            }
+        }
+        else {
+            TextView meetingDaysLabel = (TextView) findViewById(R.id.organization_info_meeting_days_label);
+            meetingDaysLabel.setVisibility(View.INVISIBLE);
+        }
 
         recyclerView = (RecyclerView) findViewById(R.id.organization_info_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -71,12 +92,17 @@ public class OrganizationInfo extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
+        final Context context = this;
+
         adapter = new OrganizationInfoAdapter(this, new ArrayList<Meeting>(), subscriptionDao, organization);
         adapter.setHasStableIds(true);
         adapter.setOnEventClickListener(new EventsAdapter.ClickListener() {
             @Override
             public void onItemClick(Event clickedEvent) {
-                // TODO: Intent to EventInfo
+                Intent intent = new Intent(context, EventInfo.class);
+                intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
+                intent.putExtra("UID", UID);
+                startActivity(intent);
             }
         });
         recyclerView.setAdapter(adapter);

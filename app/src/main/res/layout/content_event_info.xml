@@ -14,62 +14,64 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="5sp"
+        android:padding="5dp"
         android:layout_gravity="top"
         android:layout_marginLeft="@dimen/text_margin"
         android:layout_marginRight="@dimen/text_margin"
         android:layout_marginTop="@dimen/text_margin">
 
         <ImageView
-            android:layout_width="70dp"
-            android:layout_height="29dp"
-            android:src="@drawable/ic_event"/>
+            style="@style/Icon"
+            android:src="@drawable/ic_event"
+            android:layout_marginRight="10dp"
+            android:scaleType="center"/>
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:id="@+id/event_time"
-            android:text="Mon, Sept 2 at 6 pm"
-            android:textStyle="bold"/>
+            style="@style/EventInfoField"
+            android:textStyle="bold"
+            tools:text="Monday, September 2 at 6 pm"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="5sp"
+        android:padding="5dp"
         android:layout_gravity="top"
         android:layout_marginLeft="@dimen/text_margin"
         android:layout_marginRight="@dimen/text_margin"
-        android:layout_marginTop="@dimen/text_margin"
-        android:weightSum="1">
+        android:layout_marginBottom="5dp">
 
         <ImageView
-            android:layout_width="65dp"
-            android:layout_height="29dp"
-            android:src="@drawable/ic_location"/>
+            style="@style/Icon"
+            android:src="@drawable/ic_location"
+            android:layout_marginRight="10dp"
+            android:scaleType="center" />
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
             android:id="@+id/event_location_label"
+            style="@style/EventInfoField"
             android:text="Location: "/>
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
             android:id="@+id/event_location"
-            android:text="L83 and L36"
-            android:textStyle="bold" />
+            style="@style/EventInfoField"
+            android:textStyle="bold"
+            tools:text="L83 and L36"/>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/event_description"
-        android:text="Event description"
-        android:padding="5sp"
-        android:elegantTextHeight="false"
-        android:layout_marginLeft="@dimen/text_margin"
-        android:layout_marginRight="@dimen/text_margin"
-        android:layout_marginTop="5dp"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/event_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_marginRight="@dimen/text_margin"
+            android:layout_marginTop="@dimen/text_margin"
+            android:padding="5sp"
+            tools:text="Guaranteed admission to the University of California (UC) with a Transfer Admission Guarantee (TAG).\n\nSix UC campuses offer a Transfer Admission Guarantee (TAG) to California community college students who meet program-specific requirements.\n   - Davis\n   - Irvine\n   - Merced\n   - Riverside\n   - Santa Barbara\n   - Santa Cruz\n\nProspective UC TAG applicants are encouraged to attend a UC TAG Information Session to help determine their TAG-eligibility for transfer to UC in Fall 2017.\n\nUC TAG Information Sessions include:\n\n- An overview of the UC Transfer Admission Planner (TAP)and the UC TAG program (with a special focus on UC Davis TAG requirements)\n\n- An overview of UC admission requirements and campus-specific TAG criteria\n\n- UC TAG procedures and deadlines at De Anza College including student responsibilities\n\n- Questions &amp; Answers\n\nRead important details about UC TAG Information Sessions at http://www.deanza.edu/transfer/taa_tag_main/tagevents.html\n\nSIGN-UP FOR A UC TAG INFORMATION SESSION at http://daappointments.deanza.edu/transferworkshop/eSARS.asp"
+            android:textIsSelectable="true"/>
+    </ScrollView>
 
 </LinearLayout>

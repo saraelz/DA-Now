@@ -1,6 +1,7 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -75,11 +76,10 @@ public class EventCards extends Fragment {
         adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
             @Override
             public void onItemClick(Event clickedEvent) {
-                Toast.makeText(context, "Event clicked", Toast.LENGTH_LONG).show();
-                //Intent intent = new Intent(context, EventInfo.class);
-                //intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
-                //intent.putExtra("UID", UID);
-                //startActivity(intent);
+                Intent intent = new Intent(context, EventInfo.class);
+                intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
+                intent.putExtra("UID", UID);
+                startActivity(intent);
 
             }
         });

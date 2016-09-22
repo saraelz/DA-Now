@@ -13,7 +13,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 //package org.ocpsoft.prettytime.i18n;
 
-import edu.deanza.calendar.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
@@ -34,33 +33,41 @@ public class EventInfo extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //get event from passed intent
         Intent intent = getIntent();
         event = (Event) intent.getSerializableExtra("edu.deanza.calendar.models.Event");
         subscriptionDao = new FirebaseSubscriptionDao(intent.getStringExtra("UID"));
 
-        //set page title
         setTitle(event.getName());
 
-        //set location data
-        TextView locationView = (TextView) findViewById(R.id.event_location);
-        locationView.setText(event.getLocation());
+        TextView location = (TextView) findViewById(R.id.event_location);
+        location.setText(event.getLocation());
 
-        //set time data
-        TextView timeView = (TextView) findViewById(R.id.event_time);
-        timeView.setText(print_date());
+        TextView time = (TextView) findViewById(R.id.event_time);
+        time.setText(print_date());
+
+        TextView description = (TextView) findViewById(R.id.event_description);
+        description.setText(event.getDescription());
 
         //new PrettyTime().format(event.getStart());
 
-        /*initialize button
-        FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
         if (event.getSubscription() == null) {
             subscribeButton.setImageResource(R.drawable.ic_favorite_border);
         }
         else {
             subscribeButton.setImageResource(R.drawable.ic_favorite);
         }
-        subscribeButton.setOnClickListener(new OnClickSubscribeTimeDialog(this, event, subscriptionDao));*/
+        subscribeButton.setOnClickListener(new OnClickSubscribeTimeDialog(this, event, subscriptionDao) {
+            @Override
+            protected void postSubscribe() {
+                subscribeButton.setImageResource(R.drawable.ic_favorite);
+            }
+
+            @Override
+            protected void postUnsubscribe() {
+                subscribeButton.setImageResource(R.drawable.ic_favorite_border);
+            }
+        });
 
         /*
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
@@ -75,8 +82,8 @@ public class EventInfo extends AppCompatActivity {
         DateTime start = event.getStart();
         DateTime end = event.getEnd();
 
-        DateTimeFormatter date_fmt = DateTimeFormat.forPattern("EEE, MMM d");
-        DateTimeFormatter time_fmt = DateTimeFormat.forPattern("h:ss aa");
+        DateTimeFormatter date_fmt = DateTimeFormat.forPattern("EEEE, MMM d");
+        DateTimeFormatter time_fmt = DateTimeFormat.forPattern("h:ss aaaa");
 
         if (start.withTimeAtStartOfDay().isBefore(end.withTimeAtStartOfDay())) {
             return date_fmt.print(start) + " at " + time_fmt.print(start) + " to " + date_fmt.print(end) + " at " + time_fmt.print(end);
