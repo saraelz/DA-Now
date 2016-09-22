@@ -23,7 +23,6 @@ public class EventsAdapter extends MeetingsAdapter {
         super(context, subscribables, subscriptionDao);
     }
 
-    // manage ClickListener data
     private static ClickListener clickListener;
 
     public interface ClickListener {
@@ -72,14 +71,12 @@ public class EventsAdapter extends MeetingsAdapter {
         final Event event = (Event) subscribables.get(position);
         EventItemViewHolder viewHolder = (EventItemViewHolder) meetingViewHolder;
 
-        //set onClickListener for item
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 clickListener.onItemClick(event);
             }
         });
-
 
         viewHolder.eventName.setText(event.getName());
 
@@ -98,36 +95,25 @@ public class EventsAdapter extends MeetingsAdapter {
                     .setVisibility(View.INVISIBLE);
         }
 
-        /*if(position > 0 && position <= events.size()){
-            Event previousEvent = events.get(position-1); // gives error
-            //if previous event has same date, initialize string to empty
-            //if previous event has different month, start a new section
-            if (previousEvent.getStart().toDate() == event.getStart().toDate()){
-                viewHolder.eventDayOfMonth.setText("");
-                viewHolder.eventWeekday.setText("");
-            }
-        }*/
-
     }
 
-    // pre: newEvent - the event that we want to add to the adapter
-    // post: returns true if parameter's month does not match  month of previous event in adapter
-    // purpose: indicates whether we need to create a new "month" divider
-    public boolean needsNewDivider(Event newEvent) {
-        if (subscribables.size() == 0) {
+    public boolean willAddNewMonth(Event newEvent) {
+        int numberOfEvents = subscribables.size();
+
+        if (numberOfEvents == 0) {
             return true;
         }
 
-        Event lastEvent = (Event) subscribables.get(subscribables.size()-1);
-        if (lastEvent.getEnd().getMonthOfYear() != newEvent.getStart().getMonthOfYear())
+        Event lastEvent = (Event) subscribables.get(numberOfEvents - 1);
+        if (lastEvent.getEnd().getMonthOfYear() != newEvent.getStart().getMonthOfYear()) {
             return true;
-        else
+        }
+        else {
             return false;
+        }
     }
 
-    //which event is closest to today's date?
-    public int getTodayIndex() {
-
+    public int getSoonestIndex() {
         Date today = new Date();
 
         for (int i = 0; i < subscribables.size(); i++) {
@@ -137,10 +123,9 @@ public class EventsAdapter extends MeetingsAdapter {
             }
         }
 
-        return subscribables.size(); //try also subscribables.size{}-1;
+        return subscribables.size() - 1;
     }
 
-    //subscribe to an event
     @Override
     SubscribeOnClickListener getSubscribeOnClickListener(final MeetingItemViewHolder viewHolder,
                                                          Meeting meeting) {

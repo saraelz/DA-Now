@@ -50,11 +50,8 @@ public class EventCards extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        //set toolbar icons
         setHasOptionsMenu(true);
 
-        // TODO: Give UID to cards fragment
         final Context context = getContext();
         final String UID = new UidGenerator(context, THIS_TAG).generate();
         subscriptionDao = new FirebaseSubscriptionDao(UID);
@@ -73,19 +70,12 @@ public class EventCards extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         cardView.setLayoutManager(layoutManager);
 
-        adapter = new EventsAdapter(getContext(), new ArrayList<Meeting>(), subscriptionDao);
+        adapter = new EventsAdapter(context, new ArrayList<Meeting>(), subscriptionDao);
         adapter.setHasStableIds(true);
-        // TODO: Intent to EventInfo
-//        adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
-//            @Override
-//            public void onItemClick(int position, View v) {
-//            }
-//        });
-
         adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
             @Override
             public void onItemClick(Event clickedEvent) {
-                Toast.makeText(getContext(), "Event clicked", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Event clicked", Toast.LENGTH_LONG).show();
                 //Intent intent = new Intent(context, EventInfo.class);
                 //intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
                 //intent.putExtra("UID", UID);
@@ -94,76 +84,56 @@ public class EventCards extends Fragment {
             }
         });
 
-        //This is the code to provide a sectioned list
-        final List<SimpleSectionedRecyclerViewAdapter.Section> sections =
-                new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
+        final SimpleSectionedRecyclerViewAdapter sectionedAdapter = new SimpleSectionedRecyclerViewAdapter(
+                context,
+                R.layout.section,
+                R.id.section_text,
+                adapter
+        );
+        cardView.setAdapter(sectionedAdapter);
 
-        //Add my adapter to the sectionAdapter
-        final SimpleSectionedRecyclerViewAdapter sectionedAdapter = new
-                SimpleSectionedRecyclerViewAdapter(getContext(),R.layout.section,R.id.section_text,adapter);
-
+        final List<SimpleSectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
         repository.all(new Callback<Event>() {
             @Override
             protected void call(Event data) {
-                if (adapter.needsNewDivider(data)) {
+                if (adapter.willAddNewMonth(data)) {
                     int newIndex = adapter.getItemCount();
                     int newMonth = data.getStart().getMonthOfYear();
-                    sections.add(new SimpleSectionedRecyclerViewAdapter.Section(newIndex, new DateFormatSymbols().getMonths()[newMonth-1]));
+                    sections.add(new SimpleSectionedRecyclerViewAdapter.Section(
+                            newIndex,
+                            new DateFormatSymbols()
+                                    .getMonths()
+                                    [newMonth-1])
+                    );
                     sectionedAdapter.setSections(sections);
                 }
-
                 adapter.add(data);
             }
         });
 
-        //Apply this adapter to the RecyclerView
-        cardView.setAdapter(sectionedAdapter);
-
-        /*
-        adapter.setHasStableIds(true);
-        // TODO: Intent to EventInfo
-        adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
-            @Override
-            public void onItemClick(Event clickedEvent) {
-                Toast.makeText(getContext(), "Home button pressed", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(context, EventInfo.class);
-                //intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
-                //intent.putExtra("UID", UID);
-                startActivity(intent);
-
-            }
-        });
-        cardView.setAdapter(adapter); */
         return view;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    //set toolbar icons
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.events_toolbar_menu, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                //Toast.makeText(getContext(), "Home button pressed", Toast.LENGTH_LONG).show();
-                return true;
+        switch (item.getItemId()) {
             case R.id.menu_today:
-                //scroll to today's event or closest upcoming events
-                int today = adapter.getTodayIndex();
-                if (today != -1)
-                    layoutManager.scrollToPositionWithOffset(today, 20);
-                else
-                    Toast.makeText(getContext(), "No upcoming events.", Toast.LENGTH_LONG).show();
-                return true;
+                return scrollToSoonestEvent();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean scrollToSoonestEvent() {
+        int soonestIndex = adapter.getSoonestIndex();
+        if (soonestIndex != -1)
+            layoutManager.scrollToPositionWithOffset(soonestIndex, 0);
+        else
+            Toast.makeText(getContext(), "No upcoming events.", Toast.LENGTH_LONG).show();
+        return true;
     }
 }
