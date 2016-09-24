@@ -7,7 +7,7 @@ import android.view.View;
 
 import java.util.concurrent.TimeUnit;
 
-import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.Subscribable;
 import edu.deanza.calendar.domain.models.Subscription;
 
@@ -100,16 +100,14 @@ public class OnClickSubscribeTimeDialog implements SubscribeOnClickListener {
     }
 
     public void subscribe(Subscription subscription) {
-        subscriptionDao.add(subscription);
-        subscribable.subscribe(subscription);
+        subscribable.subscribe(subscription, subscriptionDao);
         postSubscribe();
     }
 
     protected void postSubscribe() {}
 
     public void unsubscribe() {
-        subscriptionDao.remove(subscribable.getSubscription());
-        subscribable.unsubscribe();
+        subscribable.unsubscribe(subscriptionDao);
         postUnsubscribe();
     }
 

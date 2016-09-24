@@ -17,7 +17,7 @@ import edu.deanza.calendar.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.SimpleSectionedRecyclerViewAdapter;
 import edu.deanza.calendar.SubscribeOnClickListener;
-import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
 import edu.deanza.calendar.domain.models.Meeting;
 import edu.deanza.calendar.domain.models.Organization;

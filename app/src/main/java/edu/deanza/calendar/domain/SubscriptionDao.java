@@ -1,4 +1,4 @@
-package edu.deanza.calendar.dal;
+package edu.deanza.calendar.domain;
 
 import java.util.Map;
 

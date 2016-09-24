@@ -33,12 +33,13 @@ public class SubscriptionMapper implements DataMapper<Subscription>, Serializabl
 
         Subscription s;
         if (key.contains("|")) {
-            // s is an Event subscription
+            // s is an Meeting subscription
             s = new Subscription(key, notifyBefore, timeUnit);
         }
         else {
             boolean notifyMeetings = (boolean) rawData.get("notifyMeetings");
-            s = new OrganizationSubscription(key, notifyBefore, timeUnit, notifyMeetings);
+            boolean notifyEvents = (boolean) rawData.get("notifyEvents");
+            s = new OrganizationSubscription(key, notifyBefore, timeUnit, notifyMeetings, notifyEvents);
         }
 
         return s;
@@ -66,6 +67,7 @@ public class SubscriptionMapper implements DataMapper<Subscription>, Serializabl
 
         if (subscription instanceof OrganizationSubscription) {
             rawMap.put("notifyMeetings", ((OrganizationSubscription) subscription).isNotifyingMeetings());
+            rawMap.put("notifyEvents", ((OrganizationSubscription) subscription).isNotifyingEvents());
         }
 
         return rawMap;

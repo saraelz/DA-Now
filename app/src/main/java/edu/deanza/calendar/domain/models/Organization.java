@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.EventRepository;
 import edu.deanza.calendar.domain.Subscribable;
 import edu.deanza.calendar.util.Callback;
@@ -98,13 +99,69 @@ public class Organization implements Subscribable, Serializable {
         subscribe((OrganizationSubscription) subscription);
     }
 
-    public void subscribe(OrganizationSubscription subscription) {
+    @Override
+    public void subscribe(Subscription subscription, SubscriptionDao dao) {
+        subscribe((OrganizationSubscription) subscription, dao);
+    }
+
+    public void subscribe(final OrganizationSubscription subscription) {
         this.subscription = subscription;
+        if (subscription.isNotifyingEvents()) {
+            getEvents(new Callback<Event>() {
+                @Override
+                protected void call(Event data) {
+                    data.organizationSubscribe(subscription);
+                }
+            });
+        }
+        if (subscription.isNotifyingMeetings()) {
+            for (RegularMeeting meeting : meetings) {
+                meeting.organizationSubscribe(subscription);
+            }
+        }
+    }
+
+    public void subscribe(final OrganizationSubscription subscription, final SubscriptionDao dao) {
+        this.subscription = subscription;
+        dao.add(subscription);
+        if (subscription.isNotifyingEvents()) {
+            getEvents(new Callback<Event>() {
+                @Override
+                protected void call(Event data) {
+                    data.organizationSubscribe(subscription, dao);
+                }
+            });
+        }
+        if (subscription.isNotifyingMeetings()) {
+            for (RegularMeeting meeting : meetings) {
+                meeting.organizationSubscribe(subscription, dao);
+            }
+        }
     }
 
     @Override
     public void unsubscribe() {
         this.subscription = null;
+    }
+
+    // TODO: option to unsubscribe from Org w/o removing all current subscriptions--just stop future ones
+    @Override
+    public void unsubscribe(final SubscriptionDao dao) {
+        dao.remove(subscription);
+        if (subscription.isNotifyingEvents()) {
+            getEvents(new Callback<Event>() {
+                @Override
+                protected void call(Event data) {
+                    data.unsubscribe(dao);
+                }
+            });
+        }
+        if (subscription.isNotifyingMeetings()) {
+            for (RegularMeeting meeting : meetings) {
+                meeting.unsubscribe(dao);
+            }
+        }
+        unsubscribe();
     }
 
     @Override

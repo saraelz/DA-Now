@@ -20,7 +20,7 @@ import edu.deanza.calendar.DividerItemDecoration;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseOrganizationRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
-import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.OrganizationRepository;
 import edu.deanza.calendar.domain.models.Organization;
 import edu.deanza.calendar.domain.models.Subscription;

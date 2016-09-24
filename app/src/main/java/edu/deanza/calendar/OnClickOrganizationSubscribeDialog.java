@@ -3,7 +3,7 @@ package edu.deanza.calendar;
 import android.content.Context;
 import android.view.View;
 
-import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Organization;
 import edu.deanza.calendar.domain.models.OrganizationSubscription;
 import edu.deanza.calendar.util.OnClickMultiChoiceDialog;
@@ -27,7 +27,7 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
 
     @Override
     protected String[] getOptions() {
-        return new String[] {"Main Events", "Meetings"};
+        return new String[] {"Events", "Meetings"};
     }
 
     @Override
@@ -43,13 +43,11 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
     @Override
     protected void onClickedOkWithSelection() {
         // TODO: Discuss: should subscribing to meetings only be an option?
+        final int SUBSCRIBE_TO_EVENTS_OPTION_INDEX = 0;
         final int SUBSCRIBE_TO_MEETINGS_OPTION_INDEX = 1;
-        if (getOptionStates()[SUBSCRIBE_TO_MEETINGS_OPTION_INDEX]) {
-            subscribe(true);
-        }
-        else {
-            subscribe(false);
-        }
+        boolean optionStates[] = getOptionStates();
+        subscribe(optionStates[SUBSCRIBE_TO_EVENTS_OPTION_INDEX],
+                optionStates[SUBSCRIBE_TO_MEETINGS_OPTION_INDEX]);
     }
 
     @Override
@@ -72,9 +70,10 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
     protected void onCancel() {}
 
 
-    private void subscribe(boolean withMeetings) {
+    private void subscribe(boolean withEvents, boolean withMeetings) {
         OrganizationSubscription.Builder builder = new OrganizationSubscription.Builder();
-        builder.notifyMeetings(withMeetings);
+        builder.notifyEvents(withEvents)
+                .notifyMeetings(withMeetings);
         final OnClickOrganizationSubscribeDialog us = this;
         new OnClickSubscribeTimeDialog(context, organization, subscriptionDao, builder) {
             @Override

@@ -12,9 +12,8 @@ import java.util.Map;
 
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.SubscribeOnClickListener;
-import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.Subscribable;
-import edu.deanza.calendar.domain.models.Organization;
 import edu.deanza.calendar.domain.models.Subscription;
 
 /**
@@ -47,7 +46,10 @@ public abstract class SubscribableAdapter
             subscribablesAddedBeforeSubscriptionsReceived.add(subscribable);
         }
         else if (subscriptions.containsKey(key)) {
-            subscribable.subscribe(subscriptions.get(key));
+            // Because we're passing in the DAO, new Events/RegularMeetings retrieved will
+            // automatically become subscribed to in the database, if their Organization is
+            // subscribed
+            subscribable.subscribe(subscriptions.get(key), subscriptionDao);
         }
         subscribables.add(subscribable);
         notifyItemInserted(subscribables.size() - 1);
