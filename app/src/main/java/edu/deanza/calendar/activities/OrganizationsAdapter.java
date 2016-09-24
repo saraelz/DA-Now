@@ -92,7 +92,7 @@ public class OrganizationsAdapter
             @Override
             protected void postUnsubscribe() {
                 notifyItemChanged(viewHolder.getAdapterPosition());
-                us.postSubscribe(viewHolder, name);
+                us.postUnsubscribe(viewHolder, name);
             }
 
             @Override

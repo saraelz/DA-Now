@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,7 +48,8 @@ public class OrganizationInfo extends AppCompatActivity {
         final String UID = intent.getStringExtra("UID");
         subscriptionDao = new FirebaseSubscriptionDao(UID);
 
-        setTitle(organization.getName());
+        final String name = organization.getName();
+        setTitle(name);
 
         final FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
         if (organization.isSubscribed()) {
@@ -61,12 +63,20 @@ public class OrganizationInfo extends AppCompatActivity {
             protected void postSubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite);
                 adapter.notifyDataSetChanged();
+                Snackbar.make(subscribeButton,
+                        "Subscribed to " + name,
+                        Snackbar.LENGTH_LONG)
+                        .show();
             }
 
             @Override
             protected void postUnsubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite_border);
                 adapter.notifyDataSetChanged();
+                Snackbar.make(subscribeButton,
+                        "Unsubscribed from" + name,
+                        Snackbar.LENGTH_LONG)
+                        .show();
             }
         });
 

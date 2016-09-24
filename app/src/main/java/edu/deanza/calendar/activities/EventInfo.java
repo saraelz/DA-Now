@@ -2,6 +2,7 @@ package edu.deanza.calendar.activities;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +38,8 @@ public class EventInfo extends AppCompatActivity {
         event = (Event) intent.getSerializableExtra("edu.deanza.calendar.models.Event");
         subscriptionDao = new FirebaseSubscriptionDao(intent.getStringExtra("UID"));
 
-        setTitle(event.getName());
+        final String name = event.getName();
+        setTitle(name);
 
         TextView location = (TextView) findViewById(R.id.event_location);
         location.setText(event.getLocation());
@@ -61,11 +63,19 @@ public class EventInfo extends AppCompatActivity {
             @Override
             protected void postSubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite);
+                Snackbar.make(subscribeButton,
+                        "Subscribed to " + name,
+                        Snackbar.LENGTH_LONG)
+                        .show();
             }
 
             @Override
             protected void postUnsubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite_border);
+                Snackbar.make(subscribeButton,
+                        "Unsubscribed from " + name,
+                        Snackbar.LENGTH_LONG)
+                        .show();
             }
         });
 

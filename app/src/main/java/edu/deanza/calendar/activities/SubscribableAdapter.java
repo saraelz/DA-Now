@@ -125,12 +125,6 @@ public abstract class SubscribableAdapter
                 .show();
     }
 
-    void onCancel(VH viewHolder) {
-        Snackbar.make(
-                viewHolder.itemView,
-                "Action cancelled.",
-                Snackbar.LENGTH_LONG)
-                .show();
-    }
+    void onCancel(VH viewHolder) {}
 
 }
