@@ -14,6 +14,8 @@ public interface Subscribable {
 
     void unsubscribe();
 
+    boolean isSubscribed();
+
     String getKey();
 
 }

@@ -53,7 +53,7 @@ public class OrganizationInfo extends AppCompatActivity {
         setTitle(organization.getName());
 
         final FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
-        if (organization.getSubscription() == null) {
+        if (organization.isSubscribed()) {
             subscribeButton.setImageResource(R.drawable.ic_favorite_border);
         }
         else {

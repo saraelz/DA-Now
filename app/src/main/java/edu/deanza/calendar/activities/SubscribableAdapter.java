@@ -78,7 +78,7 @@ public abstract class SubscribableAdapter
 
     @Override
     public int getItemViewType(int position) {
-        return subscribables.get(position).getSubscription() == null ? NOT_SUBSCRIBED : SUBSCRIBED;
+        return subscribables.get(position).isSubscribed() ? SUBSCRIBED : NOT_SUBSCRIBED;
     }
 
     @Override
@@ -95,7 +95,7 @@ public abstract class SubscribableAdapter
     public void onBindViewHolder(VH viewHolder, int position) {
         T subscribable = subscribables.get(position);
         ImageButton subscribeButton = viewHolder.subscribeButton;
-        if (subscribable.getSubscription() == null) {
+        if (subscribable.isSubscribed()) {
             subscribeButton.setImageResource(R.drawable.ic_favorite_border);
         }
         else {

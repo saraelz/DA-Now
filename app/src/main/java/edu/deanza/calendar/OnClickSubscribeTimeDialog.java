@@ -41,7 +41,7 @@ public class OnClickSubscribeTimeDialog implements SubscribeOnClickListener {
 
     @Override
     public void onClick(View view) {
-        if (subscribable.getSubscription() == null) {
+        if (subscribable.isSubscribed()) {
             createSubscribeDialog();
         }
         else {

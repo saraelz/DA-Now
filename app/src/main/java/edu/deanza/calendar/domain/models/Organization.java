@@ -108,6 +108,11 @@ public class Organization implements Subscribable, Serializable {
     }
 
     @Override
+    public boolean isSubscribed() {
+        return subscription == null;
+    }
+
+    @Override
     public String getKey() {
         return name;
     }

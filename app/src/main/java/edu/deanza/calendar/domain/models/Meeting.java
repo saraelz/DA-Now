@@ -45,6 +45,11 @@ public abstract class Meeting implements Subscribable, Serializable {
     }
 
     @Override
+    public boolean isSubscribed() {
+        return subscription == null;
+    }
+
+    @Override
     public abstract String getKey();
 
 }

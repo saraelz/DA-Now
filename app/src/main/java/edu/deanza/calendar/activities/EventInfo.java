@@ -51,7 +51,7 @@ public class EventInfo extends AppCompatActivity {
         //new PrettyTime().format(event.getStart());
 
         final FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
-        if (event.getSubscription() == null) {
+        if (event.isSubscribed()) {
             subscribeButton.setImageResource(R.drawable.ic_favorite_border);
         }
         else {

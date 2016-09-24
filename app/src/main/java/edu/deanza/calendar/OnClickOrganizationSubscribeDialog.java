@@ -60,7 +60,7 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
 
     @Override
     public void onClick(final View subscribeButton) {
-        if (organization.getSubscription() == null) {
+        if (organization.isSubscribed()) {
             super.onClick(subscribeButton);
         }
         else {
