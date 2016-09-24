@@ -97,36 +97,6 @@ public class EventsAdapter extends MeetingsAdapter {
 
     }
 
-    public boolean willAddNewMonth(Event newEvent) {
-        int numberOfEvents = subscribables.size();
-
-        if (numberOfEvents == 0) {
-            return true;
-        }
-
-        Event lastEvent = (Event) subscribables.get(numberOfEvents - 1);
-        if (lastEvent.getEnd().getMonthOfYear() != newEvent.getStart().getMonthOfYear()) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    public int getSoonestIndex() {
-        Date today = new Date();
-
-        for (int i = 0; i < subscribables.size(); i++) {
-            Date compare = subscribables.get(i).getStart().toDate();
-            if (compare.equals(today) || compare.after(today)){
-                return i + 1;
-            }
-        }
-
-        return subscribables.size() - 1;
-    }
-
-    @Override
     SubscribeOnClickListener getSubscribeOnClickListener(final MeetingItemViewHolder viewHolder,
                                                          Meeting meeting) {
         Event event = (Event) meeting;

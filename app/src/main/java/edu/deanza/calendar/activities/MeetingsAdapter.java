@@ -81,5 +81,34 @@ public abstract class MeetingsAdapter extends SubscribableAdapter<Meeting, Meeti
         }
     }
 
+    public boolean willAddNewMonth(Meeting newMeeting) {
+        int numberOfEvents = subscribables.size();
+
+        if (numberOfEvents == 0) {
+            return true;
+        }
+
+        Meeting lastEvent = subscribables.get(numberOfEvents - 1);
+        if (lastEvent.getEnd().getMonthOfYear() != newMeeting.getStart().getMonthOfYear()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public int getSoonestIndex() {
+        Date today = new Date();
+
+        for (int i = 0; i < subscribables.size(); i++) {
+            Date compare = subscribables.get(i).getStart().toDate();
+            if (compare.equals(today) || compare.after(today)){
+                return i + 1;
+            }
+        }
+
+        return subscribables.size() - 1;
+    }
+
 }
 

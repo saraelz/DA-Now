@@ -11,6 +11,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import edu.deanza.calendar.activities.MeetingsAdapter;
+import edu.deanza.calendar.activities.SubscribableAdapter;
+import edu.deanza.calendar.domain.Subscribable;
 
 /**
  * @author Gabriele Mariotti (gabri.mariotti@gmail.com)
@@ -24,12 +26,12 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     private int mSectionResourceId;
     private int mTextResourceId;
     private LayoutInflater mLayoutInflater;
-    private MeetingsAdapter mBaseAdapter;
+    private SubscribableAdapter mBaseAdapter;
     private SparseArray<Section> mSections = new SparseArray<Section>();
 
 
     public SimpleSectionedRecyclerViewAdapter(Context context, int sectionResourceId, int textResourceId,
-                                              MeetingsAdapter baseAdapter) {
+                                              SubscribableAdapter baseAdapter) {
 
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mSectionResourceId = sectionResourceId;
@@ -90,7 +92,7 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
         if (isSectionHeaderPosition(position)) {
             ((SectionViewHolder) sectionOrContentViewHolder).title.setText(mSections.get(position).title);
         }else{
-            mBaseAdapter.onBindViewHolder((MeetingsAdapter.MeetingItemViewHolder) sectionOrContentViewHolder,sectionedPositionToPosition(position));
+            mBaseAdapter.onBindViewHolder((SubscribableAdapter.SubscribableItemViewHolder) sectionOrContentViewHolder,sectionedPositionToPosition(position));
         }
 
     }

@@ -11,11 +11,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.R;
+import edu.deanza.calendar.SimpleSectionedRecyclerViewAdapter;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Club;
@@ -95,7 +98,6 @@ public class OrganizationInfo extends AppCompatActivity {
         final Context context = this;
 
         adapter = new OrganizationInfoAdapter(this, new ArrayList<Meeting>(), subscriptionDao, organization);
-        adapter.setHasStableIds(true);
         adapter.setOnEventClickListener(new EventsAdapter.ClickListener() {
             @Override
             public void onItemClick(Event clickedEvent) {
@@ -105,7 +107,8 @@ public class OrganizationInfo extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        recyclerView.setAdapter(adapter);
+
+        recyclerView.setAdapter(adapter.getSectionedAdapter());
 
         subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
             @Override
@@ -113,6 +116,7 @@ public class OrganizationInfo extends AppCompatActivity {
                 adapter.addSubscriptions(data);
             }
         });
+
         organization.getEvents(new Callback<Event>() {
             @Override
             protected void call(Event data) {

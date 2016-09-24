@@ -7,11 +7,15 @@ import org.joda.time.DateTimeComparator;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 
+import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import edu.deanza.calendar.OnClickSubscribeTimeDialog;
+import edu.deanza.calendar.R;
+import edu.deanza.calendar.SimpleSectionedRecyclerViewAdapter;
 import edu.deanza.calendar.SubscribeOnClickListener;
 import edu.deanza.calendar.dal.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
@@ -24,9 +28,11 @@ import edu.deanza.calendar.domain.models.Organization;
 
 public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, MeetingsAdapter.MeetingItemViewHolder> {
 
-    private Organization organization;
-    private MeetingsAdapter meetingsAdapter;
-    private EventsAdapter eventsAdapter;
+    private final Organization organization;
+    private final MeetingsAdapter meetingsAdapter;
+    private final EventsAdapter eventsAdapter;
+    private final SimpleSectionedRecyclerViewAdapter sectionedAdapter;
+    List<SimpleSectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
 
     private static final class AggregateViewTypes {
         private static final int RAW_REGULAR_MEETING = 1;
@@ -44,10 +50,6 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
                                    SubscriptionDao subscriptionDao, Organization organization) {
         super(context, subscribables, subscriptionDao);
         this.organization = organization;
-
-        for (Meeting meeting : organization.getMeetings()) {
-            super.add(meeting);
-        }
 
         final OrganizationInfoAdapter us = this;
 
@@ -108,6 +110,18 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
                 };
             }
         };
+
+        sectionedAdapter = new SimpleSectionedRecyclerViewAdapter(
+                context,
+                R.layout.section,
+                R.id.section_text,
+                this
+        );
+
+        for (Meeting meeting : organization.getMeetings()) {
+            tryToAddSection(meeting);
+            super.add(meeting);
+        }
     }
 
     public void setOnEventClickListener(EventsAdapter.ClickListener listener) {
@@ -118,8 +132,13 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
         return  eventsAdapter.getTodayPosition();
     }
 
+    public boolean willAddNewMonth(Meeting newMeeting) {
+        return meetingsAdapter.willAddNewMonth(newMeeting) || eventsAdapter.willAddNewMonth(newMeeting);
+    }
+
     @Override
     public void add(Meeting meeting) {
+        tryToAddSection(meeting);
         super.add(meeting);
         Collections.sort(subscribables, new Comparator<Meeting>() {
             @Override
@@ -129,6 +148,24 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
                         .compare(meetingA.getStart(), meetingB.getStart());
             }
         });
+    }
+
+    public SimpleSectionedRecyclerViewAdapter getSectionedAdapter() {
+        return sectionedAdapter;
+    }
+
+    private void tryToAddSection(Meeting meeting) {
+        if (willAddNewMonth(meeting)) {
+            int newIndex = getItemCount();
+            int newMonth = meeting.getStart().getMonthOfYear();
+            sections.add(new SimpleSectionedRecyclerViewAdapter.Section(
+                    newIndex,
+                    new DateFormatSymbols()
+                            .getMonths()
+                            [newMonth-1])
+            );
+            sectionedAdapter.setSections(sections);
+        }
     }
 
     @Override
