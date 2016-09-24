@@ -60,11 +60,13 @@ public class OrganizationInfo extends AppCompatActivity {
             @Override
             protected void postSubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             protected void postUnsubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite_border);
+                adapter.notifyDataSetChanged();
             }
         });
 
