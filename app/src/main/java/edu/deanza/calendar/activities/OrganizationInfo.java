@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Map;
 
-import edu.deanza.calendar.OnClickOrganizationSubscribeDialog;
+import edu.deanza.calendar.activities.listeners.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.domain.SubscriptionDao;
@@ -60,7 +60,7 @@ public class OrganizationInfo extends AppCompatActivity {
         }
         subscribeButton.setOnClickListener(new OnClickOrganizationSubscribeDialog(this, organization, subscriptionDao) {
             @Override
-            protected void postSubscribe() {
+            public void postSubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite);
                 adapter.notifyDataSetChanged();
                 Snackbar.make(subscribeButton,
@@ -70,7 +70,7 @@ public class OrganizationInfo extends AppCompatActivity {
             }
 
             @Override
-            protected void postUnsubscribe() {
+            public void postUnsubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite_border);
                 adapter.notifyDataSetChanged();
                 Snackbar.make(subscribeButton,

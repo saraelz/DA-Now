@@ -9,9 +9,9 @@ import android.widget.TextView;
 import java.util.Iterator;
 import java.util.List;
 
-import edu.deanza.calendar.OnClickSubscribeTimeDialog;
+import edu.deanza.calendar.activities.listeners.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.SubscribeOnClickListener;
+import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
 import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
 import edu.deanza.calendar.domain.models.Meeting;
@@ -104,17 +104,17 @@ public class EventsAdapter extends MeetingsAdapter {
 
         return new OnClickSubscribeTimeDialog(context, event, subscriptionDao) {
             @Override
-            protected void postSubscribe() {
+            public void postSubscribe() {
                 us.postSubscribe(viewHolder, name);
             }
 
             @Override
-            protected void postUnsubscribe() {
+            public void postUnsubscribe() {
                 us.postUnsubscribe(viewHolder, name);
             }
 
             @Override
-            protected void onCancel() {
+            public void onCancel() {
                 us.onCancel(viewHolder);
             }
         };

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.SubscribeOnClickListener;
+import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
 import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.Subscribable;
 import edu.deanza.calendar.domain.models.Subscription;

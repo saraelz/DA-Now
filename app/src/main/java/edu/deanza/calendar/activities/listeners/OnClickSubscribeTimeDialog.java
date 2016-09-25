@@ -1,4 +1,4 @@
-package edu.deanza.calendar;
+package edu.deanza.calendar.activities.listeners;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -49,7 +49,7 @@ public class OnClickSubscribeTimeDialog implements SubscribeOnClickListener {
         }
     }
 
-    protected void onCancel() {}
+    public void onCancel() {}
 
     public void createSubscribeDialog() {
         final int minuteOptions[] = {
@@ -99,17 +99,20 @@ public class OnClickSubscribeTimeDialog implements SubscribeOnClickListener {
                 .show();
     }
 
-    public void subscribe(Subscription subscription) {
+    void subscribe(Subscription subscription) {
         subscribable.subscribe(subscription, subscriptionDao);
         postSubscribe();
     }
 
-    protected void postSubscribe() {}
+    @Override
+    public void postSubscribe() {}
 
-    public void unsubscribe() {
+    void unsubscribe() {
         subscribable.unsubscribe(subscriptionDao);
         postUnsubscribe();
     }
 
-    protected void postUnsubscribe() {}
+    @Override
+    public void postUnsubscribe() {}
+
 }

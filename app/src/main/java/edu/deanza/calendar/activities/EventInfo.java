@@ -14,7 +14,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 //package org.ocpsoft.prettytime.i18n;
 
-import edu.deanza.calendar.OnClickSubscribeTimeDialog;
+import edu.deanza.calendar.activities.listeners.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.domain.SubscriptionDao;
@@ -61,7 +61,7 @@ public class EventInfo extends AppCompatActivity {
         }
         subscribeButton.setOnClickListener(new OnClickSubscribeTimeDialog(this, event, subscriptionDao) {
             @Override
-            protected void postSubscribe() {
+            public void postSubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite);
                 Snackbar.make(subscribeButton,
                         "Subscribed to " + name,
@@ -70,7 +70,7 @@ public class EventInfo extends AppCompatActivity {
             }
 
             @Override
-            protected void postUnsubscribe() {
+            public void postUnsubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite_border);
                 Snackbar.make(subscribeButton,
                         "Unsubscribed from " + name,

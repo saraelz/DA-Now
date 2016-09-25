@@ -1,4 +1,4 @@
-package edu.deanza.calendar;
+package edu.deanza.calendar.activities.listeners;
 
 import android.content.Context;
 import android.view.View;
@@ -67,17 +67,17 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
     }
 
     @Override
-    protected void onCancel() {}
+    public void onCancel() {}
 
 
-    private void subscribe(boolean withEvents, boolean withMeetings) {
+    void subscribe(boolean withEvents, boolean withMeetings) {
         OrganizationSubscription.Builder builder = new OrganizationSubscription.Builder();
         builder.notifyEvents(withEvents)
                 .notifyMeetings(withMeetings);
         final OnClickOrganizationSubscribeDialog us = this;
         new OnClickSubscribeTimeDialog(context, organization, subscriptionDao, builder) {
             @Override
-            protected void postSubscribe() {
+            public void postSubscribe() {
                 super.postSubscribe();
                 us.postSubscribe();
             }
@@ -89,13 +89,13 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
         }.createSubscribeDialog();
     }
 
-    protected void postSubscribe() {}
+    public void postSubscribe() {}
 
-    private void unsubscribe() {
+    void unsubscribe() {
         final OnClickOrganizationSubscribeDialog us = this;
         new OnClickSubscribeTimeDialog(context, organization, subscriptionDao) {
             @Override
-            protected void postUnsubscribe() {
+            public void postUnsubscribe() {
                 super.postUnsubscribe();
                 us.postUnsubscribe();
             }
@@ -107,5 +107,5 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
         }.unsubscribe();
     }
 
-    protected void postUnsubscribe() {}
+    public void postUnsubscribe() {}
 }

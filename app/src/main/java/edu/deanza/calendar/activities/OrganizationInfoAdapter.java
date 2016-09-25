@@ -13,10 +13,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import edu.deanza.calendar.OnClickSubscribeTimeDialog;
+import edu.deanza.calendar.activities.listeners.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.SimpleSectionedRecyclerViewAdapter;
-import edu.deanza.calendar.SubscribeOnClickListener;
+import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
 import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
 import edu.deanza.calendar.domain.models.Meeting;
@@ -66,7 +66,7 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
 
                 return new OnClickSubscribeTimeDialog(context, meeting, subscriptionDao) {
                     @Override
-                    protected void postSubscribe() {
+                    public void postSubscribe() {
                         // Redirect default behavior to this aggregate adapter, which is directly
                         // attached to the RecyclerView thus being the exclusive entry point to
                         // displaying view changes
@@ -74,12 +74,12 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
                     }
 
                     @Override
-                    protected void postUnsubscribe() {
+                    public void postUnsubscribe() {
                         us.postUnsubscribe(viewHolder, name);
                     }
 
                     @Override
-                    protected void onCancel() {
+                    public void onCancel() {
                         us.onCancel(viewHolder);
                     }
                 };
@@ -94,17 +94,17 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
 
                 return new OnClickSubscribeTimeDialog(context, event, subscriptionDao) {
                     @Override
-                    protected void postSubscribe() {
+                    public void postSubscribe() {
                         us.postSubscribe(viewHolder, name);
                     }
 
                     @Override
-                    protected void postUnsubscribe() {
+                    public void postUnsubscribe() {
                         us.postUnsubscribe(viewHolder, name);
                     }
 
                     @Override
-                    protected void onCancel() {
+                    public void onCancel() {
                         us.onCancel(viewHolder);
                     }
                 };
