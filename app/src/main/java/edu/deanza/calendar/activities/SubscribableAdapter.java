@@ -11,10 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.SubscribeOnClickListener;
-import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.Subscribable;
-import edu.deanza.calendar.domain.models.Organization;
 import edu.deanza.calendar.domain.models.Subscription;
 
 /**
@@ -47,7 +46,10 @@ public abstract class SubscribableAdapter
             subscribablesAddedBeforeSubscriptionsReceived.add(subscribable);
         }
         else if (subscriptions.containsKey(key)) {
-            subscribable.subscribe(subscriptions.get(key));
+            // Because we're passing in the DAO, new Events/RegularMeetings retrieved will
+            // automatically become subscribed to in the database, if their Organization is
+            // subscribed
+            subscribable.subscribe(subscriptions.get(key), subscriptionDao);
         }
         subscribables.add(subscribable);
         notifyItemInserted(subscribables.size() - 1);
@@ -78,7 +80,7 @@ public abstract class SubscribableAdapter
 
     @Override
     public int getItemViewType(int position) {
-        return subscribables.get(position).getSubscription() == null ? NOT_SUBSCRIBED : SUBSCRIBED;
+        return subscribables.get(position).isSubscribed() ? SUBSCRIBED : NOT_SUBSCRIBED;
     }
 
     @Override
@@ -95,7 +97,7 @@ public abstract class SubscribableAdapter
     public void onBindViewHolder(VH viewHolder, int position) {
         T subscribable = subscribables.get(position);
         ImageButton subscribeButton = viewHolder.subscribeButton;
-        if (subscribable.getSubscription() == null) {
+        if (subscribable.isSubscribed()) {
             subscribeButton.setImageResource(R.drawable.ic_favorite_border);
         }
         else {
@@ -123,12 +125,6 @@ public abstract class SubscribableAdapter
                 .show();
     }
 
-    void onCancel(VH viewHolder) {
-        Snackbar.make(
-                viewHolder.itemView,
-                "Action cancelled.",
-                Snackbar.LENGTH_LONG)
-                .show();
-    }
+    void onCancel(VH viewHolder) {}
 
 }

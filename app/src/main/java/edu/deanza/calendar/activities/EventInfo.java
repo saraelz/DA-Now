@@ -2,6 +2,7 @@ package edu.deanza.calendar.activities;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,10 +14,10 @@ import org.joda.time.format.DateTimeFormatter;
 
 //package org.ocpsoft.prettytime.i18n;
 
-import edu.deanza.calendar.OnClickSubscribeTimeDialog;
+import edu.deanza.calendar.activities.listeners.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
-import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
 
 public class EventInfo extends AppCompatActivity {
@@ -37,7 +38,8 @@ public class EventInfo extends AppCompatActivity {
         event = (Event) intent.getSerializableExtra("edu.deanza.calendar.models.Event");
         subscriptionDao = new FirebaseSubscriptionDao(intent.getStringExtra("UID"));
 
-        setTitle(event.getName());
+        final String name = event.getName();
+        setTitle(name);
 
         TextView location = (TextView) findViewById(R.id.event_location);
         location.setText(event.getLocation());
@@ -51,7 +53,7 @@ public class EventInfo extends AppCompatActivity {
         //new PrettyTime().format(event.getStart());
 
         final FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
-        if (event.getSubscription() == null) {
+        if (event.isSubscribed()) {
             subscribeButton.setImageResource(R.drawable.ic_favorite_border);
         }
         else {
@@ -59,13 +61,21 @@ public class EventInfo extends AppCompatActivity {
         }
         subscribeButton.setOnClickListener(new OnClickSubscribeTimeDialog(this, event, subscriptionDao) {
             @Override
-            protected void postSubscribe() {
+            public void postSubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite);
+                Snackbar.make(subscribeButton,
+                        "Subscribed to " + name,
+                        Snackbar.LENGTH_LONG)
+                        .show();
             }
 
             @Override
-            protected void postUnsubscribe() {
+            public void postUnsubscribe() {
                 subscribeButton.setImageResource(R.drawable.ic_favorite_border);
+                Snackbar.make(subscribeButton,
+                        "Unsubscribed from " + name,
+                        Snackbar.LENGTH_LONG)
+                        .show();
             }
         });
 

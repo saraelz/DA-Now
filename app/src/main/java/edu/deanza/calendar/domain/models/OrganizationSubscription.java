@@ -10,22 +10,35 @@ import java.util.concurrent.TimeUnit;
 public class OrganizationSubscription extends Subscription implements Serializable {
 
     private final boolean notifyMeetings;
+    private final boolean notifyEvents;
 
-    public OrganizationSubscription(String key, long notifyBefore, TimeUnit timeUnit, boolean notifyMeetings) {
+    public OrganizationSubscription(String key, long notifyBefore, TimeUnit timeUnit,
+                                    boolean notifyMeetings, boolean notifyEvents) {
         super(key, notifyBefore, timeUnit);
         this.notifyMeetings = notifyMeetings;
+        this.notifyEvents = notifyEvents;
     }
 
     public boolean isNotifyingMeetings() {
         return notifyMeetings;
     }
 
+    public boolean isNotifyingEvents() {
+        return notifyEvents;
+    }
+
     public static class Builder extends Subscription.Builder {
 
         private boolean notifyMeetingsPiece;
+        private boolean notifyEventsPiece;
 
-        public Subscription.Builder notifyMeetings(boolean notifyMeetings) {
+        public Builder notifyMeetings(boolean notifyMeetings) {
             this.notifyMeetingsPiece = notifyMeetings;
+            return this;
+        }
+
+        public Builder notifyEvents(boolean notifyEvents) {
+            this.notifyEventsPiece = notifyEvents;
             return this;
         }
 
@@ -35,7 +48,8 @@ public class OrganizationSubscription extends Subscription implements Serializab
                     keyPiece,
                     notifyBeforePiece,
                     timeUnitPiece,
-                    notifyMeetingsPiece
+                    notifyMeetingsPiece,
+                    notifyEventsPiece
             );
         }
     }

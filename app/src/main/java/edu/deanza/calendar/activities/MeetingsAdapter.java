@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Meeting;
 
 public abstract class MeetingsAdapter extends SubscribableAdapter<Meeting, MeetingsAdapter.MeetingItemViewHolder> {

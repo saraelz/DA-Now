@@ -8,11 +8,10 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import edu.deanza.calendar.OnClickOrganizationSubscribeDialog;
+import edu.deanza.calendar.activities.listeners.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.SubscribeOnClickListener;
-import edu.deanza.calendar.dal.SubscriptionDao;
-import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Organization;
 
 public class OrganizationsAdapter
@@ -85,19 +84,19 @@ public class OrganizationsAdapter
 
         return new OnClickOrganizationSubscribeDialog(context, organization, subscriptionDao) {
             @Override
-            protected void postSubscribe() {
+            public void postSubscribe() {
                 notifyItemChanged(viewHolder.getAdapterPosition());
                 us.postSubscribe(viewHolder, name);
             }
 
             @Override
-            protected void postUnsubscribe() {
+            public void postUnsubscribe() {
                 notifyItemChanged(viewHolder.getAdapterPosition());
-                us.postSubscribe(viewHolder, name);
+                us.postUnsubscribe(viewHolder, name);
             }
 
             @Override
-            protected void onCancel() {
+            public void onCancel() {
                 us.onCancel(viewHolder);
             }
         };

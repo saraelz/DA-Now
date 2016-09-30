@@ -12,7 +12,13 @@ public interface Subscribable {
 
     void subscribe(Subscription subscription);
 
+    void subscribe(Subscription subscription, SubscriptionDao dao);
+
     void unsubscribe();
+
+    void unsubscribe(SubscriptionDao dao);
+
+    boolean isSubscribed();
 
     String getKey();
 

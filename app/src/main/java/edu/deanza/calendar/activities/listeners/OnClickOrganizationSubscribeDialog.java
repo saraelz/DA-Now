@@ -1,9 +1,9 @@
-package edu.deanza.calendar;
+package edu.deanza.calendar.activities.listeners;
 
 import android.content.Context;
 import android.view.View;
 
-import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Organization;
 import edu.deanza.calendar.domain.models.OrganizationSubscription;
 import edu.deanza.calendar.util.OnClickMultiChoiceDialog;
@@ -27,7 +27,7 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
 
     @Override
     protected String[] getOptions() {
-        return new String[] {"Main Events", "Meetings"};
+        return new String[] {"Events", "Meetings"};
     }
 
     @Override
@@ -43,13 +43,11 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
     @Override
     protected void onClickedOkWithSelection() {
         // TODO: Discuss: should subscribing to meetings only be an option?
+        final int SUBSCRIBE_TO_EVENTS_OPTION_INDEX = 0;
         final int SUBSCRIBE_TO_MEETINGS_OPTION_INDEX = 1;
-        if (getOptionStates()[SUBSCRIBE_TO_MEETINGS_OPTION_INDEX]) {
-            subscribe(true);
-        }
-        else {
-            subscribe(false);
-        }
+        boolean optionStates[] = getOptionStates();
+        subscribe(optionStates[SUBSCRIBE_TO_EVENTS_OPTION_INDEX],
+                optionStates[SUBSCRIBE_TO_MEETINGS_OPTION_INDEX]);
     }
 
     @Override
@@ -60,7 +58,7 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
 
     @Override
     public void onClick(final View subscribeButton) {
-        if (organization.getSubscription() == null) {
+        if (organization.isSubscribed()) {
             super.onClick(subscribeButton);
         }
         else {
@@ -69,16 +67,17 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
     }
 
     @Override
-    protected void onCancel() {}
+    public void onCancel() {}
 
 
-    private void subscribe(boolean withMeetings) {
+    void subscribe(boolean withEvents, boolean withMeetings) {
         OrganizationSubscription.Builder builder = new OrganizationSubscription.Builder();
-        builder.notifyMeetings(withMeetings);
+        builder.notifyEvents(withEvents)
+                .notifyMeetings(withMeetings);
         final OnClickOrganizationSubscribeDialog us = this;
         new OnClickSubscribeTimeDialog(context, organization, subscriptionDao, builder) {
             @Override
-            protected void postSubscribe() {
+            public void postSubscribe() {
                 super.postSubscribe();
                 us.postSubscribe();
             }
@@ -90,13 +89,13 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
         }.createSubscribeDialog();
     }
 
-    protected void postSubscribe() {}
+    public void postSubscribe() {}
 
-    private void unsubscribe() {
+    void unsubscribe() {
         final OnClickOrganizationSubscribeDialog us = this;
         new OnClickSubscribeTimeDialog(context, organization, subscriptionDao) {
             @Override
-            protected void postUnsubscribe() {
+            public void postUnsubscribe() {
                 super.postUnsubscribe();
                 us.postUnsubscribe();
             }
@@ -108,5 +107,5 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
         }.unsubscribe();
     }
 
-    protected void postUnsubscribe() {}
+    public void postUnsubscribe() {}
 }

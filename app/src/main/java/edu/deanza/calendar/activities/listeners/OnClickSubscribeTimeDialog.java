@@ -1,4 +1,4 @@
-package edu.deanza.calendar;
+package edu.deanza.calendar.activities.listeners;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.view.View;
 
 import java.util.concurrent.TimeUnit;
 
-import edu.deanza.calendar.dal.SubscriptionDao;
+import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.Subscribable;
 import edu.deanza.calendar.domain.models.Subscription;
 
@@ -41,7 +41,7 @@ public class OnClickSubscribeTimeDialog implements SubscribeOnClickListener {
 
     @Override
     public void onClick(View view) {
-        if (subscribable.getSubscription() == null) {
+        if (subscribable.isSubscribed()) {
             createSubscribeDialog();
         }
         else {
@@ -49,7 +49,7 @@ public class OnClickSubscribeTimeDialog implements SubscribeOnClickListener {
         }
     }
 
-    protected void onCancel() {}
+    public void onCancel() {}
 
     public void createSubscribeDialog() {
         final int minuteOptions[] = {
@@ -99,19 +99,20 @@ public class OnClickSubscribeTimeDialog implements SubscribeOnClickListener {
                 .show();
     }
 
-    public void subscribe(Subscription subscription) {
-        subscriptionDao.add(subscription);
-        subscribable.subscribe(subscription);
+    void subscribe(Subscription subscription) {
+        subscribable.subscribe(subscription, subscriptionDao);
         postSubscribe();
     }
 
-    protected void postSubscribe() {}
+    @Override
+    public void postSubscribe() {}
 
-    public void unsubscribe() {
-        subscriptionDao.remove(subscribable.getSubscription());
-        subscribable.unsubscribe();
+    void unsubscribe() {
+        subscribable.unsubscribe(subscriptionDao);
         postUnsubscribe();
     }
 
-    protected void postUnsubscribe() {}
+    @Override
+    public void postUnsubscribe() {}
+
 }
