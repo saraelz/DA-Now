@@ -126,6 +126,13 @@ public class EventCards extends Fragment {
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+        getActivity().setTitle("Events Calendar");
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.events_toolbar_menu, menu);
     }

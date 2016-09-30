@@ -37,6 +37,8 @@ public class MainDisplay extends AppCompatActivity {
             fragment = new EventCards(); //set to EventCards
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment)
+                    //.replace( R.id.fragment_container, fragment )
+                    //.addToBackStack( "tag" )
                     .commit();
         }
 
@@ -132,7 +134,13 @@ public class MainDisplay extends AppCompatActivity {
         }
 
         // Insert the fragment by replacing any existing fragment
-        fm.beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        /*fm.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();*/
+        fm.beginTransaction()
+                .replace( R.id.fragment_container, fragment )
+                .addToBackStack( "tag" )
+                .commit();
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);

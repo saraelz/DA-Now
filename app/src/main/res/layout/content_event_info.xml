@@ -71,7 +71,7 @@
             android:layout_marginTop="@dimen/text_margin"
             android:padding="5sp"
             tools:text="Guaranteed admission to the University of California (UC) with a Transfer Admission Guarantee (TAG).\n\nSix UC campuses offer a Transfer Admission Guarantee (TAG) to California community college students who meet program-specific requirements.\n   - Davis\n   - Irvine\n   - Merced\n   - Riverside\n   - Santa Barbara\n   - Santa Cruz\n\nProspective UC TAG applicants are encouraged to attend a UC TAG Information Session to help determine their TAG-eligibility for transfer to UC in Fall 2017.\n\nUC TAG Information Sessions include:\n\n- An overview of the UC Transfer Admission Planner (TAP)and the UC TAG program (with a special focus on UC Davis TAG requirements)\n\n- An overview of UC admission requirements and campus-specific TAG criteria\n\n- UC TAG procedures and deadlines at De Anza College including student responsibilities\n\n- Questions &amp; Answers\n\nRead important details about UC TAG Information Sessions at http://www.deanza.edu/transfer/taa_tag_main/tagevents.html\n\nSIGN-UP FOR A UC TAG INFORMATION SESSION at http://daappointments.deanza.edu/transferworkshop/eSARS.asp"
-            android:textIsSelectable="true"/>
+            android:textIsSelectable="true" />
     </ScrollView>
 
 </LinearLayout>
