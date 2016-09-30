@@ -29,7 +29,7 @@ import edu.deanza.calendar.util.UidGenerator;
 
 public class OrganizationsList extends Fragment {
 
-    private OrganizationRepository repository = new FirebaseOrganizationRepository();
+    private OrganizationRepository repository;
     private SubscriptionDao subscriptionDao;
     private RecyclerView recyclerView;
     private OrganizationsAdapter adapter;
@@ -48,7 +48,11 @@ public class OrganizationsList extends Fragment {
                              Bundle savedInstanceState) {
 
         setHasOptionsMenu(true);
+
         final Context context = getContext();
+
+        repository = new FirebaseOrganizationRepository(context);
+
         final String UID = new UidGenerator(context, THIS_TAG).generate();
         subscriptionDao = new FirebaseSubscriptionDao(UID);
         subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {

@@ -1,5 +1,7 @@
 package edu.deanza.calendar.dal;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -31,11 +33,16 @@ abstract class FirebaseRepository<T> implements Serializable {
     transient Query currentQuery;
     private final ListOrderedMap<String, T> currentData = new ListOrderedMap<>();
     private transient AsyncTask runningTask;
+    private transient final Context context;
 
     private static final String THIS_CLASS_TAG = FirebaseRepository.class.getName();
 
     {
         initializeRoot();
+    }
+
+    public FirebaseRepository(Context context) {
+        this.context = context;
     }
 
     void initializeRoot() {
@@ -63,6 +70,18 @@ abstract class FirebaseRepository<T> implements Serializable {
 
             runningTask = new AsyncTask<Void, T, ListOrderedMap<String, T>>() {
 
+                ProgressDialog dialog = new ProgressDialog(context);
+
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+
+                    dialog.setMessage("Getting Data ...");
+                    dialog.setIndeterminate(false);
+                    dialog.setCancelable(true);
+                    dialog.show();
+                }
+
                 @Override
                 protected ListOrderedMap<String, T> doInBackground(Void... voids) {
                     ListOrderedMap<String, T> newData = new ListOrderedMap<>();
@@ -86,6 +105,7 @@ abstract class FirebaseRepository<T> implements Serializable {
 
                 @Override
                 protected void onPostExecute(ListOrderedMap<String, T> newData) {
+                    dialog.dismiss();
                     currentData.clear();
                     currentData.putAll(newData);
                 }

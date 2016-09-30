@@ -34,7 +34,7 @@ import edu.deanza.calendar.util.UidGenerator;
 
 public class EventCards extends Fragment {
 
-    private EventRepository repository = new FirebaseEventRepository();
+    private EventRepository repository;
     private SubscriptionDao subscriptionDao;
     private RecyclerView cardView;
     private EventsAdapter adapter;
@@ -54,6 +54,9 @@ public class EventCards extends Fragment {
         setHasOptionsMenu(true);
 
         final Context context = getContext();
+
+        repository = new FirebaseEventRepository(context);
+
         final String UID = new UidGenerator(context, THIS_TAG).generate();
         subscriptionDao = new FirebaseSubscriptionDao(UID);
         subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
