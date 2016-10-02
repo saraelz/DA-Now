@@ -19,22 +19,15 @@ import edu.deanza.calendar.domain.models.Meeting;
 
 public class MeetingsAdapter extends SubscribableAdapter<Meeting, MeetingsAdapter.MeetingItemViewHolder> {
 
-    private int todayPosition;
-
     public MeetingsAdapter(Context context, List<Meeting> subscribables, SubscriptionDao subscriptionDao) {
         super(context, subscribables, subscriptionDao);
-        todayPosition = -1;
     }
 
-    public int getTodayPosition() {
-        return  todayPosition;
-    }
+    static class MeetingItemViewHolder extends SubscribableAdapter.SubscribableItemViewHolder {
 
-    public static class MeetingItemViewHolder extends SubscribableAdapter.SubscribableItemViewHolder {
-
-        protected TextView meetingTime;
-        protected TextView meetingDayOfMonth;
-        protected TextView meetingWeekday;
+        TextView meetingTime;
+        TextView meetingDayOfMonth;
+        TextView meetingWeekday;
 
         public MeetingItemViewHolder(View containingItem) {
             super(containingItem);
@@ -73,12 +66,6 @@ public class MeetingsAdapter extends SubscribableAdapter<Meeting, MeetingsAdapte
 
         DateTimeFormatter weekdayFormatter = DateTimeFormat.forPattern("EEE");
         viewHolder.meetingWeekday.setText(weekdayFormatter.print(startDate));
-        Date today = new Date();
-        if (startDate.toDate().equals(today)) {
-            todayPosition = position;
-        } else if (startDate.toDate().after(today) && todayPosition == -1) {
-            todayPosition = position;
-        }
     }
 
     public boolean willAddNewMonth(Meeting newMeeting) {
@@ -89,20 +76,15 @@ public class MeetingsAdapter extends SubscribableAdapter<Meeting, MeetingsAdapte
         }
 
         Meeting lastEvent = subscribables.get(numberOfEvents - 1);
-        if (lastEvent.getEnd().getMonthOfYear() != newMeeting.getStart().getMonthOfYear()) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return lastEvent.getEnd().getMonthOfYear() != newMeeting.getStart().getMonthOfYear();
     }
 
     public int getSoonestIndex() {
         Date today = new Date();
 
-        for (int i = 0; i < subscribables.size(); i++) {
-            Date compare = subscribables.get(i).getStart().toDate();
-            if (compare.equals(today) || compare.after(today)){
+        for (int i = 0; i < subscribables.size(); ++i) {
+            Date date = subscribables.get(i).getStart().toDate();
+            if (date.equals(today) || date.after(today)) {
                 return i + 1;
             }
         }

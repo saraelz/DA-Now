@@ -89,10 +89,6 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
         eventsAdapter.setOnItemClickListener(listener);
     }
 
-    public int getTodayPosition() {
-        return  eventsAdapter.getTodayPosition();
-    }
-
     public boolean willAddNewMonth(Meeting newMeeting) {
         return meetingsAdapter.willAddNewMonth(newMeeting) || eventsAdapter.willAddNewMonth(newMeeting);
     }
