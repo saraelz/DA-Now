@@ -59,16 +59,24 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
     @Override
     public void onClick(final View subscribeButton) {
         if (organization.isSubscribed()) {
-            super.onClick(subscribeButton);
+            unsubscribe();
         }
         else {
-            unsubscribe();
+            super.onClick(subscribeButton);
         }
     }
 
     @Override
     public void onCancel() {}
 
+    @Override
+    public void postSubscriptionChange() {}
+
+    @Override
+    public void postSubscribe() {}
+
+    @Override
+    public void postUnsubscribe() {}
 
     void subscribe(boolean withEvents, boolean withMeetings) {
         OrganizationSubscription.Builder builder = new OrganizationSubscription.Builder();
@@ -76,6 +84,11 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
                 .notifyMeetings(withMeetings);
         final OnClickOrganizationSubscribeDialog us = this;
         new OnClickSubscribeTimeDialog(context, organization, subscriptionDao, builder) {
+            @Override
+            public void postSubscriptionChange() {
+                super.postSubscriptionChange();
+                us.postSubscriptionChange();
+            }
             @Override
             public void postSubscribe() {
                 super.postSubscribe();
@@ -89,11 +102,14 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
         }.createSubscribeDialog();
     }
 
-    public void postSubscribe() {}
-
     void unsubscribe() {
         final OnClickOrganizationSubscribeDialog us = this;
         new OnClickSubscribeTimeDialog(context, organization, subscriptionDao) {
+            @Override
+            public void postSubscriptionChange() {
+                super.postSubscriptionChange();
+                us.postSubscriptionChange();
+            }
             @Override
             public void postUnsubscribe() {
                 super.postUnsubscribe();
@@ -107,5 +123,4 @@ public class OnClickOrganizationSubscribeDialog extends OnClickMultiChoiceDialog
         }.unsubscribe();
     }
 
-    public void postUnsubscribe() {}
 }

@@ -47,6 +47,7 @@ public class Event extends Meeting implements Subscribable, Serializable {
         this.organizationRepository = null;
     }
 
+    @Override
     public String getName() {
         return name;
     }

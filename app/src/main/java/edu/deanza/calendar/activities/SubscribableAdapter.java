@@ -98,10 +98,10 @@ public abstract class SubscribableAdapter
         T subscribable = subscribables.get(position);
         ImageButton subscribeButton = viewHolder.subscribeButton;
         if (subscribable.isSubscribed()) {
-            subscribeButton.setImageResource(R.drawable.ic_favorite_border);
+            subscribeButton.setImageResource(R.drawable.ic_favorite);
         }
         else {
-            subscribeButton.setImageResource(R.drawable.ic_favorite);
+            subscribeButton.setImageResource(R.drawable.ic_favorite_border);
         }
         subscribeButton.setOnClickListener(getSubscribeOnClickListener(viewHolder, subscribable));
     }

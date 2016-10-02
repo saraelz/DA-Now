@@ -3,19 +3,17 @@ package edu.deanza.calendar.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-import edu.deanza.calendar.activities.listeners.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.domain.SubscriptionDao;
@@ -26,6 +24,7 @@ import edu.deanza.calendar.domain.models.Meeting;
 import edu.deanza.calendar.domain.models.Organization;
 import edu.deanza.calendar.domain.models.Subscription;
 import edu.deanza.calendar.util.Callback;
+import edu.deanza.calendar.views.SubscribeButtonWrapper;
 
 public class OrganizationInfo extends AppCompatActivity {
 
@@ -43,6 +42,8 @@ public class OrganizationInfo extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final Context context = this;
+
         Intent intent = getIntent();
         organization = (Organization) intent.getSerializableExtra("edu.deanza.calendar.models.Organization");
         final String UID = intent.getStringExtra("UID");
@@ -51,34 +52,18 @@ public class OrganizationInfo extends AppCompatActivity {
         final String name = organization.getName();
         setTitle(name);
 
-        final FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
-        if (organization.isSubscribed()) {
-            subscribeButton.setImageResource(R.drawable.ic_favorite_border);
-        }
-        else {
-            subscribeButton.setImageResource(R.drawable.ic_favorite);
-        }
-        subscribeButton.setOnClickListener(new OnClickOrganizationSubscribeDialog(this, organization, subscriptionDao) {
+        SubscribeButtonWrapper subscribeButton = new SubscribeButtonWrapper(
+                (ImageButton) findViewById(R.id.fab),
+                this,
+                organization,
+                subscriptionDao
+        ) {
             @Override
-            public void postSubscribe() {
-                subscribeButton.setImageResource(R.drawable.ic_favorite);
+            protected void postSubscriptionChange() {
+                super.postSubscriptionChange();
                 adapter.notifyDataSetChanged();
-                Snackbar.make(subscribeButton,
-                        "Subscribed to " + name,
-                        Snackbar.LENGTH_LONG)
-                        .show();
             }
-
-            @Override
-            public void postUnsubscribe() {
-                subscribeButton.setImageResource(R.drawable.ic_favorite_border);
-                adapter.notifyDataSetChanged();
-                Snackbar.make(subscribeButton,
-                        "Unsubscribed from" + name,
-                        Snackbar.LENGTH_LONG)
-                        .show();
-            }
-        });
+        };
 
         TextView meetingLocation = (TextView) findViewById(R.id.organization_info_location);
         meetingLocation.setText(organization.getLocation());
@@ -103,8 +88,6 @@ public class OrganizationInfo extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-
-        final Context context = this;
 
         adapter = new OrganizationInfoAdapter(this, new ArrayList<Meeting>(), subscriptionDao, organization);
         adapter.setOnEventClickListener(new EventsAdapter.ClickListener() {

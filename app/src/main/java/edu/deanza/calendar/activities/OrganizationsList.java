@@ -55,12 +55,6 @@ public class OrganizationsList extends Fragment {
 
         final String UID = new UidGenerator(context, THIS_TAG).generate();
         subscriptionDao = new FirebaseSubscriptionDao(UID);
-        subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
-            @Override
-            protected void call(Map<String, Subscription> data) {
-                adapter.addSubscriptions(data);
-            }
-        });
 
         //setContentView(R.layout.fragment_organizations_list);
         View view = inflater.inflate(R.layout.fragment_organizations_list, container, false);
@@ -90,6 +84,13 @@ public class OrganizationsList extends Fragment {
             @Override
             protected void call(Organization data) {
                 adapter.add(data);
+            }
+        });
+
+        subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
+            @Override
+            protected void call(Map<String, Subscription> data) {
+                adapter.addSubscriptions(data);
             }
         });
 

@@ -2,23 +2,23 @@ package edu.deanza.calendar.activities;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-//package org.ocpsoft.prettytime.i18n;
+//import org.ocpsoft.prettytime.i18n;
 
-import edu.deanza.calendar.activities.listeners.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.views.SubscribeButtonWrapper;
 
 public class EventInfo extends AppCompatActivity {
 
@@ -52,32 +52,12 @@ public class EventInfo extends AppCompatActivity {
 
         //new PrettyTime().format(event.getStart());
 
-        final FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
-        if (event.isSubscribed()) {
-            subscribeButton.setImageResource(R.drawable.ic_favorite_border);
-        }
-        else {
-            subscribeButton.setImageResource(R.drawable.ic_favorite);
-        }
-        subscribeButton.setOnClickListener(new OnClickSubscribeTimeDialog(this, event, subscriptionDao) {
-            @Override
-            public void postSubscribe() {
-                subscribeButton.setImageResource(R.drawable.ic_favorite);
-                Snackbar.make(subscribeButton,
-                        "Subscribed to " + name,
-                        Snackbar.LENGTH_LONG)
-                        .show();
-            }
-
-            @Override
-            public void postUnsubscribe() {
-                subscribeButton.setImageResource(R.drawable.ic_favorite_border);
-                Snackbar.make(subscribeButton,
-                        "Unsubscribed from " + name,
-                        Snackbar.LENGTH_LONG)
-                        .show();
-            }
-        });
+        SubscribeButtonWrapper subscribeButton = new SubscribeButtonWrapper(
+                (ImageButton) findViewById(R.id.fab),
+                this,
+                event,
+                subscriptionDao
+        );
 
         /*
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);

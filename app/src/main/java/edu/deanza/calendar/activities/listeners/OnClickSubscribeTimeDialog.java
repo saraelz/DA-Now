@@ -42,10 +42,10 @@ public class OnClickSubscribeTimeDialog implements SubscribeOnClickListener {
     @Override
     public void onClick(View view) {
         if (subscribable.isSubscribed()) {
-            createSubscribeDialog();
+            unsubscribe();
         }
         else {
-            unsubscribe();
+            createSubscribeDialog();
         }
     }
 
@@ -102,15 +102,20 @@ public class OnClickSubscribeTimeDialog implements SubscribeOnClickListener {
     void subscribe(Subscription subscription) {
         subscribable.subscribe(subscription, subscriptionDao);
         postSubscribe();
+        postSubscriptionChange();
     }
-
-    @Override
-    public void postSubscribe() {}
 
     void unsubscribe() {
         subscribable.unsubscribe(subscriptionDao);
         postUnsubscribe();
+        postSubscriptionChange();
     }
+
+    @Override
+    public void postSubscriptionChange() {}
+
+    @Override
+    public void postSubscribe() {}
 
     @Override
     public void postUnsubscribe() {}
