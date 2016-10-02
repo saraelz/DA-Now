@@ -15,6 +15,7 @@ import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
 import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.Subscribable;
 import edu.deanza.calendar.domain.models.Subscription;
+import edu.deanza.calendar.views.SubscribeButtonWrapper;
 
 /**
  * Created by karinaantonio on 9/16/16.
@@ -94,37 +95,36 @@ public abstract class SubscribableAdapter
     }
 
     @Override
-    public void onBindViewHolder(VH viewHolder, int position) {
+    public void onBindViewHolder(final VH viewHolder, int position) {
         T subscribable = subscribables.get(position);
-        ImageButton subscribeButton = viewHolder.subscribeButton;
-        if (subscribable.isSubscribed()) {
-            subscribeButton.setImageResource(R.drawable.ic_favorite);
-        }
-        else {
-            subscribeButton.setImageResource(R.drawable.ic_favorite_border);
-        }
-        subscribeButton.setOnClickListener(getSubscribeOnClickListener(viewHolder, subscribable));
+        final SubscribableAdapter us = this;
+        SubscribeButtonWrapper wrapper = new SubscribeButtonWrapper(viewHolder.subscribeButton, context, subscribable, subscriptionDao) {
+            @Override
+            protected void postSubscriptionChange() {
+                super.postSubscriptionChange();
+                us.postSubscriptionChange(viewHolder);
+            }
+            @Override
+            protected void postSubscribe() {
+                super.postSubscribe();
+                us.postSubscribe(viewHolder);
+            }
+            @Override
+            protected void postUnsubscribe() {
+                super.postUnsubscribe();
+                us.postUnsubscribe(viewHolder);
+            }
+        };
     }
 
-    abstract SubscribeOnClickListener getSubscribeOnClickListener(VH viewHolder, T subscribable);
-
-    void postSubscribe(VH viewHolder, String name) {
+    protected void postSubscriptionChange(VH viewHolder) {
         notifyItemChanged(viewHolder.getAdapterPosition());
-        Snackbar.make(viewHolder.itemView,
-                "Subscribed to " + name,
-                Snackbar.LENGTH_LONG)
-                .show();
     }
-
-    void postUnsubscribe(VH viewHolder, String name) {
+    protected void postSubscribe(VH viewHolder) {
         notifyItemChanged(viewHolder.getAdapterPosition());
-        Snackbar.make(
-                viewHolder.itemView,
-                "Unsubscribed from " + name,
-                Snackbar.LENGTH_LONG)
-                .show();
     }
-
-    void onCancel(VH viewHolder) {}
+    protected void postUnsubscribe(VH viewHolder) {
+        notifyItemChanged(viewHolder.getAdapterPosition());
+    }
 
 }

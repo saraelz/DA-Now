@@ -96,28 +96,4 @@ public class EventsAdapter extends MeetingsAdapter {
 
     }
 
-    SubscribeOnClickListener getSubscribeOnClickListener(final MeetingItemViewHolder viewHolder,
-                                                         Meeting meeting) {
-        Event event = (Event) meeting;
-        final String name = event.getName();
-        final EventsAdapter us = this;
-
-        return new OnClickSubscribeTimeDialog(context, event, subscriptionDao) {
-            @Override
-            public void postSubscribe() {
-                us.postSubscribe(viewHolder, name);
-            }
-
-            @Override
-            public void postUnsubscribe() {
-                us.postUnsubscribe(viewHolder, name);
-            }
-
-            @Override
-            public void onCancel() {
-                us.onCancel(viewHolder);
-            }
-        };
-    }
-
 }
