@@ -1,7 +1,6 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -22,10 +21,6 @@ import edu.deanza.calendar.views.SubscribeButtonWrapper;
 
 public class EventInfo extends AppCompatActivity {
 
-    Event event;
-    SubscriptionDao subscriptionDao;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,22 +30,10 @@ public class EventInfo extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        event = (Event) intent.getSerializableExtra("edu.deanza.calendar.models.Event");
-        subscriptionDao = new FirebaseSubscriptionDao(intent.getStringExtra("UID"));
+        Event event = (Event) intent.getSerializableExtra("edu.deanza.calendar.models.Event");
+        SubscriptionDao subscriptionDao = new FirebaseSubscriptionDao(intent.getStringExtra("UID"));
 
-        final String name = event.getName();
-        setTitle(name);
-
-        TextView location = (TextView) findViewById(R.id.event_location);
-        location.setText(event.getLocation());
-
-        TextView time = (TextView) findViewById(R.id.event_time);
-        time.setText(print_date());
-
-        TextView description = (TextView) findViewById(R.id.event_description);
-        description.setText(event.getDescription());
-
-        //new PrettyTime().format(event.getStart());
+        setText(event);
 
         SubscribeButtonWrapper subscribeButton = new SubscribeButtonWrapper(
                 (ImageButton) findViewById(R.id.fab),
@@ -65,13 +48,20 @@ public class EventInfo extends AppCompatActivity {
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml("<p>This is the text that will be shared.</p>"));
         startActivity(Intent.createChooser(sharingIntent,"Share using"));
          */
-
     }
 
-    private String print_date() {
-        DateTime start = event.getStart();
-        DateTime end = event.getEnd();
+    private void setText(Event event) {
+        setTitle(event.getName());
 
+        TextView time = (TextView) findViewById(R.id.event_time);
+        TextView location = (TextView) findViewById(R.id.event_location);
+        TextView description = (TextView) findViewById(R.id.event_description);
+        time.setText(prettyPrintInterval(event.getStart(), event.getEnd()));
+        location.setText(event.getLocation());
+        description.setText(event.getDescription());
+    }
+
+    private String prettyPrintInterval(DateTime start, DateTime end) {
         DateTimeFormatter date_fmt = DateTimeFormat.forPattern("EEEE, MMM d");
         DateTimeFormatter time_fmt = DateTimeFormat.forPattern("h:ss aaaa");
 
@@ -84,9 +74,5 @@ public class EventInfo extends AppCompatActivity {
         else {
             return date_fmt.print(start) + " at " + time_fmt.print(start) + " - " + time_fmt.print(end);
         }
-    }
-
-    private String print_event() {
-        return event.getName() + "\n" + print_date() + "\n" + event.getLocation() + "\n\n" + event.getDescription();
     }
 }

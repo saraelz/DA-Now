@@ -34,8 +34,6 @@ import edu.deanza.calendar.util.UidGenerator;
 
 public class EventCards extends Fragment {
 
-    private EventRepository repository;
-    private SubscriptionDao subscriptionDao;
     private RecyclerView cardView;
     private EventsAdapter adapter;
     private LinearLayoutManager layoutManager;
@@ -53,26 +51,26 @@ public class EventCards extends Fragment {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        final Context context = getContext();
-
-        repository = new FirebaseEventRepository(context);
-
-        final String UID = new UidGenerator(context, THIS_TAG).generate();
-        subscriptionDao = new FirebaseSubscriptionDao(UID);
-        subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
-            @Override
-            protected void call(Map<String, Subscription> data) {
-                adapter.addSubscriptions(data);
-            }
-        });
-
         View view = inflater.inflate(R.layout.fragment_event_cards, container, false);
         cardView = (RecyclerView) view.findViewById(R.id.cardView);
-        cardView.setHasFixedSize(true);
+        initializeRecyclerView(cardView, getContext());
+
+        return view;
+    }
+
+    private void initializeRecyclerView(RecyclerView recyclerView, Context context) {
+        recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        cardView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(layoutManager);
+
+        initializeAdapter(context);
+    }
+
+    private void initializeAdapter(final Context context) {
+        final String UID = new UidGenerator(context, THIS_TAG).generate();
+        SubscriptionDao subscriptionDao = new FirebaseSubscriptionDao(UID);
 
         adapter = new EventsAdapter(context, new ArrayList<Meeting>(), subscriptionDao);
         adapter.setHasStableIds(true);
@@ -83,7 +81,6 @@ public class EventCards extends Fragment {
                 intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
                 intent.putExtra("UID", UID);
                 startActivity(intent);
-
             }
         });
 
@@ -95,8 +92,13 @@ public class EventCards extends Fragment {
         );
         cardView.setAdapter(sectionedAdapter);
 
+        fetchData(new FirebaseEventRepository(context), subscriptionDao, sectionedAdapter);
+    }
+
+    private void fetchData(EventRepository eventRepository, SubscriptionDao subscriptionDao,
+                           final SimpleSectionedRecyclerViewAdapter sectionedAdapter) {
         final List<SimpleSectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
-        repository.all(new Callback<Event>() {
+        eventRepository.all(new Callback<Event>() {
             @Override
             protected void call(Event data) {
                 if (adapter.willAddNewMonth(data)) {
@@ -114,7 +116,13 @@ public class EventCards extends Fragment {
             }
         });
 
-        return view;
+        subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
+            @Override
+            protected void call(Map<String, Subscription> data) {
+                adapter.addSubscriptions(data);
+            }
+        });
+
     }
 
     @Override
