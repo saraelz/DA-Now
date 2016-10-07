@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.SimpleSectionedRecyclerViewAdapter;
+import edu.deanza.calendar.util.SectionedRecyclerViewAdapter;
 import edu.deanza.calendar.dal.FirebaseEventRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.domain.SubscriptionDao;
@@ -34,8 +34,6 @@ import edu.deanza.calendar.util.UidGenerator;
 
 public class EventCards extends Fragment {
 
-    private EventRepository repository;
-    private SubscriptionDao subscriptionDao;
     private RecyclerView cardView;
     private EventsAdapter adapter;
     private LinearLayoutManager layoutManager;
@@ -53,26 +51,26 @@ public class EventCards extends Fragment {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        final Context context = getContext();
-
-        repository = new FirebaseEventRepository(context);
-
-        final String UID = new UidGenerator(context, THIS_TAG).generate();
-        subscriptionDao = new FirebaseSubscriptionDao(UID);
-        subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
-            @Override
-            protected void call(Map<String, Subscription> data) {
-                adapter.addSubscriptions(data);
-            }
-        });
-
         View view = inflater.inflate(R.layout.fragment_event_cards, container, false);
         cardView = (RecyclerView) view.findViewById(R.id.cardView);
-        cardView.setHasFixedSize(true);
+        initializeRecyclerView(cardView, getContext());
+
+        return view;
+    }
+
+    private void initializeRecyclerView(RecyclerView recyclerView, Context context) {
+        recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        cardView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(layoutManager);
+
+        initializeAdapter(context);
+    }
+
+    private void initializeAdapter(final Context context) {
+        final String UID = new UidGenerator(context, THIS_TAG).generate();
+        SubscriptionDao subscriptionDao = new FirebaseSubscriptionDao(UID);
 
         adapter = new EventsAdapter(context, new ArrayList<Meeting>(), subscriptionDao);
         adapter.setHasStableIds(true);
@@ -83,11 +81,10 @@ public class EventCards extends Fragment {
                 intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
                 intent.putExtra("UID", UID);
                 startActivity(intent);
-
             }
         });
 
-        final SimpleSectionedRecyclerViewAdapter sectionedAdapter = new SimpleSectionedRecyclerViewAdapter(
+        final SectionedRecyclerViewAdapter sectionedAdapter = new SectionedRecyclerViewAdapter(
                 context,
                 R.layout.section,
                 R.id.section_text,
@@ -95,14 +92,19 @@ public class EventCards extends Fragment {
         );
         cardView.setAdapter(sectionedAdapter);
 
-        final List<SimpleSectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
-        repository.all(new Callback<Event>() {
+        fetchData(new FirebaseEventRepository(context), subscriptionDao, sectionedAdapter);
+    }
+
+    private void fetchData(EventRepository eventRepository, SubscriptionDao subscriptionDao,
+                           final SectionedRecyclerViewAdapter sectionedAdapter) {
+        final List<SectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
+        eventRepository.all(new Callback<Event>() {
             @Override
             protected void call(Event data) {
                 if (adapter.willAddNewMonth(data)) {
                     int newIndex = adapter.getItemCount();
                     int newMonth = data.getStart().getMonthOfYear();
-                    sections.add(new SimpleSectionedRecyclerViewAdapter.Section(
+                    sections.add(new SectionedRecyclerViewAdapter.Section(
                             newIndex,
                             new DateFormatSymbols()
                                     .getMonths()
@@ -114,7 +116,13 @@ public class EventCards extends Fragment {
             }
         });
 
-        return view;
+        subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
+            @Override
+            protected void call(Map<String, Subscription> data) {
+                adapter.addSubscriptions(data);
+            }
+        });
+
     }
 
     @Override

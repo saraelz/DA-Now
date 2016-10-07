@@ -15,7 +15,7 @@ import java.util.List;
 
 import edu.deanza.calendar.activities.listeners.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.SimpleSectionedRecyclerViewAdapter;
+import edu.deanza.calendar.util.SectionedRecyclerViewAdapter;
 import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
 import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
@@ -31,8 +31,8 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
     private final Organization organization;
     private final MeetingsAdapter meetingsAdapter;
     private final EventsAdapter eventsAdapter;
-    private final SimpleSectionedRecyclerViewAdapter sectionedAdapter;
-    List<SimpleSectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
+    private final SectionedRecyclerViewAdapter sectionedAdapter;
+    List<SectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
 
     private static final class AggregateViewTypes {
         private static final int RAW_REGULAR_MEETING = 1;
@@ -55,63 +55,24 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
 
         this.meetingsAdapter = new MeetingsAdapter(context, subscribables, subscriptionDao) {
             @Override
-            SubscribeOnClickListener getSubscribeOnClickListener(final MeetingItemViewHolder viewHolder, final Meeting meeting) {
-                DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendLiteral(us.organization.getName())
-                        .appendLiteral(" meeting on ")
-                        // DayOfWeek, Month day
-                        .appendPattern("EEEE, MMMM d")
-                        .toFormatter();
-                final String name = meeting.getStart()
-                                .toString(formatter);
-
-                return new OnClickSubscribeTimeDialog(context, meeting, subscriptionDao) {
-                    @Override
-                    public void postSubscribe() {
-                        // Redirect default behavior to this aggregate adapter, which is directly
-                        // attached to the RecyclerView thus being the exclusive entry point to
-                        // displaying view changes
-                        us.postSubscribe(viewHolder, name);
-                    }
-
-                    @Override
-                    public void postUnsubscribe() {
-                        us.postUnsubscribe(viewHolder, name);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        us.onCancel(viewHolder);
-                    }
-                };
+            protected void postSubscriptionChange(MeetingItemViewHolder viewHolder) {
+                // Redirect default behavior to this aggregate adapter, which is directly
+                // attached to the RecyclerView and is thus the exclusive entry point to
+                // displaying view changes
+                super.postSubscriptionChange(viewHolder);
+                us.postSubscriptionChange(viewHolder);
             }
         };
 
         this.eventsAdapter = new EventsAdapter(context, subscribables, subscriptionDao) {
             @Override
-            SubscribeOnClickListener getSubscribeOnClickListener(final MeetingItemViewHolder viewHolder, Meeting meeting) {
-                Event event = (Event) meeting;
-                final String name = event.getName();
-
-                return new OnClickSubscribeTimeDialog(context, event, subscriptionDao) {
-                    @Override
-                    public void postSubscribe() {
-                        us.postSubscribe(viewHolder, name);
-                    }
-
-                    @Override
-                    public void postUnsubscribe() {
-                        us.postUnsubscribe(viewHolder, name);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        us.onCancel(viewHolder);
-                    }
-                };
+            protected void postSubscriptionChange(MeetingItemViewHolder viewHolder) {
+                super.postSubscriptionChange(viewHolder);
+                us.postSubscriptionChange(viewHolder);
             }
         };
 
-        sectionedAdapter = new SimpleSectionedRecyclerViewAdapter(
+        sectionedAdapter = new SectionedRecyclerViewAdapter(
                 context,
                 R.layout.section,
                 R.id.section_text,
@@ -126,10 +87,6 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
 
     public void setOnEventClickListener(EventsAdapter.ClickListener listener) {
         eventsAdapter.setOnItemClickListener(listener);
-    }
-
-    public int getTodayPosition() {
-        return  eventsAdapter.getTodayPosition();
     }
 
     public boolean willAddNewMonth(Meeting newMeeting) {
@@ -150,7 +107,7 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
         });
     }
 
-    public SimpleSectionedRecyclerViewAdapter getSectionedAdapter() {
+    public SectionedRecyclerViewAdapter getSectionedAdapter() {
         return sectionedAdapter;
     }
 
@@ -158,7 +115,7 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
         if (willAddNewMonth(meeting)) {
             int newIndex = getItemCount();
             int newMonth = meeting.getStart().getMonthOfYear();
-            sections.add(new SimpleSectionedRecyclerViewAdapter.Section(
+            sections.add(new SectionedRecyclerViewAdapter.Section(
                     newIndex,
                     new DateFormatSymbols()
                             .getMonths()
@@ -200,13 +157,6 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
         else {
             eventsAdapter.onBindViewHolder(viewHolder, position);
         }
-    }
-
-    // Never used; subscription behavior taken care of by the component adapters
-    @Override
-    SubscribeOnClickListener getSubscribeOnClickListener(
-            MeetingsAdapter.MeetingItemViewHolder viewHolder, Meeting meeting) {
-        return null;
     }
 
     private boolean isRegularMeeting(Meeting meeting) {

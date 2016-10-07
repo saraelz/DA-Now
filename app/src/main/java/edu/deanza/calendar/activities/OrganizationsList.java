@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.Map;
 
-import edu.deanza.calendar.DividerItemDecoration;
+import edu.deanza.calendar.util.DividerItemDecoration;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseOrganizationRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
@@ -29,8 +29,6 @@ import edu.deanza.calendar.util.UidGenerator;
 
 public class OrganizationsList extends Fragment {
 
-    private OrganizationRepository repository;
-    private SubscriptionDao subscriptionDao;
     private RecyclerView recyclerView;
     private OrganizationsAdapter adapter;
     private LinearLayoutManager layoutManager;
@@ -46,31 +44,28 @@ public class OrganizationsList extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         setHasOptionsMenu(true);
 
-        final Context context = getContext();
-
-        repository = new FirebaseOrganizationRepository(context);
-
-        final String UID = new UidGenerator(context, THIS_TAG).generate();
-        subscriptionDao = new FirebaseSubscriptionDao(UID);
-        subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
-            @Override
-            protected void call(Map<String, Subscription> data) {
-                adapter.addSubscriptions(data);
-            }
-        });
-
-        //setContentView(R.layout.fragment_organizations_list);
         View view = inflater.inflate(R.layout.fragment_organizations_list, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.organization_recycler_view);
+        initializeRecyclerView(recyclerView, getContext());
+
+        return view;
+    }
+
+    private void initializeRecyclerView(RecyclerView recyclerView, Context context) {
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        //recyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
+
+        initializeAdapter(getContext());
+    }
+    
+    private void initializeAdapter(final Context context) {
+        final String UID = new UidGenerator(context, THIS_TAG).generate();
+        SubscriptionDao subscriptionDao = new FirebaseSubscriptionDao(UID);
 
         adapter = new OrganizationsAdapter(context, new ArrayList<Organization>(), subscriptionDao);
         adapter.setHasStableIds(true);
@@ -84,16 +79,26 @@ public class OrganizationsList extends Fragment {
             }
         });
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
-
-        repository.all(new Callback<Organization>() {
+        recyclerView.addItemDecoration(new DividerItemDecoration(context));
+        
+        fetchData(new FirebaseOrganizationRepository(context), subscriptionDao);
+    }
+    
+    private void fetchData(OrganizationRepository organizationRepository,
+                           SubscriptionDao subscriptionDao) {
+        organizationRepository.all(new Callback<Organization>() {
             @Override
             protected void call(Organization data) {
                 adapter.add(data);
             }
         });
 
-        return view;
+        subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
+            @Override
+            protected void call(Map<String, Subscription> data) {
+                adapter.addSubscriptions(data);
+            }
+        });
     }
 
     @Override
@@ -103,7 +108,6 @@ public class OrganizationsList extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.organizations_toolbar_menu, menu);
     }
 

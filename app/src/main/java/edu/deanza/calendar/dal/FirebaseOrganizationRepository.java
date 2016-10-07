@@ -54,7 +54,7 @@ public final class FirebaseOrganizationRepository extends FirebaseRepository<Org
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        initializeRoot();
+        initialize();
     }
 
 }

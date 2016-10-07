@@ -8,6 +8,8 @@ import android.view.View;
 
 public interface SubscribeOnClickListener extends View.OnClickListener {
 
+    void postSubscriptionChange();
+
     void postSubscribe();
 
     void postUnsubscribe();

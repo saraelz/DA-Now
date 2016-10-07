@@ -1,6 +1,8 @@
 package edu.deanza.calendar.domain.models;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.Serializable;
@@ -49,6 +51,7 @@ public class Organization implements Subscribable, Serializable {
         this.eventRepository = null;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -166,7 +169,7 @@ public class Organization implements Subscribable, Serializable {
 
     @Override
     public boolean isSubscribed() {
-        return subscription == null;
+        return subscription != null;
     }
 
     @Override
@@ -205,6 +208,17 @@ public class Organization implements Subscribable, Serializable {
 
         public String getOrganizationName() {
             return organizationName;
+        }
+
+        @Override
+        public String getName() {
+            DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                    .appendLiteral(organizationName)
+                    .appendLiteral(" meeting on ")
+                    // DayOfWeek, Month day
+                    .appendPattern("EEEE, MMMM d")
+                    .toFormatter();
+            return start.toString(formatter);
         }
 
         @Override

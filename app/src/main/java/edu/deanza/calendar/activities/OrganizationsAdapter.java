@@ -22,7 +22,6 @@ public class OrganizationsAdapter
         super(context, subscribables, subscriptionDao);
     }
 
-    // manage ClickListener data
     protected static ClickListener clickListener;
 
     public interface ClickListener {
@@ -33,7 +32,6 @@ public class OrganizationsAdapter
         clickListener = listener;
     }
 
-    // based on item_organization
     public static class OrganizationItemViewHolder
             extends SubscribableAdapter.SubscribableItemViewHolder {
 
@@ -74,32 +72,6 @@ public class OrganizationsAdapter
         });
 
         viewHolder.organizationName.setText(organization.getName());
-    }
-
-    @Override
-    SubscribeOnClickListener getSubscribeOnClickListener(final OrganizationItemViewHolder viewHolder,
-                                                         Organization organization) {
-        final String name = organization.getName();
-        final OrganizationsAdapter us = this;
-
-        return new OnClickOrganizationSubscribeDialog(context, organization, subscriptionDao) {
-            @Override
-            public void postSubscribe() {
-                notifyItemChanged(viewHolder.getAdapterPosition());
-                us.postSubscribe(viewHolder, name);
-            }
-
-            @Override
-            public void postUnsubscribe() {
-                notifyItemChanged(viewHolder.getAdapterPosition());
-                us.postUnsubscribe(viewHolder, name);
-            }
-
-            @Override
-            public void onCancel() {
-                us.onCancel(viewHolder);
-            }
-        };
     }
 
 }

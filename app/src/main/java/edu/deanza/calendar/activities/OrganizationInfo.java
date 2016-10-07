@@ -3,19 +3,17 @@ package edu.deanza.calendar.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-import edu.deanza.calendar.activities.listeners.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.domain.SubscriptionDao;
@@ -26,11 +24,10 @@ import edu.deanza.calendar.domain.models.Meeting;
 import edu.deanza.calendar.domain.models.Organization;
 import edu.deanza.calendar.domain.models.Subscription;
 import edu.deanza.calendar.util.Callback;
+import edu.deanza.calendar.views.SubscribeButtonWrapper;
 
 public class OrganizationInfo extends AppCompatActivity {
 
-    private Organization organization;
-    private SubscriptionDao subscriptionDao;
     private RecyclerView recyclerView;
     private OrganizationInfoAdapter adapter;
     private LinearLayoutManager layoutManager;
@@ -44,49 +41,38 @@ public class OrganizationInfo extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        organization = (Organization) intent.getSerializableExtra("edu.deanza.calendar.models.Organization");
-        final String UID = intent.getStringExtra("UID");
-        subscriptionDao = new FirebaseSubscriptionDao(UID);
+        Organization organization = (Organization) intent.getSerializableExtra("edu.deanza.calendar.models.Organization");
+        String UID = intent.getStringExtra("UID");
+        SubscriptionDao subscriptionDao = new FirebaseSubscriptionDao(UID);
 
-        final String name = organization.getName();
-        setTitle(name);
+        setText(organization);
 
-        final FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
-        if (organization.isSubscribed()) {
-            subscribeButton.setImageResource(R.drawable.ic_favorite_border);
-        }
-        else {
-            subscribeButton.setImageResource(R.drawable.ic_favorite);
-        }
-        subscribeButton.setOnClickListener(new OnClickOrganizationSubscribeDialog(this, organization, subscriptionDao) {
+        SubscribeButtonWrapper subscribeButton = new SubscribeButtonWrapper(
+                (ImageButton) findViewById(R.id.fab),
+                this,
+                organization,
+                subscriptionDao
+        ) {
             @Override
-            public void postSubscribe() {
-                subscribeButton.setImageResource(R.drawable.ic_favorite);
+            protected void postSubscriptionChange() {
+                super.postSubscriptionChange();
                 adapter.notifyDataSetChanged();
-                Snackbar.make(subscribeButton,
-                        "Subscribed to " + name,
-                        Snackbar.LENGTH_LONG)
-                        .show();
             }
+        };
 
-            @Override
-            public void postUnsubscribe() {
-                subscribeButton.setImageResource(R.drawable.ic_favorite_border);
-                adapter.notifyDataSetChanged();
-                Snackbar.make(subscribeButton,
-                        "Unsubscribed from" + name,
-                        Snackbar.LENGTH_LONG)
-                        .show();
-            }
-        });
+        recyclerView = (RecyclerView) findViewById(R.id.organization_info_recycler_view);
+        initializeRecyclerView(recyclerView);
+        initializeAdapter(organization, subscriptionDao, UID);
+    }
+    
+    private void setText(Organization organization) {
+        setTitle(organization.getName());
 
         TextView meetingLocation = (TextView) findViewById(R.id.organization_info_location);
-        meetingLocation.setText(organization.getLocation());
-
         TextView description = (TextView) findViewById(R.id.organization_info_description);
-        description.setText(organization.getDescription());
-
         TextView meetingDays = (TextView) findViewById(R.id.organization_info_meeting_days);
+        meetingLocation.setText(organization.getLocation());
+        description.setText(organization.getDescription());
         if (organization instanceof Club) {
             for (Day day : ((Club) organization).getMeetingDays()) {
                 meetingDays.setText(day.fullName() + 's');
@@ -96,21 +82,24 @@ public class OrganizationInfo extends AppCompatActivity {
             TextView meetingDaysLabel = (TextView) findViewById(R.id.organization_info_meeting_days_label);
             meetingDaysLabel.setVisibility(View.INVISIBLE);
         }
+    }
 
-        recyclerView = (RecyclerView) findViewById(R.id.organization_info_recycler_view);
+    private void initializeRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
+    }
 
-        final Context context = this;
-
-        adapter = new OrganizationInfoAdapter(this, new ArrayList<Meeting>(), subscriptionDao, organization);
+    private void initializeAdapter(Organization organization, final SubscriptionDao subscriptionDao,
+                                   final String UID) {
+        adapter = new OrganizationInfoAdapter(
+                this, new ArrayList<Meeting>(), subscriptionDao, organization);
         adapter.setOnEventClickListener(new EventsAdapter.ClickListener() {
             @Override
             public void onItemClick(Event clickedEvent) {
-                Intent intent = new Intent(context, EventInfo.class);
+                Intent intent = new Intent(getBaseContext(), EventInfo.class);
                 intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
                 intent.putExtra("UID", UID);
                 startActivity(intent);
@@ -119,6 +108,16 @@ public class OrganizationInfo extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter.getSectionedAdapter());
 
+        fetchData(organization, subscriptionDao);
+    }
+
+    private void fetchData(Organization organization, SubscriptionDao subscriptionDao) {
+        organization.getEvents(new Callback<Event>() {
+            @Override
+            protected void call(Event data) {
+                adapter.add(data);
+            }
+        });
         subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
             @Override
             protected void call(Map<String, Subscription> data) {
@@ -126,13 +125,7 @@ public class OrganizationInfo extends AppCompatActivity {
             }
         });
 
-        organization.getEvents(new Callback<Event>() {
-            @Override
-            protected void call(Event data) {
-                adapter.add(data);
-            }
-        });
-
     }
+
 }
 

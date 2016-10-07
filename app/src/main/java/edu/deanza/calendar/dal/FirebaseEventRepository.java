@@ -97,7 +97,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        initializeRoot();
+        initialize();
     }
 
 }

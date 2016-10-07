@@ -1,30 +1,25 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-//package org.ocpsoft.prettytime.i18n;
+//import org.ocpsoft.prettytime.i18n;
 
-import edu.deanza.calendar.activities.listeners.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.views.SubscribeButtonWrapper;
 
 public class EventInfo extends AppCompatActivity {
-
-    Event event;
-    SubscriptionDao subscriptionDao;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,49 +30,17 @@ public class EventInfo extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        event = (Event) intent.getSerializableExtra("edu.deanza.calendar.models.Event");
-        subscriptionDao = new FirebaseSubscriptionDao(intent.getStringExtra("UID"));
+        Event event = (Event) intent.getSerializableExtra("edu.deanza.calendar.models.Event");
+        SubscriptionDao subscriptionDao = new FirebaseSubscriptionDao(intent.getStringExtra("UID"));
 
-        final String name = event.getName();
-        setTitle(name);
+        setText(event);
 
-        TextView location = (TextView) findViewById(R.id.event_location);
-        location.setText(event.getLocation());
-
-        TextView time = (TextView) findViewById(R.id.event_time);
-        time.setText(print_date());
-
-        TextView description = (TextView) findViewById(R.id.event_description);
-        description.setText(event.getDescription());
-
-        //new PrettyTime().format(event.getStart());
-
-        final FloatingActionButton subscribeButton = (FloatingActionButton) findViewById(R.id.fab);
-        if (event.isSubscribed()) {
-            subscribeButton.setImageResource(R.drawable.ic_favorite_border);
-        }
-        else {
-            subscribeButton.setImageResource(R.drawable.ic_favorite);
-        }
-        subscribeButton.setOnClickListener(new OnClickSubscribeTimeDialog(this, event, subscriptionDao) {
-            @Override
-            public void postSubscribe() {
-                subscribeButton.setImageResource(R.drawable.ic_favorite);
-                Snackbar.make(subscribeButton,
-                        "Subscribed to " + name,
-                        Snackbar.LENGTH_LONG)
-                        .show();
-            }
-
-            @Override
-            public void postUnsubscribe() {
-                subscribeButton.setImageResource(R.drawable.ic_favorite_border);
-                Snackbar.make(subscribeButton,
-                        "Unsubscribed from " + name,
-                        Snackbar.LENGTH_LONG)
-                        .show();
-            }
-        });
+        SubscribeButtonWrapper subscribeButton = new SubscribeButtonWrapper(
+                (ImageButton) findViewById(R.id.fab),
+                this,
+                event,
+                subscriptionDao
+        );
 
         /*
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
@@ -85,13 +48,20 @@ public class EventInfo extends AppCompatActivity {
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml("<p>This is the text that will be shared.</p>"));
         startActivity(Intent.createChooser(sharingIntent,"Share using"));
          */
-
     }
 
-    private String print_date() {
-        DateTime start = event.getStart();
-        DateTime end = event.getEnd();
+    private void setText(Event event) {
+        setTitle(event.getName());
 
+        TextView time = (TextView) findViewById(R.id.event_time);
+        TextView location = (TextView) findViewById(R.id.event_location);
+        TextView description = (TextView) findViewById(R.id.event_description);
+        time.setText(prettyPrintInterval(event.getStart(), event.getEnd()));
+        location.setText(event.getLocation());
+        description.setText(event.getDescription());
+    }
+
+    private String prettyPrintInterval(DateTime start, DateTime end) {
         DateTimeFormatter date_fmt = DateTimeFormat.forPattern("EEEE, MMM d");
         DateTimeFormatter time_fmt = DateTimeFormat.forPattern("h:ss aaaa");
 
@@ -104,9 +74,5 @@ public class EventInfo extends AppCompatActivity {
         else {
             return date_fmt.print(start) + " at " + time_fmt.print(start) + " - " + time_fmt.print(end);
         }
-    }
-
-    private String print_event() {
-        return event.getName() + "\n" + print_date() + "\n" + event.getLocation() + "\n\n" + event.getDescription();
     }
 }

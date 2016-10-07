@@ -20,6 +20,8 @@ public interface Subscribable {
 
     boolean isSubscribed();
 
+    String getName();
+
     String getKey();
 
 }
