@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.SimpleSectionedRecyclerViewAdapter;
+import edu.deanza.calendar.util.SectionedRecyclerViewAdapter;
 import edu.deanza.calendar.dal.FirebaseEventRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.domain.SubscriptionDao;
@@ -84,7 +84,7 @@ public class EventCards extends Fragment {
             }
         });
 
-        final SimpleSectionedRecyclerViewAdapter sectionedAdapter = new SimpleSectionedRecyclerViewAdapter(
+        final SectionedRecyclerViewAdapter sectionedAdapter = new SectionedRecyclerViewAdapter(
                 context,
                 R.layout.section,
                 R.id.section_text,
@@ -96,15 +96,15 @@ public class EventCards extends Fragment {
     }
 
     private void fetchData(EventRepository eventRepository, SubscriptionDao subscriptionDao,
-                           final SimpleSectionedRecyclerViewAdapter sectionedAdapter) {
-        final List<SimpleSectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
+                           final SectionedRecyclerViewAdapter sectionedAdapter) {
+        final List<SectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
         eventRepository.all(new Callback<Event>() {
             @Override
             protected void call(Event data) {
                 if (adapter.willAddNewMonth(data)) {
                     int newIndex = adapter.getItemCount();
                     int newMonth = data.getStart().getMonthOfYear();
-                    sections.add(new SimpleSectionedRecyclerViewAdapter.Section(
+                    sections.add(new SectionedRecyclerViewAdapter.Section(
                             newIndex,
                             new DateFormatSymbols()
                                     .getMonths()

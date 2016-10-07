@@ -1,4 +1,4 @@
-package edu.deanza.calendar;
+package edu.deanza.calendar.util;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +19,7 @@ import edu.deanza.calendar.domain.Subscribable;
  * Modified by Karina Antonio (karinafantonio@gmail.com)
  */
 
-public class SimpleSectionedRecyclerViewAdapter
+public class SectionedRecyclerViewAdapter
         <VH extends RecyclerView.ViewHolder, A extends RecyclerView.Adapter<VH>>
         extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -32,8 +32,8 @@ public class SimpleSectionedRecyclerViewAdapter
     private A mBaseAdapter;
     private SparseArray<Section> mSections = new SparseArray<>();
 
-    public SimpleSectionedRecyclerViewAdapter(Context context, int sectionResourceId,
-                                              int textResourceId, A baseAdapter) {
+    public SectionedRecyclerViewAdapter(Context context, int sectionResourceId,
+                                        int textResourceId, A baseAdapter) {
         mSectionResourceId = sectionResourceId;
         mTextResourceId = textResourceId;
         mBaseAdapter = baseAdapter;

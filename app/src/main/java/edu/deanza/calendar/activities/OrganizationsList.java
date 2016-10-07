@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.Map;
 
-import edu.deanza.calendar.DividerItemDecoration;
+import edu.deanza.calendar.util.DividerItemDecoration;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseOrganizationRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;

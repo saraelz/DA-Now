@@ -15,7 +15,7 @@ import java.util.List;
 
 import edu.deanza.calendar.activities.listeners.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.SimpleSectionedRecyclerViewAdapter;
+import edu.deanza.calendar.util.SectionedRecyclerViewAdapter;
 import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
 import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
@@ -31,8 +31,8 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
     private final Organization organization;
     private final MeetingsAdapter meetingsAdapter;
     private final EventsAdapter eventsAdapter;
-    private final SimpleSectionedRecyclerViewAdapter sectionedAdapter;
-    List<SimpleSectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
+    private final SectionedRecyclerViewAdapter sectionedAdapter;
+    List<SectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
 
     private static final class AggregateViewTypes {
         private static final int RAW_REGULAR_MEETING = 1;
@@ -72,7 +72,7 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
             }
         };
 
-        sectionedAdapter = new SimpleSectionedRecyclerViewAdapter(
+        sectionedAdapter = new SectionedRecyclerViewAdapter(
                 context,
                 R.layout.section,
                 R.id.section_text,
@@ -107,7 +107,7 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
         });
     }
 
-    public SimpleSectionedRecyclerViewAdapter getSectionedAdapter() {
+    public SectionedRecyclerViewAdapter getSectionedAdapter() {
         return sectionedAdapter;
     }
 
@@ -115,7 +115,7 @@ public class OrganizationInfoAdapter extends SubscribableAdapter<Meeting, Meetin
         if (willAddNewMonth(meeting)) {
             int newIndex = getItemCount();
             int newMonth = meeting.getStart().getMonthOfYear();
-            sections.add(new SimpleSectionedRecyclerViewAdapter.Section(
+            sections.add(new SectionedRecyclerViewAdapter.Section(
                     newIndex,
                     new DateFormatSymbols()
                             .getMonths()

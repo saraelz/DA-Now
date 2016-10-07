@@ -1,4 +1,4 @@
-package edu.deanza.calendar;
+package edu.deanza.calendar.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -7,6 +7,10 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+/**
+ * @author http://stackoverflow.com/a/27037230
+ */
 
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
