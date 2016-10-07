@@ -38,14 +38,18 @@ abstract class FirebaseRepository<T> implements Serializable {
     private static final String THIS_CLASS_TAG = FirebaseRepository.class.getName();
 
     {
-        initializeRoot();
+        initialize();
     }
 
     public FirebaseRepository(Context context) {
         this.context = context;
     }
 
-    void initializeRoot() {
+    void initialize() {
+        initializeRoot();
+    }
+
+    private void initializeRoot() {
         this.root = FirebaseDatabase.getInstance().getReference().child(getRootName());
     }
 
@@ -192,7 +196,7 @@ abstract class FirebaseRepository<T> implements Serializable {
     // For serialization; copy and paste in each subclass
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        initializeRoot();
+        initialize();
     }
 
 }
