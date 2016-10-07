@@ -33,7 +33,8 @@ abstract class FirebaseRepository<T> implements Serializable {
     transient Query currentQuery;
     private final ListOrderedMap<String, T> currentData = new ListOrderedMap<>();
     private transient AsyncTask runningTask;
-    private transient final Context context;
+    // Note: context becomes and remains null after serialization
+    private final transient Context context;
 
     private static final String THIS_CLASS_TAG = FirebaseRepository.class.getName();
 
@@ -74,16 +75,23 @@ abstract class FirebaseRepository<T> implements Serializable {
 
             runningTask = new AsyncTask<Void, T, ListOrderedMap<String, T>>() {
 
-                ProgressDialog dialog = new ProgressDialog(context);
+                ProgressDialog dialog;
+                {
+                    if (context != null) {
+                        dialog= new ProgressDialog(context);
+                    }
+                }
 
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
 
-                    dialog.setMessage("Getting Data ...");
-                    dialog.setIndeterminate(false);
-                    dialog.setCancelable(true);
-                    dialog.show();
+                    if (dialog != null) {
+                        dialog.setMessage("Getting Data ...");
+                        dialog.setIndeterminate(false);
+                        dialog.setCancelable(true);
+                        dialog.show();
+                    }
                 }
 
                 @Override
@@ -109,7 +117,9 @@ abstract class FirebaseRepository<T> implements Serializable {
 
                 @Override
                 protected void onPostExecute(ListOrderedMap<String, T> newData) {
-                    dialog.dismiss();
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
                     currentData.clear();
                     currentData.putAll(newData);
                 }
