@@ -16,8 +16,12 @@ import edu.deanza.calendar.domain.Subscribable;
 
 /**
  * @author Gabriele Mariotti (gabri.mariotti@gmail.com)
+ * Modified by Karina Antonio (karinafantonio@gmail.com)
  */
-public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+public class SimpleSectionedRecyclerViewAdapter
+        <VH extends RecyclerView.ViewHolder, A extends RecyclerView.Adapter<VH>>
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context mContext;
     private static final int SECTION_TYPE = 100;
@@ -25,15 +29,11 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     private boolean mValid = true;
     private int mSectionResourceId;
     private int mTextResourceId;
-    private LayoutInflater mLayoutInflater;
-    private SubscribableAdapter mBaseAdapter;
-    private SparseArray<Section> mSections = new SparseArray<Section>();
+    private A mBaseAdapter;
+    private SparseArray<Section> mSections = new SparseArray<>();
 
-
-    public SimpleSectionedRecyclerViewAdapter(Context context, int sectionResourceId, int textResourceId,
-                                              SubscribableAdapter baseAdapter) {
-
-        mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public SimpleSectionedRecyclerViewAdapter(Context context, int sectionResourceId,
+                                              int textResourceId, A baseAdapter) {
         mSectionResourceId = sectionResourceId;
         mTextResourceId = textResourceId;
         mBaseAdapter = baseAdapter;
@@ -82,7 +82,8 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
         if (typeView == SECTION_TYPE) {
             final View view = LayoutInflater.from(mContext).inflate(mSectionResourceId, parent, false);
             return new SectionViewHolder(view,mTextResourceId);
-        }else{
+        }
+        else {
             return mBaseAdapter.onCreateViewHolder(parent, toOriginalViewType(typeView));
         }
     }
@@ -90,9 +91,12 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder sectionOrContentViewHolder, int position) {
         if (isSectionHeaderPosition(position)) {
-            ((SectionViewHolder) sectionOrContentViewHolder).title.setText(mSections.get(position).title);
-        }else{
-            mBaseAdapter.onBindViewHolder((SubscribableAdapter.SubscribableItemViewHolder) sectionOrContentViewHolder,sectionedPositionToPosition(position));
+            ((SectionViewHolder) sectionOrContentViewHolder)
+                    .title
+                    .setText(mSections.get(position).title);
+        }
+        else {
+            mBaseAdapter.onBindViewHolder((VH) sectionOrContentViewHolder, sectionedPositionToPosition(position));
         }
 
     }
@@ -170,7 +174,6 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     public boolean isSectionHeaderPosition(int position) {
         return mSections.get(position) != null;
     }
-
 
     @Override
     public long getItemId(int position) {
