@@ -43,7 +43,6 @@ public class EventCards extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle("Events Calendar");
     }
 
     @Override
@@ -53,19 +52,17 @@ public class EventCards extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_event_cards, container, false);
         cardView = (RecyclerView) view.findViewById(R.id.cardView);
-        initializeRecyclerView(cardView, getContext());
+        initializeRecyclerView(cardView);
 
         return view;
     }
 
-    private void initializeRecyclerView(RecyclerView recyclerView, Context context) {
+    private void initializeRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-
-        initializeAdapter(context);
     }
 
     private void initializeAdapter(final Context context) {
@@ -84,7 +81,7 @@ public class EventCards extends Fragment {
             }
         });
 
-        final SectionedRecyclerViewAdapter sectionedAdapter = new SectionedRecyclerViewAdapter(
+        final SectionedRecyclerViewAdapter sectionedAdapter = new SectionedRecyclerViewAdapter<>(
                 context,
                 R.layout.section,
                 R.id.section_text,
@@ -126,10 +123,10 @@ public class EventCards extends Fragment {
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         getActivity().setTitle("Events Calendar");
+        initializeAdapter(getContext());
     }
 
     @Override

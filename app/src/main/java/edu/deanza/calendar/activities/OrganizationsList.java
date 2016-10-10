@@ -38,7 +38,6 @@ public class OrganizationsList extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle("Organizations");
     }
 
     @Override
@@ -48,19 +47,17 @@ public class OrganizationsList extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_organizations_list, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.organization_recycler_view);
-        initializeRecyclerView(recyclerView, getContext());
+        initializeRecyclerView(recyclerView);
 
         return view;
     }
 
-    private void initializeRecyclerView(RecyclerView recyclerView, Context context) {
+    private void initializeRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-
-        initializeAdapter(getContext());
     }
     
     private void initializeAdapter(final Context context) {
@@ -102,10 +99,10 @@ public class OrganizationsList extends Fragment {
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         getActivity().setTitle("Organizations");
+        initializeAdapter(getContext());
     }
 
     @Override
