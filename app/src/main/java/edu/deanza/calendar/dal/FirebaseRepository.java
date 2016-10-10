@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import edu.deanza.calendar.util.Callback;
+import edu.deanza.calendar.util.Utilities;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
@@ -51,7 +52,7 @@ abstract class FirebaseRepository<T> implements Serializable {
     }
 
     private void initializeRoot() {
-        this.root = FirebaseDatabase.getInstance().getReference().child(getRootName());
+        this.root = Utilities.getFirebase().getReference().child(getRootName());
     }
 
     abstract String getRootName();
