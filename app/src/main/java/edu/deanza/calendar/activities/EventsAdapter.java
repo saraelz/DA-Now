@@ -79,6 +79,10 @@ public class EventsAdapter extends MeetingsAdapter {
 
         viewHolder.eventName.setText(event.getName());
 
+        if (event.isAllDay()) {
+            viewHolder.meetingTime.setText("All day");
+        }
+
         Iterator<String> i = event.getOrganizationNames().iterator();
         if (i.hasNext()) {
             StringBuilder organizationNamesList = new StringBuilder();

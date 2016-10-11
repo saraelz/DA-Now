@@ -86,6 +86,10 @@ public class Event extends Meeting implements Subscribable, Serializable {
         }
     }
 
+    public boolean isAllDay() {
+        return start.equals(end);
+    }
+
     @Override
     public String getKey() {
         return start.toString(ISODateTimeFormat.yearMonthDay()) + '|' + name;
