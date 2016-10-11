@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Iterator;
@@ -94,8 +95,8 @@ public class EventsAdapter extends MeetingsAdapter {
             viewHolder.eventOrganizations.setText(organizationNamesList.toString());
         }
         else {
-            viewHolder.itemView.findViewById(R.id.item_event_organizations_label)
-                    .setVisibility(View.INVISIBLE);
+            viewHolder.itemView.findViewById(R.id.item_event_organizations)
+                    .setVisibility(View.GONE);
         }
 
     }

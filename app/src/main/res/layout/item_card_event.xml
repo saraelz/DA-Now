@@ -8,10 +8,10 @@
                                     card_view:cardCornerRadius="4dp">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="12dp"
         android:background="?android:attr/selectableItemBackground"
-        android:minHeight="25dp">
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/item_event_dom"
@@ -38,7 +38,6 @@
             android:id="@+id/item_event_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_toEndOf="@id/item_event_dow"
             android:layout_toStartOf="@+id/item_event_subscribe"
             android:layout_marginBottom="5dp"
@@ -57,21 +56,11 @@
             tools:text="Time"/>
 
         <TextView
-            android:id="@+id/item_event_organizations_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/item_event_time"
-            android:layout_toEndOf="@id/item_event_dow"
-            android:textSize="13sp"
-            android:text="Hosted by "
-            android:textStyle="italic"/>
-
-        <TextView
             android:id="@+id/item_event_organizations"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/item_event_time"
-            android:layout_toEndOf="@id/item_event_organizations_label"
+            android:layout_toEndOf="@id/item_event_dow"
             android:layout_toStartOf="@id/item_event_subscribe"
             android:textSize="13sp"
             tools:text="Organizations"
@@ -83,7 +72,7 @@
             android:layout_alignParentTop="false"
             android:layout_alignParentBottom="@id/item_event_time"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
             android:src="@drawable/ic_favorite_border"
             android:clickable="true"/>
