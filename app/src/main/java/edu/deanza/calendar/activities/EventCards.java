@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.joda.time.LocalDate;
+
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +97,7 @@ public class EventCards extends Fragment {
     private void fetchData(EventRepository eventRepository, SubscriptionDao subscriptionDao,
                            final SectionedRecyclerViewAdapter sectionedAdapter) {
         final List<SectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
-        eventRepository.all(new Callback<Event>() {
+        eventRepository.after(LocalDate.now(), new Callback<Event>() {
             @Override
             protected void call(Event data) {
                 if (adapter.willAddNewMonth(data)) {
