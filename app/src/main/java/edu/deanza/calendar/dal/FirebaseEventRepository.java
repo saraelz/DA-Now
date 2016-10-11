@@ -45,7 +45,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
 
     @Override
     public void all(Callback<Event> callback) {
-        currentQuery = root.orderByKey();
+        currentQuery = root.orderByChild("start");
         listenToQuery(callback);
     }
 
@@ -61,7 +61,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     public void on(LocalDate date, Callback<Event> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = root
-                .orderByKey()
+                .orderByChild("start")
                 .startAt(formatter.print(date))
                 .endAt(formatter.print(date.plusDays(1)));
         listenToQuery(callback);
@@ -71,7 +71,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     public void before(LocalDate date, Callback<Event> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = root
-                .orderByKey()
+                .orderByChild("start")
                 .endAt(formatter.print(date));
         listenToQuery(callback);
     }
@@ -80,7 +80,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     public void after(LocalDate date, Callback<Event> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = root
-                .orderByKey()
+                .orderByChild("start")
                 .startAt(formatter.print(date));
         listenToQuery(callback);
     }
@@ -89,7 +89,7 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     public void between(LocalDate start, LocalDate end, Callback<Event> callback) {
         DateTimeFormatter formatter = ISODateTimeFormat.date();
         currentQuery = root
-                .orderByKey()
+                .orderByChild("start")
                 .startAt(formatter.print(start))
                 .endAt(formatter.print(end));
         listenToQuery(callback);
