@@ -27,7 +27,8 @@ public class Event extends Meeting implements Subscribable, Serializable {
 
     // TODO: implement `categories` field
 
-    public Event(DateTime start, DateTime end, String name, String description, String location, List<String> organizationNames, OrganizationRepository organizationRepository) {
+    public Event(DateTime start, DateTime end, String name, String description, String location,
+                 List<String> organizationNames, OrganizationRepository organizationRepository) {
         super(start, end);
         this.name = name;
         this.description = description;
@@ -37,7 +38,8 @@ public class Event extends Meeting implements Subscribable, Serializable {
         this.organizations = null;
     }
 
-    public Event(DateTime start, DateTime end, String name, String description, String location, List<String> organizationNames, List<Organization> organizations) {
+    public Event(DateTime start, DateTime end, String name, String description, String location,
+                 List<String> organizationNames, List<Organization> organizations) {
         super(start, end);
         this.name = name;
         this.description = description;

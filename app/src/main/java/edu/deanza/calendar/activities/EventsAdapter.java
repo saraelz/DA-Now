@@ -1,6 +1,10 @@
 package edu.deanza.calendar.activities;
 
 import android.content.Context;
+import android.content.Intent;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +20,12 @@ import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
 import edu.deanza.calendar.domain.SubscriptionDao;
 import edu.deanza.calendar.domain.models.Event;
 import edu.deanza.calendar.domain.models.Meeting;
+import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.util.Callback;
+import edu.deanza.calendar.util.UidGenerator;
 
 public class EventsAdapter extends MeetingsAdapter {
+
 
     public EventsAdapter(Context context, List<Meeting> subscribables, SubscriptionDao subscriptionDao) {
         super(context, subscribables, subscriptionDao);
@@ -38,9 +46,11 @@ public class EventsAdapter extends MeetingsAdapter {
         private TextView eventName;
         private TextView eventOrganizations;
 
+
         public EventItemViewHolder(View containingItem) {
             super(containingItem);
             eventName = (TextView) containingItem.findViewById(R.id.item_event_name);
+
             eventOrganizations = (TextView) containingItem.findViewById(R.id.item_event_organizations);
 
             meetingTime = (TextView) containingItem.findViewById(R.id.item_event_time);
@@ -69,7 +79,7 @@ public class EventsAdapter extends MeetingsAdapter {
         super.onBindViewHolder(meetingViewHolder, position);
 
         final Event event = (Event) subscribables.get(position);
-        EventItemViewHolder viewHolder = (EventItemViewHolder) meetingViewHolder;
+        final EventItemViewHolder viewHolder = (EventItemViewHolder) meetingViewHolder;
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,21 +94,67 @@ public class EventsAdapter extends MeetingsAdapter {
             viewHolder.meetingTime.setText("All day");
         }
 
-        Iterator<String> i = event.getOrganizationNames().iterator();
-        if (i.hasNext()) {
-            StringBuilder organizationNamesList = new StringBuilder();
-            organizationNamesList.append(i.next());
-            while (i.hasNext()) {
-                organizationNamesList.append(", ");
-                organizationNamesList.append(i.next());
-            }
-            viewHolder.eventOrganizations.setText(organizationNamesList.toString());
+        if (!event.getOrganizationNames().isEmpty()) {
+            final SpannableStringBuilder organizationNamesList = new SpannableStringBuilder();
+            event.getOrganizations (new Callback<Organization>() {
+                @Override
+                protected void call(final Organization data) {
+                    if (organizationNamesList.length() != 0) // not the first item in the list
+                        organizationNamesList.append(", ");
+
+                    String organizationName = data.getName(); //
+                    organizationNamesList.append(organizationName);
+                    organizationNamesList.setSpan(new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            Intent intent = new Intent(context, OrganizationInfo.class);
+                            intent.putExtra("edu.deanza.calendar.models.Organization", data);
+                            intent.putExtra("UID", "");//UidGenerator.UID); //TODO: PASS UID
+                            context.startActivity(intent);
+
+                        }
+                    }, organizationNamesList.length() - organizationName.length(), organizationNamesList.length(), 0);
+                    }
+                }
+            );
+
+            viewHolder.eventOrganizations.setMovementMethod(LinkMovementMethod.getInstance());
+            viewHolder.eventOrganizations.setText(organizationNamesList, TextView.BufferType.SPANNABLE);
         }
         else {
             viewHolder.itemView.findViewById(R.id.item_event_organizations)
                     .setVisibility(View.GONE);
         }
 
+        /*Iterator<String> i = event.getOrganizationNames().iterator();
+        if (i.hasNext()) {
+            SpannableStringBuilder organizationNamesList = new SpannableStringBuilder();
+            do {
+                final String organizationName = i.next();
+                organizationNamesList.append(organizationName);
+                organizationNamesList.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(View widget) {
+                        event.getOrganizationRepository().findByName(organizationName, new Callback<Organization>() {
+                            @Override
+                            protected void call(Organization clickedOrganization) {
+                                Intent intent = new Intent(context, OrganizationInfo.class);
+                                intent.putExtra("edu.deanza.calendar.models.Organization", clickedOrganization);
+                                intent.putExtra("UID", "");//UidGenerator.UID); //TODO: PASS UID
+                                context.startActivity(intent);
+                            }
+                        });
+                    }
+                }, organizationNamesList.length() - organizationName.length(), organizationNamesList.length(), 0);
+            } while (i.hasNext());
+
+            viewHolder.eventOrganizations.setMovementMethod(LinkMovementMethod.getInstance());
+            viewHolder.eventOrganizations.setText(organizationNamesList, TextView.BufferType.SPANNABLE);
+        }
+        else {
+            viewHolder.itemView.findViewById(R.id.item_event_organizations)
+                    .setVisibility(View.GONE);
+        }*/
     }
 
 }
