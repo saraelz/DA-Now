@@ -3,6 +3,7 @@ package edu.deanza.calendar.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,6 +40,8 @@ public class EventCards extends Fragment {
     private RecyclerView cardView;
     private EventsAdapter adapter;
     private LinearLayoutManager layoutManager;
+    private int lastFirstVisiblePosition;
+
 
     private static final String THIS_TAG = EventCards.class.getName();
 
@@ -80,6 +83,7 @@ public class EventCards extends Fragment {
                 intent.putExtra("edu.deanza.calendar.models.Event", clickedEvent);
                 intent.putExtra("UID", UID);
                 startActivity(intent);
+
             }
         });
 
@@ -130,9 +134,19 @@ public class EventCards extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        cardView.getLayoutManager().scrollToPosition(lastFirstVisiblePosition);
         getActivity().setTitle("Events Calendar");
         initializeAdapter(getContext());
     }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        lastFirstVisiblePosition = ((LinearLayoutManager)cardView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+
+    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

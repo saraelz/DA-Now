@@ -1,9 +1,12 @@
 package edu.deanza.calendar.activities;
 
+import android.app.ActionBar;
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -26,8 +29,12 @@ public class EventInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_info);
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Provides a "back" button for Android
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         Event event = (Event) intent.getSerializableExtra("edu.deanza.calendar.models.Event");
@@ -50,6 +57,7 @@ public class EventInfo extends AppCompatActivity {
          */
     }
 
+
     private void setText(Event event) {
         setTitle(event.getName());
 
@@ -58,7 +66,7 @@ public class EventInfo extends AppCompatActivity {
         TextView description = (TextView) findViewById(R.id.event_description);
         time.setText(prettyPrintInterval(event.getStart(), event.getEnd()));
         location.setText(event.getLocation());
-        description.setText(event.getDescription());
+        description.setText(event.getDescription() + "\n\n\n\n");
     }
 
     private String prettyPrintInterval(DateTime start, DateTime end) {

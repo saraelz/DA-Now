@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">De Anza Student Calendar</string>
+    <string name="app_name">De Anza Now</string>
     <string name="facebook_app_id">1701604733446155</string>
     <string name="title_activity_organization_info">OrganizationInfo</string>
     <string name="large_text">
@@ -104,4 +104,5 @@
     <string name="today_button">Today</string>
     <string name="menu_today">Today</string>
     <string name="title_activity_event_info">EventInfo</string>
+    <string name="menu_like">Subscribe to this event</string>
 </resources>

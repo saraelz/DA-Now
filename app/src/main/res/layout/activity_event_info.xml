@@ -22,7 +22,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_event_info" />
+    <include layout="@layout/content_event_info"
+        android:id="@+id/info"
+        android:layout_height="418dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -30,8 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_favorite_border"
-        app:layout_anchor="@id/toolbar"
-        app:layout_anchorGravity="bottom|end"
-        app:backgroundTint="@color/colorPrimary" />
+        app:layout_anchorGravity="bottom|right"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_anchor="@id/info" />
 
 </android.support.design.widget.CoordinatorLayout>
