@@ -77,8 +77,11 @@ public class OrganizationsList extends Fragment {
         });
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(context));
-        
-        fetchData(new FirebaseOrganizationRepository(context), subscriptionDao);
+
+        FirebaseOrganizationRepository organizationRepository = new FirebaseOrganizationRepository();
+        organizationRepository.enableLoadingDialog(context);
+
+        fetchData(organizationRepository, subscriptionDao);
     }
     
     private void fetchData(OrganizationRepository organizationRepository,

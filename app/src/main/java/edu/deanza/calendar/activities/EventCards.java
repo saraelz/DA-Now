@@ -91,7 +91,10 @@ public class EventCards extends Fragment {
         );
         cardView.setAdapter(sectionedAdapter);
 
-        fetchData(new FirebaseEventRepository(context), subscriptionDao, sectionedAdapter);
+        FirebaseEventRepository eventRepository = new FirebaseEventRepository();
+        eventRepository.enableLoadingDialog(context);
+
+        fetchData(eventRepository, subscriptionDao, sectionedAdapter);
     }
 
     private void fetchData(EventRepository eventRepository, SubscriptionDao subscriptionDao,

@@ -8,7 +8,6 @@ import android.util.Log;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -35,16 +34,12 @@ abstract class FirebaseRepository<T> implements Serializable {
     private final ListOrderedMap<String, T> currentData = new ListOrderedMap<>();
     private transient AsyncTask runningTask;
     // Note: context becomes and remains null after serialization
-    private final transient Context context;
+    private transient Context context;
 
     private static final String THIS_CLASS_TAG = FirebaseRepository.class.getName();
 
     {
         initialize();
-    }
-
-    public FirebaseRepository(Context context) {
-        this.context = context;
     }
 
     void initialize() {
@@ -173,8 +168,7 @@ abstract class FirebaseRepository<T> implements Serializable {
             else {
                 newData = recycle(existingDataIndex);
             }
-            continuation.setArgument(newData);
-            continuation.run();
+            continuation.run(newData);
         }
 
         private T recycle(int existingDataIndex) {
@@ -208,6 +202,10 @@ abstract class FirebaseRepository<T> implements Serializable {
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         initialize();
+    }
+
+    public void enableLoadingDialog(Context context) {
+        this.context = context;
     }
 
 }

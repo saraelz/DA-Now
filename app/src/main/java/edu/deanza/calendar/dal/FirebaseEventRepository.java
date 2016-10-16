@@ -1,7 +1,5 @@
 package edu.deanza.calendar.dal;
 
-import android.content.Context;
-
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -23,13 +21,11 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
 
     private final DataMapper<Event> mapper;
 
-    public FirebaseEventRepository(Context context) {
-        super(context);
-        mapper = new EventMapper(new FirebaseOrganizationRepository(context, this));
+    public FirebaseEventRepository() {
+        mapper = new EventMapper(new FirebaseOrganizationRepository(this));
     }
 
-    public FirebaseEventRepository(Context context, OrganizationRepository repository) {
-        super(context);
+    public FirebaseEventRepository(OrganizationRepository repository) {
         mapper = new EventMapper(repository);
     }
 

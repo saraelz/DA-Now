@@ -1,7 +1,5 @@
 package edu.deanza.calendar.dal;
 
-import android.content.Context;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -19,13 +17,11 @@ public final class FirebaseOrganizationRepository extends FirebaseRepository<Org
 
     private final DataMapper<Organization> mapper;
 
-    public FirebaseOrganizationRepository(Context context) {
-        super(context);
-        mapper = new OrganizationMapper(new FirebaseEventRepository(context, this));
+    public FirebaseOrganizationRepository() {
+        mapper = new OrganizationMapper(new FirebaseEventRepository(this));
     }
 
-    public FirebaseOrganizationRepository(Context context, EventRepository repository) {
-        super(context);
+    public FirebaseOrganizationRepository(EventRepository repository) {
         mapper = new OrganizationMapper(repository);
     }
 
