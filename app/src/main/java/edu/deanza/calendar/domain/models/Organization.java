@@ -20,14 +20,14 @@ import edu.deanza.calendar.util.Callback;
 
 public class Organization implements Subscribable, Serializable {
 
-    protected final String name;
-    protected final String description;
-    protected final String location;
-    protected final String facebookUrl;
-    protected final List<RegularMeeting> meetings;
-    protected final EventRepository eventRepository;
-    protected List<Event> events;
-    protected OrganizationSubscription subscription;
+    final String name;
+    final String description;
+    final String location;
+    final String facebookUrl;
+    final List<RegularMeeting> meetings;
+    final EventRepository eventRepository;
+    List<Event> events;
+    OrganizationSubscription subscription;
 
     public Organization(String name, String description, String location, String facebookUrl,
                         List<RegularMeeting> meetings, EventRepository eventRepository) {

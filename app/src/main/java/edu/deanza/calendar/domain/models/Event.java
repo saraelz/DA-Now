@@ -17,13 +17,13 @@ import edu.deanza.calendar.util.Callback;
 
 public class Event extends Meeting implements Subscribable, Serializable {
 
-    protected final String name;
-    protected final String description;
-    protected final String location;
-    protected final List<String> organizationNames;
-    protected final OrganizationRepository organizationRepository;
+    final String name;
+    final String description;
+    final String location;
+    final List<String> organizationNames;
+    final OrganizationRepository organizationRepository;
     // If an Organization entry does not exist for a given organizationName, the List entry will be null
-    protected List<Organization> organizations;
+    List<Organization> organizations;
 
     // TODO: implement `categories` field
 
