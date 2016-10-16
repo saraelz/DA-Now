@@ -178,6 +178,20 @@ public class Organization implements Subscribable, Serializable {
     }
 
     @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Organization{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", location='").append(location).append('\'');
+        sb.append(", facebookUrl='").append(facebookUrl).append('\'');
+        sb.append(", meetings=").append(meetings);
+        sb.append(", events=").append(events);
+        sb.append(", subscription=").append(subscription);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -224,6 +238,14 @@ public class Organization implements Subscribable, Serializable {
         @Override
         public String getKey() {
             return start.toString(ISODateTimeFormat.yearMonthDay()) + '|' + organizationName;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("RegularMeeting{");
+            sb.append("organizationName='").append(organizationName).append('\'');
+            sb.append('}');
+            return sb.toString();
         }
 
         @Override

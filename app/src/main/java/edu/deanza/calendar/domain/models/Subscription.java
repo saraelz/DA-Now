@@ -31,8 +31,15 @@ public class Subscription implements Serializable {
         return timeUnit;
     }
 
-    // TODO: Implement notifications
-    // public abstract void setNotification();
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Subscription{");
+        sb.append("key='").append(key).append('\'');
+        sb.append(", notifyBefore=").append(notifyBefore);
+        sb.append(", timeUnit=").append(timeUnit);
+        sb.append('}');
+        return sb.toString();
+    }
 
     public static class Builder {
 

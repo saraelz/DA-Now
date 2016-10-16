@@ -26,4 +26,12 @@ public class Club extends Organization implements Subscribable, Serializable {
         return meetingDays;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Club{");
+        sb.append(super.toString());
+        sb.append("meetingDays=").append(meetingDays);
+        sb.append('}');
+        return sb.toString();
+    }
 }

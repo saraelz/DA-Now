@@ -27,6 +27,16 @@ public class OrganizationSubscription extends Subscription implements Serializab
         return notifyEvents;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("OrganizationSubscription{");
+        sb.append(super.toString());
+        sb.append("notifyMeetings=").append(notifyMeetings);
+        sb.append(", notifyEvents=").append(notifyEvents);
+        sb.append('}');
+        return sb.toString();
+    }
+
     public static class Builder extends Subscription.Builder {
 
         private boolean notifyMeetingsPiece;

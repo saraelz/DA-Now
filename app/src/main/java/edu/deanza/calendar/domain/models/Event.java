@@ -91,6 +91,18 @@ public class Event extends Meeting implements Subscribable, Serializable {
     }
 
     @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Event{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", location='").append(location).append('\'');
+        sb.append(", organizationNames=").append(organizationNames);
+        sb.append(", organizations=").append(organizations);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    @Override
     public String getKey() {
         return start.toString(ISODateTimeFormat.yearMonthDay()) + '|' + name;
     }
