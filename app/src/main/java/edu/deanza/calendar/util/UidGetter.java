@@ -12,19 +12,15 @@ import java.util.UUID;
  * Created by karinaantonio on 9/16/16.
  */
 
-public class UidGenerator {
+public class UidGetter {
 
     private static final String UID_FILENAME = "UID";
-    private String uid;
-    private final Context context;
-    private final String CONTEXT_TAG;
+    private static String uid;
 
-    public UidGenerator(Context context, String CONTEXT_TAG) {
-        this.context = context;
-        this.CONTEXT_TAG = CONTEXT_TAG;
+    private UidGetter() {
     }
 
-    public String generate() {
+    public static String get(Context context) {
         if (uid != null) {
             return uid;
         }
@@ -33,29 +29,29 @@ public class UidGenerator {
                 .getFileStreamPath(UID_FILENAME)
                 .exists();
         if (!uidExists) {
-            uid = saveUidToFile();
+            uid = saveUidToFile(context);
         }
         else {
-            uid = readUidFromFile();
+            uid = readUidFromFile(context);
         }
         return uid;
     }
 
-    private String saveUidToFile() {
+    private static String saveUidToFile(Context context) {
         uid = UUID.randomUUID().toString();
         try (FileOutputStream fos = context.openFileOutput(UID_FILENAME, Context.MODE_PRIVATE)) {
             fos.write(uid.getBytes());
         }
         catch (IOException ex) {
             // TODO: Show dialog box?
-            Log.wtf(CONTEXT_TAG, "Writing the UID to file failed, skipping! This session's" +
+            Log.wtf(UID_FILENAME, "Writing the UID to file failed, skipping! This session's" +
                     "subscriptions will be lost on app exit", ex);
             return uid;
         }
         return uid;
     }
 
-    private String readUidFromFile() {
+    private static String readUidFromFile(Context context) {
         try (FileInputStream fis = context.openFileInput(UID_FILENAME)) {
             StringBuilder builder = new StringBuilder();
             int charCode;
@@ -65,8 +61,8 @@ public class UidGenerator {
             uid = builder.toString();
         }
         catch (IOException ex) {
-            Log.wtf(CONTEXT_TAG, "Reading the UID file failed, creating a new one", ex);
-            return saveUidToFile();
+            Log.wtf(UID_FILENAME, "Reading the UID file failed, creating a new one", ex);
+            return saveUidToFile(context);
         }
         return uid;
     }

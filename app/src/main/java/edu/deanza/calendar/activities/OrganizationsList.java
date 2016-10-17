@@ -25,7 +25,7 @@ import edu.deanza.calendar.domain.OrganizationRepository;
 import edu.deanza.calendar.domain.models.Organization;
 import edu.deanza.calendar.domain.models.Subscription;
 import edu.deanza.calendar.util.Callback;
-import edu.deanza.calendar.util.UidGenerator;
+import edu.deanza.calendar.util.UidGetter;
 
 public class OrganizationsList extends Fragment {
 
@@ -61,7 +61,7 @@ public class OrganizationsList extends Fragment {
     }
     
     private void initializeAdapter(final Context context) {
-        final String UID = new UidGenerator(context, THIS_TAG).generate();
+        final String UID = UidGetter.get(context);
         SubscriptionDao subscriptionDao = new FirebaseSubscriptionDao(UID);
 
         adapter = new OrganizationsAdapter(context, new ArrayList<Organization>(), subscriptionDao);

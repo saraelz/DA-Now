@@ -32,7 +32,7 @@ import edu.deanza.calendar.domain.models.Event;
 import edu.deanza.calendar.domain.models.Meeting;
 import edu.deanza.calendar.domain.models.Subscription;
 import edu.deanza.calendar.util.Callback;
-import edu.deanza.calendar.util.UidGenerator;
+import edu.deanza.calendar.util.UidGetter;
 
 public class EventCards extends Fragment {
 
@@ -68,7 +68,7 @@ public class EventCards extends Fragment {
     }
 
     private void initializeAdapter(final Context context) {
-        final String UID = new UidGenerator(context, THIS_TAG).generate();
+        final String UID = UidGetter.get(context);
         SubscriptionDao subscriptionDao = new FirebaseSubscriptionDao(UID);
 
         adapter = new EventsAdapter(context, new ArrayList<Meeting>(), subscriptionDao);
