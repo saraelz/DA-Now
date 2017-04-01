@@ -12,7 +12,7 @@ import java.util.Map;
 import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
 import edu.deanza.calendar.domain.interfaces.Subscribable;
 import edu.deanza.calendar.domain.Subscription;
-import edu.deanza.calendar.activities.views.SubscribeButtonWrapper;
+import edu.deanza.calendar.activities.views.SubscribeButtonBehavior;
 
 /**
  * Created by karinaantonio on 9/16/16.
@@ -95,7 +95,7 @@ public abstract class SubscribableAdapter
     public void onBindViewHolder(final VH viewHolder, int position) {
         T subscribable = subscribables.get(position);
         final SubscribableAdapter us = this;
-        SubscribeButtonWrapper wrapper = new SubscribeButtonWrapper(viewHolder.subscribeButton, context, subscribable, subscriptionDao) {
+        SubscribeButtonBehavior wrapper = new SubscribeButtonBehavior(viewHolder.subscribeButton, context, subscribable, subscriptionDao) {
             @Override
             protected void postSubscriptionChange() {
                 super.postSubscriptionChange();

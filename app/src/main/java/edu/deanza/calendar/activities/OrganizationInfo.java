@@ -11,16 +11,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.activities.adapters.EventsAdapter;
 import edu.deanza.calendar.activities.adapters.OrganizationInfoAdapter;
-import edu.deanza.calendar.activities.views.SubscribeButtonWrapper;
-import edu.deanza.calendar.dal.FirebaseEventRepository;
+import edu.deanza.calendar.activities.views.SubscribeButtonBehavior;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
-import edu.deanza.calendar.dal.interfaces.EventRepository;
 import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
 import edu.deanza.calendar.domain.Club;
 import edu.deanza.calendar.domain.Day;
@@ -51,7 +48,7 @@ public class OrganizationInfo extends AppCompatActivity {
 
         setText(organization);
 
-        SubscribeButtonWrapper subscribeButton = new SubscribeButtonWrapper(
+        SubscribeButtonBehavior subscribeButton = new SubscribeButtonBehavior(
                 (ImageButton) findViewById(R.id.fab),
                 this,
                 organization,

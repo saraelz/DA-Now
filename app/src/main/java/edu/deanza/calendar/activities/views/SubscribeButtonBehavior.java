@@ -17,19 +17,19 @@ import edu.deanza.calendar.domain.Organization;
  * Created by Karina on 10/1/2016.
  */
 
-public class SubscribeButtonWrapper {
+public class SubscribeButtonBehavior {
 
     private final ImageButton button;
     private final Subscribable subscribable;
 
-    public SubscribeButtonWrapper(ImageButton button, Context context, Subscribable subscribable, SubscriptionDao dao) {
+    public SubscribeButtonBehavior(ImageButton button, Context context, Subscribable subscribable, SubscriptionDao dao) {
         this.button = button;
         this.subscribable = subscribable;
 
         setSubscribedImage(subscribable.isSubscribed());
 
         SubscribeOnClickListener listener;
-        final SubscribeButtonWrapper us = this;
+        final SubscribeButtonBehavior us = this;
 
         if (isMeeting(subscribable)) {
             Meeting meeting = (Meeting) subscribable;

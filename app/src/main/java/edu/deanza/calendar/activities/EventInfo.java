@@ -17,7 +17,7 @@ import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
 import edu.deanza.calendar.domain.Event;
-import edu.deanza.calendar.activities.views.SubscribeButtonWrapper;
+import edu.deanza.calendar.activities.views.SubscribeButtonBehavior;
 
 public class EventInfo extends AppCompatActivity {
 
@@ -35,7 +35,7 @@ public class EventInfo extends AppCompatActivity {
 
         setText(event);
 
-        SubscribeButtonWrapper subscribeButton = new SubscribeButtonWrapper(
+        SubscribeButtonBehavior subscribeButton = new SubscribeButtonBehavior(
                 (ImageButton) findViewById(R.id.fab),
                 this,
                 event,
