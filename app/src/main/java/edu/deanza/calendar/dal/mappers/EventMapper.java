@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.deanza.calendar.dal.interfaces.OrganizationRepository;
 import edu.deanza.calendar.domain.Event;
 import edu.deanza.calendar.util.dal.mappers.DataMapper;
 
@@ -16,12 +15,6 @@ import edu.deanza.calendar.util.dal.mappers.DataMapper;
  */
 
 public class EventMapper implements DataMapper<Event>, Serializable {
-
-    private final OrganizationRepository repository;
-
-    public EventMapper(OrganizationRepository repository) {
-        this.repository = repository;
-    }
 
     public Event map(String eventKey, Map<Object, Object> rawEvent) {
         int nameStartDelimiter = eventKey.lastIndexOf('|');
@@ -38,7 +31,7 @@ public class EventMapper implements DataMapper<Event>, Serializable {
             organizationNames.add((String) entry.getKey());
         }
 
-        return new Event(start, end, name, description, location, organizationNames, repository);
+        return new Event(start, end, name, description, location, organizationNames);
     }
 
 }

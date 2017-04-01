@@ -11,12 +11,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.activities.adapters.EventsAdapter;
 import edu.deanza.calendar.activities.adapters.OrganizationInfoAdapter;
+import edu.deanza.calendar.activities.views.SubscribeButtonWrapper;
+import edu.deanza.calendar.dal.FirebaseEventRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
+import edu.deanza.calendar.dal.interfaces.EventRepository;
 import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
 import edu.deanza.calendar.domain.Club;
 import edu.deanza.calendar.domain.Day;
@@ -25,7 +29,6 @@ import edu.deanza.calendar.domain.Meeting;
 import edu.deanza.calendar.domain.Organization;
 import edu.deanza.calendar.domain.Subscription;
 import edu.deanza.calendar.util.Callback;
-import edu.deanza.calendar.activities.views.SubscribeButtonWrapper;
 
 public class OrganizationInfo extends AppCompatActivity {
 
@@ -112,13 +115,19 @@ public class OrganizationInfo extends AppCompatActivity {
         fetchData(organization, subscriptionDao);
     }
 
-    private void fetchData(Organization organization, SubscriptionDao subscriptionDao) {
-        organization.getEvents(new Callback<Event>() {
+    private void fetchData(final Organization organization, SubscriptionDao subscriptionDao) {
+        EventRepository repository = new FirebaseEventRepository();
+        final List<Event> events = new ArrayList<>();
+
+        repository.findByOrganization(organization.getName(), new Callback<Event>() {
             @Override
             protected void call(Event data) {
+                events.add(data);
                 adapter.add(data);
             }
         });
+        organization.setEvents(events);
+
         subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
             @Override
             protected void call(Map<String, Subscription> data) {

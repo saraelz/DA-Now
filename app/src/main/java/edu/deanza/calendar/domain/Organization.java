@@ -9,9 +9,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
-import edu.deanza.calendar.dal.interfaces.EventRepository;
 import edu.deanza.calendar.dal.interfaces.Subscribable;
+import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
 import edu.deanza.calendar.util.Callback;
 
 /**
@@ -25,19 +24,17 @@ public class Organization implements Subscribable, Serializable {
     final String location;
     final String facebookUrl;
     final List<RegularMeeting> meetings;
-    final EventRepository eventRepository;
     List<Event> events;
     OrganizationSubscription subscription;
 
     public Organization(String name, String description, String location, String facebookUrl,
-                        List<RegularMeeting> meetings, EventRepository eventRepository) {
+                        List<RegularMeeting> meetings) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.facebookUrl = facebookUrl;
         this.meetings = meetings;
-        this.eventRepository = eventRepository;
-        this.events = null;
+        events = new ArrayList<>();
     }
 
     public Organization(String name, String description, String location, String facebookUrl,
@@ -48,7 +45,6 @@ public class Organization implements Subscribable, Serializable {
         this.facebookUrl = facebookUrl;
         this.meetings = meetings;
         this.events = events;
-        this.eventRepository = null;
     }
 
     @Override
@@ -72,30 +68,17 @@ public class Organization implements Subscribable, Serializable {
         return meetings;
     }
 
-    public void getEvents(final Callback<Event> callback) {
-        if (events == null) {
-            assert eventRepository != null;
-            events = new ArrayList<>();
-            eventRepository.findByOrganization(name, new Callback<Event>() {
-                @Override
-                protected void call(Event data) {
-                    events.add(data);
-                    callback.setArgument(data);
-                    callback.run();
-                }
-            });
-        }
-        else {
-            for (Event e : events) {
-                callback.setArgument(e);
-                callback.run();
-            }
-        }
+    public List<Event> getEvents() {
+        return events;
     }
 
     @Override
     public OrganizationSubscription getSubscription() {
         return subscription;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 
     @Override

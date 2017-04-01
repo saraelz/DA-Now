@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 
-import edu.deanza.calendar.dal.interfaces.EventRepository;
 import edu.deanza.calendar.dal.interfaces.OrganizationRepository;
 import edu.deanza.calendar.dal.mappers.OrganizationMapper;
 import edu.deanza.calendar.util.dal.RecylcingFirebaseAccessor;
@@ -21,11 +20,7 @@ public final class FirebaseOrganizationRepository extends RecylcingFirebaseAcces
     private final DataMapper<Organization> mapper;
 
     public FirebaseOrganizationRepository() {
-        mapper = new OrganizationMapper(new FirebaseEventRepository(this));
-    }
-
-    public FirebaseOrganizationRepository(EventRepository repository) {
-        mapper = new OrganizationMapper(repository);
+        mapper = new OrganizationMapper();
     }
 
     @Override

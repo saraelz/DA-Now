@@ -8,23 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.deanza.calendar.dal.interfaces.EventRepository;
-import edu.deanza.calendar.util.dal.mappers.DataMapper;
 import edu.deanza.calendar.domain.Club;
 import edu.deanza.calendar.domain.Day;
 import edu.deanza.calendar.domain.Organization;
+import edu.deanza.calendar.util.dal.mappers.DataMapper;
 
 /**
  * Created by karinaantonio on 8/19/16.
  */
 
 public class OrganizationMapper implements DataMapper<Organization>, Serializable {
-
-    private final EventRepository repository;
-
-    public OrganizationMapper(EventRepository repository) {
-        this.repository = repository;
-    }
 
     public Organization map(String name, Map<Object, Object> rawOrganization) {
 
@@ -63,10 +56,10 @@ public class OrganizationMapper implements DataMapper<Organization>, Serializabl
                 }
             }
 
-            o = new Club(name, description, location, facebookUrl, meetings, repository, days);
+            o = new Club(name, description, location, facebookUrl, meetings, days);
         }
         else {
-            o = new Organization(name, description, location, facebookUrl, meetings, repository);
+            o = new Organization(name, description, location, facebookUrl, meetings);
         }
 
         return o;

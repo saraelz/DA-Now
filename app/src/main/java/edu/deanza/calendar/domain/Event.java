@@ -7,9 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.deanza.calendar.dal.interfaces.OrganizationRepository;
 import edu.deanza.calendar.dal.interfaces.Subscribable;
-import edu.deanza.calendar.util.Callback;
 
 /**
  * Created by Sara on 5/28/2016.
@@ -21,30 +19,30 @@ public class Event extends Meeting implements Subscribable, Serializable {
     final String description;
     final String location;
     final List<String> organizationNames;
-    final OrganizationRepository organizationRepository;
     // If an Organization entry does not exist for a given organizationName, the List entry will be null
     List<Organization> organizations;
 
     // TODO: implement `categories` field
 
-    public Event(DateTime start, DateTime end, String name, String description, String location, List<String> organizationNames, OrganizationRepository organizationRepository) {
+
+    public Event(DateTime start, DateTime end, String name, String description, String location,
+                 List<String> organizationNames) {
         super(start, end);
         this.name = name;
         this.description = description;
         this.location = location;
         this.organizationNames = organizationNames;
-        this.organizationRepository = organizationRepository;
-        this.organizations = null;
+        organizations = new ArrayList<>();
     }
 
-    public Event(DateTime start, DateTime end, String name, String description, String location, List<String> organizationNames, List<Organization> organizations) {
+    public Event(DateTime start, DateTime end, String name, String description, String location,
+                 List<String> organizationNames, List<Organization> organizations) {
         super(start, end);
         this.name = name;
         this.description = description;
         this.location = location;
         this.organizationNames = organizationNames;
         this.organizations = organizations;
-        this.organizationRepository = null;
     }
 
     @Override
@@ -64,31 +62,16 @@ public class Event extends Meeting implements Subscribable, Serializable {
         return organizationNames;
     }
 
-    public void getOrganizations(final Callback<Organization> callback) {
-        if (organizations == null) {
-            assert organizationRepository != null;
-            organizations = new ArrayList<>();
-            for (String name : organizationNames) {
-                organizationRepository.findByName(name, new Callback<Organization>() {
-                    @Override
-                    protected void call(Organization data) {
-                        organizations.add(data);
-                        callback.setArgument(data);
-                        callback.run();
-                    }
-                });
-            }
-        }
-        else {
-            for (Organization organization : organizations) {
-                callback.setArgument(organization);
-                callback.run();
-            }
-        }
+    public List<Organization> getOrganizations() {
+        return organizations;
     }
 
     public boolean isAllDay() {
         return start.equals(end);
+    }
+
+    public void setOrganizations(List<Organization> organizations) {
+        this.organizations = organizations;
     }
 
     @Override
