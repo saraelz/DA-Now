@@ -14,7 +14,7 @@ import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
 import edu.deanza.calendar.dal.mappers.SubscriptionMapper;
 import edu.deanza.calendar.domain.Subscription;
 import edu.deanza.calendar.util.Callback;
-import edu.deanza.calendar.util.Utilities;
+import edu.deanza.calendar.util.FirebaseDatabase;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
@@ -28,7 +28,7 @@ public class FirebaseSubscriptionDao implements SubscriptionDao {
     private SubscriptionMapper mapper = new SubscriptionMapper();
 
     public FirebaseSubscriptionDao(String uid) {
-        root = Utilities.getFirebase().getReference().child("users").child(uid);
+        root = FirebaseDatabase.getFirebase().getReference().child("users").child(uid);
     }
 
     @Override

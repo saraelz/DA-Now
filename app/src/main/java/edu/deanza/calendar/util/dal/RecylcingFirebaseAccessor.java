@@ -20,7 +20,7 @@ import java.util.Map;
 
 import edu.deanza.calendar.util.dal.mappers.DataMapper;
 import edu.deanza.calendar.util.Callback;
-import edu.deanza.calendar.util.Utilities;
+import edu.deanza.calendar.util.FirebaseDatabase;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
@@ -40,7 +40,7 @@ public abstract class RecylcingFirebaseAccessor<T> implements Serializable {
     private static final String THIS_CLASS_TAG = RecylcingFirebaseAccessor.class.getName();
 
     protected DatabaseReference initializeRoot() {
-        return Utilities.getFirebase().getReference().child(getRootName());
+        return FirebaseDatabase.getFirebase().getReference().child(getRootName());
     }
 
     public abstract String getRootName();
