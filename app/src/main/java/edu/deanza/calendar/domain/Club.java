@@ -15,12 +15,6 @@ public class Club extends Organization implements Subscribable, Serializable {
         this.meetingDays = meetingDays;
     }
 
-    public Club(String name, String description, String location, String facebookUrl,
-                List<RegularMeeting> meetings, List<Event> events, List<Day> meetingDays) {
-        super(name, description, location, facebookUrl, meetings, events);
-        this.meetingDays = meetingDays;
-    }
-
     public List<Day> getMeetingDays() {
         return meetingDays;
     }

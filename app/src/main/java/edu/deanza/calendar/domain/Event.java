@@ -20,7 +20,6 @@ public class Event extends Meeting implements Subscribable, Serializable {
     final String location;
     final List<String> organizationNames;
     // If an Organization entry does not exist for a given organizationName, the List entry will be null
-    List<Organization> organizations;
 
     // TODO: implement `categories` field
 
@@ -32,17 +31,6 @@ public class Event extends Meeting implements Subscribable, Serializable {
         this.description = description;
         this.location = location;
         this.organizationNames = organizationNames;
-        organizations = new ArrayList<>();
-    }
-
-    public Event(DateTime start, DateTime end, String name, String description, String location,
-                 List<String> organizationNames, List<Organization> organizations) {
-        super(start, end);
-        this.name = name;
-        this.description = description;
-        this.location = location;
-        this.organizationNames = organizationNames;
-        this.organizations = organizations;
     }
 
     @Override
@@ -62,16 +50,8 @@ public class Event extends Meeting implements Subscribable, Serializable {
         return organizationNames;
     }
 
-    public List<Organization> getOrganizations() {
-        return organizations;
-    }
-
     public boolean isAllDay() {
         return start.equals(end);
-    }
-
-    public void setOrganizations(List<Organization> organizations) {
-        this.organizations = organizations;
     }
 
     @Override
@@ -81,7 +61,6 @@ public class Event extends Meeting implements Subscribable, Serializable {
         sb.append(", description='").append(description).append('\'');
         sb.append(", location='").append(location).append('\'');
         sb.append(", organizationNames=").append(organizationNames);
-        sb.append(", organizations=").append(organizations);
         sb.append('}');
         return sb.toString();
     }

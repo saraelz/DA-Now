@@ -24,7 +24,6 @@ public class Organization implements Subscribable, Serializable {
     final String location;
     final String facebookUrl;
     final List<RegularMeeting> meetings;
-    List<Event> events;
     OrganizationSubscription subscription;
 
     public Organization(String name, String description, String location, String facebookUrl,
@@ -34,17 +33,6 @@ public class Organization implements Subscribable, Serializable {
         this.location = location;
         this.facebookUrl = facebookUrl;
         this.meetings = meetings;
-        events = new ArrayList<>();
-    }
-
-    public Organization(String name, String description, String location, String facebookUrl,
-                        List<RegularMeeting> meetings, List<Event> events) {
-        this.name = name;
-        this.description = description;
-        this.location = location;
-        this.facebookUrl = facebookUrl;
-        this.meetings = meetings;
-        this.events = events;
     }
 
     @Override
@@ -68,17 +56,9 @@ public class Organization implements Subscribable, Serializable {
         return meetings;
     }
 
-    public List<Event> getEvents() {
-        return events;
-    }
-
     @Override
     public OrganizationSubscription getSubscription() {
         return subscription;
-    }
-
-    public void setEvents(List<Event> events) {
-        this.events = events;
     }
 
     @Override
@@ -169,7 +149,6 @@ public class Organization implements Subscribable, Serializable {
         sb.append(", location='").append(location).append('\'');
         sb.append(", facebookUrl='").append(facebookUrl).append('\'');
         sb.append(", meetings=").append(meetings);
-        sb.append(", events=").append(events);
         sb.append(", subscription=").append(subscription);
         sb.append('}');
         return sb.toString();
