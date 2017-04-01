@@ -24,6 +24,7 @@ public class Organization implements Subscribable, Serializable {
     final String location;
     final String facebookUrl;
     final List<RegularMeeting> meetings;
+    List<Event> events;
     OrganizationSubscription subscription;
 
     public Organization(String name, String description, String location, String facebookUrl,
@@ -56,9 +57,17 @@ public class Organization implements Subscribable, Serializable {
         return meetings;
     }
 
+    public List<Event> getEvents() {
+        return events;
+    }
+
     @Override
     public OrganizationSubscription getSubscription() {
         return subscription;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 
     @Override
@@ -71,15 +80,12 @@ public class Organization implements Subscribable, Serializable {
         subscribe((OrganizationSubscription) subscription, dao);
     }
 
-    public void subscribe(final OrganizationSubscription subscription) {
+    private void subscribe(final OrganizationSubscription subscription) {
         this.subscription = subscription;
         if (subscription.isNotifyingEvents()) {
-            getEvents(new Callback<Event>() {
-                @Override
-                protected void call(Event data) {
-                    data.organizationSubscribe(subscription);
-                }
-            });
+            for (Event e : events) {
+                e.organizationSubscribe(subscription);
+            }
         }
         if (subscription.isNotifyingMeetings()) {
             for (RegularMeeting meeting : meetings) {
@@ -88,16 +94,13 @@ public class Organization implements Subscribable, Serializable {
         }
     }
 
-    public void subscribe(final OrganizationSubscription subscription, final SubscriptionDao dao) {
+    private void subscribe(final OrganizationSubscription subscription, final SubscriptionDao dao) {
         this.subscription = subscription;
         dao.add(subscription);
         if (subscription.isNotifyingEvents()) {
-            getEvents(new Callback<Event>() {
-                @Override
-                protected void call(Event data) {
-                    data.organizationSubscribe(subscription, dao);
-                }
-            });
+            for (Event e : events) {
+                e.organizationSubscribe(subscription, dao);
+            }
         }
         if (subscription.isNotifyingMeetings()) {
             for (RegularMeeting meeting : meetings) {
@@ -108,7 +111,17 @@ public class Organization implements Subscribable, Serializable {
 
     @Override
     public void unsubscribe() {
-        this.subscription = null;
+        if (subscription.isNotifyingEvents()) {
+            for (Event e : events) {
+                e.unsubscribe();
+            }
+        }
+        if (subscription.isNotifyingMeetings()) {
+            for (RegularMeeting meeting : meetings) {
+                meeting.unsubscribe();
+            }
+        }
+        subscription = null;
     }
 
     // TODO: option to unsubscribe from Org w/o removing all current subscriptions--just stop future ones
@@ -116,19 +129,16 @@ public class Organization implements Subscribable, Serializable {
     public void unsubscribe(final SubscriptionDao dao) {
         dao.remove(subscription);
         if (subscription.isNotifyingEvents()) {
-            getEvents(new Callback<Event>() {
-                @Override
-                protected void call(Event data) {
-                    data.unsubscribe(dao);
-                }
-            });
+            for (Event e : events) {
+                e.unsubscribe(dao);
+            }
         }
         if (subscription.isNotifyingMeetings()) {
             for (RegularMeeting meeting : meetings) {
                 meeting.unsubscribe(dao);
             }
         }
-        unsubscribe();
+        subscription = null;
     }
 
     @Override

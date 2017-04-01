@@ -2,6 +2,7 @@ package edu.deanza.calendar.dal.interfaces;
 
 import java.util.Map;
 
+import edu.deanza.calendar.domain.OrganizationSubscription;
 import edu.deanza.calendar.domain.Subscription;
 import edu.deanza.calendar.util.Callback;
 
@@ -14,6 +15,8 @@ public interface SubscriptionDao {
     void getUserSubscriptions(Callback<Map<String, Subscription>> callback);
 
     void add(Subscription subscription);
+
+    void add(OrganizationSubscription subscription);
 
     void update(Subscription subscription);
 
