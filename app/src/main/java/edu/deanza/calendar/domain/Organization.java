@@ -6,10 +6,13 @@ import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
+import edu.deanza.calendar.dal.interfaces.EventRepository;
 import edu.deanza.calendar.domain.interfaces.Subscribable;
 import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
+import edu.deanza.calendar.util.Callback;
 
 /**
  * Created by soso1 on 8/8/2016.
@@ -23,15 +26,28 @@ public class Organization implements Subscribable, Serializable {
     final String facebookUrl;
     final List<RegularMeeting> meetings;
     List<Event> events;
+    final EventRepository eventRepository;
     OrganizationSubscription subscription;
 
     public Organization(String name, String description, String location, String facebookUrl,
-                        List<RegularMeeting> meetings) {
+                        List<RegularMeeting> meetings, EventRepository eventRepository) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.facebookUrl = facebookUrl;
         this.meetings = meetings;
+        this.eventRepository = eventRepository;
+    }
+
+    public Organization(String name, String description, String location, String facebookUrl,
+                        List<RegularMeeting> meetings, List<Event> events) {
+        this.name = name;
+        this.description = description;
+        this.location = location;
+        this.facebookUrl = facebookUrl;
+        this.meetings = meetings;
+        this.events = events;
+        this.eventRepository = null;
     }
 
     @Override
@@ -55,8 +71,25 @@ public class Organization implements Subscribable, Serializable {
         return meetings;
     }
 
-    public List<Event> getEvents() {
-        return events;
+    public void getEvents(final Callback<Event> callback) {
+        if (events == null) {
+            assert eventRepository != null;
+            events = new ArrayList<>();
+            eventRepository.findByOrganization(name, new Callback<Event>() {
+                @Override
+                protected void call(Event data) {
+                    events.add(data);
+                    callback.setArgument(data);
+                    callback.run();
+                }
+            });
+        } else {
+            for (Event e : events) {
+                callback.setArgument(e);
+                callback.run();
+            }
+
+        }
     }
 
     @Override
@@ -64,18 +97,17 @@ public class Organization implements Subscribable, Serializable {
         return subscription;
     }
 
-    public void setEvents(List<Event> events) {
-        this.events = events;
-    }
-
     @Override
-    public void subscribe(Subscription subscription, SubscriptionDao dao) {
+    public void subscribe(final Subscription subscription, final SubscriptionDao dao) {
         this.subscription = (OrganizationSubscription) subscription;
         dao.add(this.subscription);
         if (this.subscription.isNotifyingEvents()) {
-            for (Event e : events) {
-                e.subscribe(subscription, dao);
-            }
+            getEvents(new Callback<Event>() {
+                @Override
+                protected void call(Event data) {
+                    data.subscribe(subscription, dao);
+                }
+            });
         }
         if (this.subscription.isNotifyingMeetings()) {
             for (RegularMeeting meeting : meetings) {
@@ -89,9 +121,12 @@ public class Organization implements Subscribable, Serializable {
     public void unsubscribe(final SubscriptionDao dao) {
         dao.remove(subscription);
         if (subscription.isNotifyingEvents()) {
-            for (Event e : events) {
-                e.unsubscribe(dao);
-            }
+            getEvents(new Callback<Event>() {
+                @Override
+                protected void call(Event data) {
+                    data.unsubscribe(dao);
+                }
+            });
         }
         if (subscription.isNotifyingMeetings()) {
             for (RegularMeeting meeting : meetings) {

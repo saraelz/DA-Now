@@ -116,17 +116,12 @@ public class OrganizationInfo extends AppCompatActivity {
     }
 
     private void fetchData(final Organization organization, SubscriptionDao subscriptionDao) {
-        EventRepository repository = new FirebaseEventRepository();
-
-        final List<Event> events = new ArrayList<>();
-        repository.findByOrganization(organization.getName(), new Callback<Event>() {
+        organization.getEvents(new Callback<Event>() {
             @Override
             protected void call(Event data) {
                 adapter.add(data);
-                events.add(data);
             }
         });
-        organization.setEvents(events);
 
         subscriptionDao.getUserSubscriptions(new Callback<Map<String, Subscription>>() {
             @Override

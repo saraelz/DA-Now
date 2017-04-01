@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import edu.deanza.calendar.dal.interfaces.EventRepository;
 import edu.deanza.calendar.domain.Club;
 import edu.deanza.calendar.domain.Day;
 import edu.deanza.calendar.domain.Organization;
@@ -18,6 +19,12 @@ import edu.deanza.calendar.util.dal.mappers.DataMapper;
  */
 
 public class OrganizationMapper implements DataMapper<Organization>, Serializable {
+
+    private EventRepository eventRepository;
+
+    public OrganizationMapper(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
 
     public Organization map(String name, Map<Object, Object> rawOrganization) {
 
@@ -56,10 +63,10 @@ public class OrganizationMapper implements DataMapper<Organization>, Serializabl
                 }
             }
 
-            o = new Club(name, description, location, facebookUrl, meetings, days);
+            o = new Club(name, description, location, facebookUrl, meetings, eventRepository, days);
         }
         else {
-            o = new Organization(name, description, location, facebookUrl, meetings);
+            o = new Organization(name, description, location, facebookUrl, meetings, eventRepository);
         }
 
         return o;

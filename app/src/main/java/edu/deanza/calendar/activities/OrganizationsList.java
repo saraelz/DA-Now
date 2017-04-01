@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import edu.deanza.calendar.activities.adapters.OrganizationsAdapter;
+import edu.deanza.calendar.dal.FirebaseEventRepository;
 import edu.deanza.calendar.util.DividerItemDecoration;
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseOrganizationRepository;
@@ -79,7 +80,8 @@ public class OrganizationsList extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(context));
 
-        FirebaseOrganizationRepository organizationRepository = new FirebaseOrganizationRepository();
+        FirebaseOrganizationRepository organizationRepository =
+                new FirebaseOrganizationRepository(new FirebaseEventRepository());
         organizationRepository.enableLoadingDialog(context);
 
         fetchData(organizationRepository, subscriptionDao);
