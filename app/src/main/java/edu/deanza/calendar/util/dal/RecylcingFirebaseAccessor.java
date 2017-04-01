@@ -101,7 +101,8 @@ public abstract class RecylcingFirebaseAccessor<T> implements Serializable {
 
                 @Override
                 protected void onProgressUpdate(T... newElement) {
-                    continuation.run(newElement[0]);
+                    continuation.setArgument(newElement[0]);
+                    continuation.run();
                 }
 
                 @Override
@@ -148,7 +149,7 @@ public abstract class RecylcingFirebaseAccessor<T> implements Serializable {
         public void onDataChange(final DataSnapshot node) {
             if (node.getValue() == null) {
                 Log.i(THIS_CLASS_TAG, "RecyclingEventLocationListener:onDataChange: on an empty node: " + node.getKey());
-                continuation.run(null);
+                continuation.run();
                 return;
             }
 
@@ -161,7 +162,8 @@ public abstract class RecylcingFirebaseAccessor<T> implements Serializable {
             else {
                 newData = recycle(existingDataIndex);
             }
-            continuation.run(newData);
+            continuation.setArgument(newData);
+            continuation.run();
         }
 
         private T recycle(int existingDataIndex) {

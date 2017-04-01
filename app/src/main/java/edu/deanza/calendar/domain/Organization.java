@@ -80,7 +80,8 @@ public class Organization implements Subscribable, Serializable {
                 @Override
                 protected void call(Event data) {
                     events.add(data);
-                    callback.run(data);
+                    callback.setArgument(data);
+                    callback.run();
                 }
             });
         }

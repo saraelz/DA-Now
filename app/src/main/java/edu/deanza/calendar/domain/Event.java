@@ -73,7 +73,8 @@ public class Event extends Meeting implements Subscribable, Serializable {
                     @Override
                     protected void call(Organization data) {
                         organizations.add(data);
-                        callback.run(data);
+                        callback.setArgument(data);
+                        callback.run();
                     }
                 });
             }
