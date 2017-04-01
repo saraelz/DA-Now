@@ -9,7 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
 import edu.deanza.calendar.domain.Organization;
 
 public class OrganizationsAdapter

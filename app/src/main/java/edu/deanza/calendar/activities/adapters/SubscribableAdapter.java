@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
-import edu.deanza.calendar.dal.interfaces.Subscribable;
+import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.interfaces.Subscribable;
 import edu.deanza.calendar.domain.Subscription;
 import edu.deanza.calendar.activities.views.SubscribeButtonWrapper;
 
@@ -58,7 +58,7 @@ public abstract class SubscribableAdapter
         for (T o : subscribablesAddedBeforeSubscriptionsReceived) {
             String key = o.getKey();
             if (subscriptions.containsKey(key)) {
-                o.subscribe(subscriptions.get(key));
+                o.subscribe(subscriptions.get(key), subscriptionDao);
             }
         }
     }

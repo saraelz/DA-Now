@@ -25,7 +25,7 @@ import edu.deanza.calendar.activities.adapters.EventsAdapter;
 import edu.deanza.calendar.util.activities.adapters.SectionedRecyclerViewAdapter;
 import edu.deanza.calendar.dal.FirebaseEventRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
-import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
 import edu.deanza.calendar.dal.interfaces.EventRepository;
 import edu.deanza.calendar.domain.Event;
 import edu.deanza.calendar.domain.Meeting;

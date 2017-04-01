@@ -3,7 +3,7 @@ package edu.deanza.calendar.domain;
 import java.io.Serializable;
 import java.util.List;
 
-import edu.deanza.calendar.dal.interfaces.Subscribable;
+import edu.deanza.calendar.domain.interfaces.Subscribable;
 
 public class Club extends Organization implements Subscribable, Serializable {
 

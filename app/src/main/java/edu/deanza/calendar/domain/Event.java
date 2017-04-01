@@ -4,10 +4,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-import edu.deanza.calendar.dal.interfaces.Subscribable;
+import edu.deanza.calendar.domain.interfaces.Subscribable;
 
 /**
  * Created by Sara on 5/28/2016.

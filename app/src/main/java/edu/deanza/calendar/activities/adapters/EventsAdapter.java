@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
 import edu.deanza.calendar.domain.Event;
 import edu.deanza.calendar.domain.Meeting;
 

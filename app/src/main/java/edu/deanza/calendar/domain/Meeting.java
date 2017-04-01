@@ -4,8 +4,8 @@ import org.joda.time.DateTime;
 
 import java.io.Serializable;
 
-import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
-import edu.deanza.calendar.dal.interfaces.Subscribable;
+import edu.deanza.calendar.domain.interfaces.Subscribable;
+import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
 
 /**
  * All meetings belong to an Organization.
@@ -36,38 +36,15 @@ public abstract class Meeting implements Subscribable, Serializable {
     }
 
     @Override
-    public void subscribe(Subscription subscription) {
-        this.subscription = subscription;
-    }
-
-    public void organizationSubscribe(OrganizationSubscription subscription) {
-        this.subscription = new Subscription(
-                getKey(),
-                subscription.getNotifyBefore(),
-                subscription.getTimeUnit()
-        );
-    }
-
-    @Override
     public void subscribe(Subscription subscription, SubscriptionDao dao) {
-        subscribe(subscription);
+        this.subscription = subscription;
         dao.add(subscription);
-    }
-
-    public void organizationSubscribe(OrganizationSubscription subscription, SubscriptionDao dao) {
-        organizationSubscribe(subscription);
-        dao.add(this.subscription);
-    }
-
-    @Override
-    public void unsubscribe() {
-        this.subscription = null;
     }
 
     @Override
     public void unsubscribe(SubscriptionDao dao) {
         dao.remove(subscription);
-        unsubscribe();
+        this.subscription = null;
     }
 
     @Override

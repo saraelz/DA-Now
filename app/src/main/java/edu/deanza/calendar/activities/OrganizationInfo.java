@@ -21,7 +21,7 @@ import edu.deanza.calendar.activities.views.SubscribeButtonWrapper;
 import edu.deanza.calendar.dal.FirebaseEventRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
 import edu.deanza.calendar.dal.interfaces.EventRepository;
-import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
 import edu.deanza.calendar.domain.Club;
 import edu.deanza.calendar.domain.Day;
 import edu.deanza.calendar.domain.Event;

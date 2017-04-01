@@ -7,8 +7,8 @@ import android.view.View;
 
 import java.util.concurrent.TimeUnit;
 
-import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
-import edu.deanza.calendar.dal.interfaces.Subscribable;
+import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.interfaces.Subscribable;
 import edu.deanza.calendar.domain.Subscription;
 
 /**

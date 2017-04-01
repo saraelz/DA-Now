@@ -13,7 +13,7 @@ import java.util.List;
 
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.util.activities.adapters.SectionedRecyclerViewAdapter;
-import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
 import edu.deanza.calendar.domain.Meeting;
 import edu.deanza.calendar.domain.Organization;
 

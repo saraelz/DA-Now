@@ -10,7 +10,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.interfaces.SubscriptionDao;
 import edu.deanza.calendar.dal.mappers.SubscriptionMapper;
 import edu.deanza.calendar.domain.OrganizationSubscription;
 import edu.deanza.calendar.domain.Subscription;
@@ -57,11 +57,6 @@ public class FirebaseSubscriptionDao implements SubscriptionDao {
     @Override
     public void add(Subscription subscription) {
         root.child(subscription.getKey()).setValue(mapper.reverseMap(subscription));
-    }
-
-    @Override
-    public void add(OrganizationSubscription subscription) {
-
     }
 
     @Override
