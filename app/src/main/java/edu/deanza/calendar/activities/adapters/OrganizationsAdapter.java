@@ -1,4 +1,4 @@
-package edu.deanza.calendar.activities;
+package edu.deanza.calendar.activities.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,11 +8,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import edu.deanza.calendar.activities.listeners.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
-import edu.deanza.calendar.domain.SubscriptionDao;
-import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.Organization;
 
 public class OrganizationsAdapter
         extends SubscribableAdapter<Organization, OrganizationsAdapter.OrganizationItemViewHolder> {

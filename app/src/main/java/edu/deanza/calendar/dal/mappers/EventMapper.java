@@ -1,4 +1,4 @@
-package edu.deanza.calendar.dal;
+package edu.deanza.calendar.dal.mappers;
 
 import org.joda.time.DateTime;
 
@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.deanza.calendar.domain.OrganizationRepository;
-import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.dal.interfaces.OrganizationRepository;
+import edu.deanza.calendar.domain.Event;
+import edu.deanza.calendar.util.dal.mappers.DataMapper;
 
 /**
  * Created by karinaantonio on 8/20/16.
  */
 
-class EventMapper implements DataMapper<Event>, Serializable {
+public class EventMapper implements DataMapper<Event>, Serializable {
 
     private final OrganizationRepository repository;
 

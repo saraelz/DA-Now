@@ -4,16 +4,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 
-import edu.deanza.calendar.domain.EventRepository;
-import edu.deanza.calendar.domain.OrganizationRepository;
-import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.dal.interfaces.EventRepository;
+import edu.deanza.calendar.dal.interfaces.OrganizationRepository;
+import edu.deanza.calendar.dal.mappers.OrganizationMapper;
+import edu.deanza.calendar.util.dal.RecylcingFirebaseAccessor;
+import edu.deanza.calendar.util.dal.mappers.DataMapper;
+import edu.deanza.calendar.domain.Organization;
 import edu.deanza.calendar.util.Callback;
 
 /**
  * Created by karinaantonio on 8/18/16.
  */
 
-public final class FirebaseOrganizationRepository extends FirebaseRepository<Organization> implements OrganizationRepository, Serializable {
+public final class FirebaseOrganizationRepository extends RecylcingFirebaseAccessor<Organization> implements OrganizationRepository, Serializable {
 
     private final DataMapper<Organization> mapper;
 
@@ -26,12 +29,12 @@ public final class FirebaseOrganizationRepository extends FirebaseRepository<Org
     }
 
     @Override
-    String getRootName() {
+    public String getRootName() {
         return "organizations";
     }
 
     @Override
-    DataMapper<Organization> getMapper() {
+    public DataMapper<Organization> getMapper() {
         return mapper;
     }
 
@@ -48,9 +51,10 @@ public final class FirebaseOrganizationRepository extends FirebaseRepository<Org
         listenToLocation(callback);
     }
 
+    // For serialization; Java REQUIRES this method to be private, so paste it into each subclass
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        initialize();
+        root = initializeRoot();
     }
 
 }

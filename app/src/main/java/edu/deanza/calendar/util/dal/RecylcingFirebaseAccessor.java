@@ -1,4 +1,4 @@
-package edu.deanza.calendar.dal;
+package edu.deanza.calendar.util.dal;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,6 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Map;
 
+import edu.deanza.calendar.util.dal.mappers.DataMapper;
 import edu.deanza.calendar.util.Callback;
 import edu.deanza.calendar.util.Utilities;
 
@@ -27,38 +28,30 @@ import static com.google.android.gms.internal.zzs.TAG;
  * Created by karinaantonio on 8/29/16.
  */
 
-abstract class FirebaseRepository<T> implements Serializable {
+public abstract class RecylcingFirebaseAccessor<T> implements Serializable {
 
-    transient DatabaseReference root;
-    transient Query currentQuery;
+    protected transient DatabaseReference root = initializeRoot();
+    protected transient Query currentQuery;
     private final ListOrderedMap<String, T> currentData = new ListOrderedMap<>();
     private transient AsyncTask runningTask;
     // Note: context becomes and remains null after serialization
     private transient Context context;
 
-    private static final String THIS_CLASS_TAG = FirebaseRepository.class.getName();
+    private static final String THIS_CLASS_TAG = RecylcingFirebaseAccessor.class.getName();
 
-    {
-        initialize();
+    protected DatabaseReference initializeRoot() {
+        return Utilities.getFirebase().getReference().child(getRootName());
     }
 
-    void initialize() {
-        initializeRoot();
-    }
+    public abstract String getRootName();
 
-    private void initializeRoot() {
-        this.root = Utilities.getFirebase().getReference().child(getRootName());
-    }
+    public abstract DataMapper<T> getMapper();
 
-    abstract String getRootName();
-
-    abstract DataMapper<T> getMapper();
-
-    class RecyclingEventQueryListener implements ValueEventListener {
+    private class RecyclingEventQueryListener implements ValueEventListener {
 
         private final Callback<T> continuation;
 
-        public RecyclingEventQueryListener(Callback<T> continuation) {
+        RecyclingEventQueryListener(Callback<T> continuation) {
             this.continuation = continuation;
         }
 
@@ -143,11 +136,11 @@ abstract class FirebaseRepository<T> implements Serializable {
 
     }
 
-    class RecyclingEventLocationListener implements ValueEventListener {
+    private class RecyclingEventLocationListener implements ValueEventListener {
 
         private final Callback<T> continuation;
 
-        public RecyclingEventLocationListener(Callback<T> continuation) {
+        RecyclingEventLocationListener(Callback<T> continuation) {
             this.continuation = continuation;
         }
 
@@ -187,21 +180,21 @@ abstract class FirebaseRepository<T> implements Serializable {
 
     }
 
-    final void listenToQuery(Callback<T> callback) {
+    protected final void listenToQuery(Callback<T> callback) {
         if (runningTask != null) {
             runningTask.cancel(true);
         }
         currentQuery.addListenerForSingleValueEvent(new RecyclingEventQueryListener(callback));
     }
 
-    final void listenToLocation(Callback<T> callback) {
+    protected final void listenToLocation(Callback<T> callback) {
         currentQuery.addListenerForSingleValueEvent(new RecyclingEventLocationListener(callback));
     }
 
-    // For serialization; copy and paste in each subclass
+    // For serialization; Java REQUIRES this method to be private, so paste it into each subclass
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        initialize();
+        root = initializeRoot();
     }
 
     public void enableLoadingDialog(Context context) {

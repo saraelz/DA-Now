@@ -1,12 +1,13 @@
-package edu.deanza.calendar.dal;
+package edu.deanza.calendar.dal.mappers;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import edu.deanza.calendar.domain.models.OrganizationSubscription;
-import edu.deanza.calendar.domain.models.Subscription;
+import edu.deanza.calendar.util.dal.mappers.DataMapper;
+import edu.deanza.calendar.domain.OrganizationSubscription;
+import edu.deanza.calendar.domain.Subscription;
 
 /**
  * Created by karinaantonio on 9/11/16.

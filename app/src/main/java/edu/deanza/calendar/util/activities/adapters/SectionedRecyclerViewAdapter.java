@@ -1,4 +1,4 @@
-package edu.deanza.calendar.util;
+package edu.deanza.calendar.util.activities.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,10 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
-
-import edu.deanza.calendar.activities.MeetingsAdapter;
-import edu.deanza.calendar.activities.SubscribableAdapter;
-import edu.deanza.calendar.domain.Subscribable;
 
 /**
  * @author Gabriele Mariotti (gabri.mariotti@gmail.com)

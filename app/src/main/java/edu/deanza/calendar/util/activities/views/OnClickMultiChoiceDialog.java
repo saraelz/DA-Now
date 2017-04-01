@@ -1,4 +1,4 @@
-package edu.deanza.calendar.util;
+package edu.deanza.calendar.util.activities.views;
 
 import android.content.Context;
 import android.content.DialogInterface;

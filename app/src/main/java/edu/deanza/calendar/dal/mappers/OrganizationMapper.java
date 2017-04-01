@@ -1,4 +1,4 @@
-package edu.deanza.calendar.dal;
+package edu.deanza.calendar.dal.mappers;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -8,16 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.deanza.calendar.domain.EventRepository;
-import edu.deanza.calendar.domain.models.Club;
-import edu.deanza.calendar.domain.models.Day;
-import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.dal.interfaces.EventRepository;
+import edu.deanza.calendar.util.dal.mappers.DataMapper;
+import edu.deanza.calendar.domain.Club;
+import edu.deanza.calendar.domain.Day;
+import edu.deanza.calendar.domain.Organization;
 
 /**
  * Created by karinaantonio on 8/19/16.
  */
 
-class OrganizationMapper implements DataMapper<Organization>, Serializable {
+public class OrganizationMapper implements DataMapper<Organization>, Serializable {
 
     private final EventRepository repository;
 

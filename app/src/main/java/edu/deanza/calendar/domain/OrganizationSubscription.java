@@ -1,4 +1,4 @@
-package edu.deanza.calendar.domain.models;
+package edu.deanza.calendar.domain;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;

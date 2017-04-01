@@ -1,11 +1,9 @@
-package edu.deanza.calendar.activities;
+package edu.deanza.calendar.activities.adapters;
 
 import android.content.Context;
 import android.view.ViewGroup;
 
 import org.joda.time.DateTimeComparator;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -13,14 +11,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import edu.deanza.calendar.activities.listeners.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.util.SectionedRecyclerViewAdapter;
-import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
-import edu.deanza.calendar.domain.SubscriptionDao;
-import edu.deanza.calendar.domain.models.Event;
-import edu.deanza.calendar.domain.models.Meeting;
-import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.util.activities.adapters.SectionedRecyclerViewAdapter;
+import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.Meeting;
+import edu.deanza.calendar.domain.Organization;
 
 /**
  * Created by karinaantonio on 9/20/16.

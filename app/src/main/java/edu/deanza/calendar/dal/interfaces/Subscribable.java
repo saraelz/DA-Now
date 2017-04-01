@@ -1,6 +1,6 @@
-package edu.deanza.calendar.domain;
+package edu.deanza.calendar.dal.interfaces;
 
-import edu.deanza.calendar.domain.models.Subscription;
+import edu.deanza.calendar.domain.Subscription;
 
 /**
  * Created by karinaantonio on 9/16/16.

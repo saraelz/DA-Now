@@ -3,10 +3,10 @@ package edu.deanza.calendar.activities.listeners;
 import android.content.Context;
 import android.view.View;
 
-import edu.deanza.calendar.domain.SubscriptionDao;
-import edu.deanza.calendar.domain.models.Organization;
-import edu.deanza.calendar.domain.models.OrganizationSubscription;
-import edu.deanza.calendar.util.OnClickMultiChoiceDialog;
+import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.Organization;
+import edu.deanza.calendar.domain.OrganizationSubscription;
+import edu.deanza.calendar.util.activities.views.OnClickMultiChoiceDialog;
 
 /**
  * Created by karinaantonio on 9/15/16.

@@ -1,10 +1,10 @@
-package edu.deanza.calendar.domain.models;
+package edu.deanza.calendar.domain;
 
 import java.io.Serializable;
 import java.util.List;
 
-import edu.deanza.calendar.domain.EventRepository;
-import edu.deanza.calendar.domain.Subscribable;
+import edu.deanza.calendar.dal.interfaces.EventRepository;
+import edu.deanza.calendar.dal.interfaces.Subscribable;
 
 public class Club extends Organization implements Subscribable, Serializable {
 

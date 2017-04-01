@@ -1,8 +1,8 @@
-package edu.deanza.calendar.domain;
+package edu.deanza.calendar.dal.interfaces;
 
 import org.joda.time.LocalDate;
 
-import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.domain.Event;
 import edu.deanza.calendar.util.Callback;
 
 /**

@@ -1,11 +1,11 @@
-package edu.deanza.calendar.domain.models;
+package edu.deanza.calendar.domain;
 
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
 
-import edu.deanza.calendar.domain.SubscriptionDao;
-import edu.deanza.calendar.domain.Subscribable;
+import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.dal.interfaces.Subscribable;
 
 /**
  * All meetings belong to an Organization.

@@ -5,14 +5,14 @@ import android.util.Log;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.deanza.calendar.domain.SubscriptionDao;
-import edu.deanza.calendar.domain.models.Subscription;
+import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.dal.mappers.SubscriptionMapper;
+import edu.deanza.calendar.domain.Subscription;
 import edu.deanza.calendar.util.Callback;
 import edu.deanza.calendar.util.Utilities;
 

@@ -15,9 +15,9 @@ import org.joda.time.format.DateTimeFormatter;
 
 import edu.deanza.calendar.R;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
-import edu.deanza.calendar.domain.SubscriptionDao;
-import edu.deanza.calendar.domain.models.Event;
-import edu.deanza.calendar.views.SubscribeButtonWrapper;
+import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.Event;
+import edu.deanza.calendar.activities.views.SubscribeButtonWrapper;
 
 public class EventInfo extends AppCompatActivity {
 

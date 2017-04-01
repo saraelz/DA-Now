@@ -1,8 +1,8 @@
-package edu.deanza.calendar.domain;
+package edu.deanza.calendar.dal.interfaces;
 
 import java.util.Map;
 
-import edu.deanza.calendar.domain.models.Subscription;
+import edu.deanza.calendar.domain.Subscription;
 import edu.deanza.calendar.util.Callback;
 
 /**

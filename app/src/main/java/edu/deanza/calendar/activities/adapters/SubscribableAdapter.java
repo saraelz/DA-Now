@@ -1,7 +1,6 @@
-package edu.deanza.calendar.activities;
+package edu.deanza.calendar.activities.adapters;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -10,12 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.deanza.calendar.R;
-import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
-import edu.deanza.calendar.domain.SubscriptionDao;
-import edu.deanza.calendar.domain.Subscribable;
-import edu.deanza.calendar.domain.models.Subscription;
-import edu.deanza.calendar.views.SubscribeButtonWrapper;
+import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.dal.interfaces.Subscribable;
+import edu.deanza.calendar.domain.Subscription;
+import edu.deanza.calendar.activities.views.SubscribeButtonWrapper;
 
 /**
  * Created by karinaantonio on 9/16/16.

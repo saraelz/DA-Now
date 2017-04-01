@@ -8,16 +8,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 
-import edu.deanza.calendar.domain.EventRepository;
-import edu.deanza.calendar.domain.OrganizationRepository;
-import edu.deanza.calendar.domain.models.Event;
+import edu.deanza.calendar.dal.interfaces.EventRepository;
+import edu.deanza.calendar.dal.interfaces.OrganizationRepository;
+import edu.deanza.calendar.util.dal.RecylcingFirebaseAccessor;
+import edu.deanza.calendar.util.dal.mappers.DataMapper;
+import edu.deanza.calendar.dal.mappers.EventMapper;
+import edu.deanza.calendar.domain.Event;
 import edu.deanza.calendar.util.Callback;
 
 /**
  * Created by karinaantonio on 8/11/16.
  */
 
-public final class FirebaseEventRepository extends FirebaseRepository<Event> implements EventRepository, Serializable {
+public final class FirebaseEventRepository extends RecylcingFirebaseAccessor<Event> implements EventRepository, Serializable {
 
     private final DataMapper<Event> mapper;
 
@@ -30,12 +33,12 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
     }
 
     @Override
-    String getRootName() {
+    public String getRootName() {
         return "events";
     }
 
     @Override
-    DataMapper<Event> getMapper() {
+    public DataMapper<Event> getMapper() {
         return mapper;
     }
 
@@ -91,9 +94,10 @@ public final class FirebaseEventRepository extends FirebaseRepository<Event> imp
         listenToQuery(callback);
     }
 
+    // For serialization; Java REQUIRES this method to be private, so paste it into each subclass
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        initialize();
+        root = initializeRoot();
     }
 
 }

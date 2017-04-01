@@ -21,14 +21,15 @@ import java.util.List;
 import java.util.Map;
 
 import edu.deanza.calendar.R;
-import edu.deanza.calendar.util.SectionedRecyclerViewAdapter;
+import edu.deanza.calendar.activities.adapters.EventsAdapter;
+import edu.deanza.calendar.util.activities.adapters.SectionedRecyclerViewAdapter;
 import edu.deanza.calendar.dal.FirebaseEventRepository;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
-import edu.deanza.calendar.domain.SubscriptionDao;
-import edu.deanza.calendar.domain.EventRepository;
-import edu.deanza.calendar.domain.models.Event;
-import edu.deanza.calendar.domain.models.Meeting;
-import edu.deanza.calendar.domain.models.Subscription;
+import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.dal.interfaces.EventRepository;
+import edu.deanza.calendar.domain.Event;
+import edu.deanza.calendar.domain.Meeting;
+import edu.deanza.calendar.domain.Subscription;
 import edu.deanza.calendar.util.Callback;
 import edu.deanza.calendar.util.UidGetter;
 

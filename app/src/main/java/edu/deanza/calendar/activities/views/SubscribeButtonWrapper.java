@@ -1,4 +1,4 @@
-package edu.deanza.calendar.views;
+package edu.deanza.calendar.activities.views;
 
 import android.content.Context;
 import android.support.design.widget.Snackbar;
@@ -8,10 +8,10 @@ import edu.deanza.calendar.R;
 import edu.deanza.calendar.activities.listeners.OnClickOrganizationSubscribeDialog;
 import edu.deanza.calendar.activities.listeners.OnClickSubscribeTimeDialog;
 import edu.deanza.calendar.activities.listeners.SubscribeOnClickListener;
-import edu.deanza.calendar.domain.Subscribable;
-import edu.deanza.calendar.domain.SubscriptionDao;
-import edu.deanza.calendar.domain.models.Meeting;
-import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.dal.interfaces.Subscribable;
+import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.Meeting;
+import edu.deanza.calendar.domain.Organization;
 
 /**
  * Created by Karina on 10/1/2016.

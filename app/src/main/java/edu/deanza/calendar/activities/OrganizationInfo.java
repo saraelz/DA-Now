@@ -1,6 +1,5 @@
 package edu.deanza.calendar.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,16 +14,18 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import edu.deanza.calendar.R;
+import edu.deanza.calendar.activities.adapters.EventsAdapter;
+import edu.deanza.calendar.activities.adapters.OrganizationInfoAdapter;
 import edu.deanza.calendar.dal.FirebaseSubscriptionDao;
-import edu.deanza.calendar.domain.SubscriptionDao;
-import edu.deanza.calendar.domain.models.Club;
-import edu.deanza.calendar.domain.models.Day;
-import edu.deanza.calendar.domain.models.Event;
-import edu.deanza.calendar.domain.models.Meeting;
-import edu.deanza.calendar.domain.models.Organization;
-import edu.deanza.calendar.domain.models.Subscription;
+import edu.deanza.calendar.dal.interfaces.SubscriptionDao;
+import edu.deanza.calendar.domain.Club;
+import edu.deanza.calendar.domain.Day;
+import edu.deanza.calendar.domain.Event;
+import edu.deanza.calendar.domain.Meeting;
+import edu.deanza.calendar.domain.Organization;
+import edu.deanza.calendar.domain.Subscription;
 import edu.deanza.calendar.util.Callback;
-import edu.deanza.calendar.views.SubscribeButtonWrapper;
+import edu.deanza.calendar.activities.views.SubscribeButtonWrapper;
 
 public class OrganizationInfo extends AppCompatActivity {
 

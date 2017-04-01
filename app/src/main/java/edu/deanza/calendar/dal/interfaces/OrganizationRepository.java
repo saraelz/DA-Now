@@ -1,6 +1,6 @@
-package edu.deanza.calendar.domain;
+package edu.deanza.calendar.dal.interfaces;
 
-import edu.deanza.calendar.domain.models.Organization;
+import edu.deanza.calendar.domain.Organization;
 import edu.deanza.calendar.util.Callback;
 
 /**
